@@ -52,6 +52,12 @@ namespace QuantLib {
             return s;
         }
 
+        // we want the times as vector because swig does not really know what to do with std::set
+        std::vector<DateType> observationTimesVector() {
+            std::set<DateType> obsTimes = observationTimes();
+            return std::vector<DateType>(obsTimes.begin(), obsTimes.end());
+        }
+
         // generic pricer
         class Pricer {
         protected:
