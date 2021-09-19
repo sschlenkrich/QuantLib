@@ -233,7 +233,7 @@ namespace QuantLib {
 
 
     inline size_t QGLocalvolModel::minIdx(const std::vector<Real>& X, const Real x) {
-        QL_REQUIRE(X.size()>0,"X.size>0 required")
+        QL_REQUIRE(X.size() > 0, "X.size>0 required");
         if (x <= X[0]) return 0;
         if (x > X.back()) return X.size();
         // bisection search

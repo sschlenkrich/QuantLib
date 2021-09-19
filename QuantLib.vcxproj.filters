@@ -3771,14 +3771,6 @@
     <ClCompile Include="ql\pricingengines\barrier\discretizedbarrieroption.cpp">
       <Filter>pricingengines\barrier</Filter>
     </ClCompile>
-    <ClInclude Include="ql\auto_link.hpp" />
-    <ClInclude Include="ql\auto_ptr.hpp" />
-    <ClInclude Include="ql\cashflow.hpp" />
-    <ClInclude Include="ql\compounding.hpp" />
-    <ClInclude Include="ql\config.ansi.hpp" />
-    <ClInclude Include="ql\config.mingw.hpp" />
-    <ClInclude Include="ql\config.msvc.hpp" />
-    <ClInclude Include="ql\config.sun.hpp" />
     <ClInclude Include="ql\currency.hpp" />
     <ClInclude Include="ql\default.hpp" />
     <ClInclude Include="ql\discretizedasset.hpp" />
@@ -3792,7 +3784,6 @@
     <ClInclude Include="ql\handle.hpp" />
     <ClInclude Include="ql\index.hpp" />
     <ClInclude Include="ql\instrument.hpp" />
-    <ClInclude Include="ql\interestrate.hpp" />
     <ClInclude Include="ql\mathconstants.hpp" />
     <ClInclude Include="ql\money.hpp" />
     <ClInclude Include="ql\numericalmethod.hpp" />
@@ -4667,6 +4658,8 @@
     <ClInclude Include="ql\experimental\templatemodels\hybrid\spreadmodelT.hpp">
       <Filter>experimental\templatemodels\hybrid</Filter>
     </ClInclude>
+    <ClInclude Include="ql\interestrate.hpp" />
+    <ClInclude Include="ql\compounding.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -6871,7 +6864,6 @@
     <ClCompile Include="ql\exercise.cpp" />
     <ClCompile Include="ql\rebatedexercise.cpp" />
     <ClCompile Include="ql\index.cpp" />
-    <ClCompile Include="ql\interestrate.cpp" />
     <ClCompile Include="ql\money.cpp" />
     <ClCompile Include="ql\position.cpp" />
     <ClCompile Include="ql\prices.cpp" />
@@ -7470,6 +7462,7 @@
       <Filter>experimental\templatemodels\qgaussian2</Filter>
     </ClCompile>
     <ClCompile Include="ql\buildinfo.cpp" />
+    <ClCompile Include="ql\interestrate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Flex Include="ql\experimental\templatemodels\montecarlo\scripting\lexer.l">

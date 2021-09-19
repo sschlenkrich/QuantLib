@@ -43,8 +43,8 @@ namespace QuantLib {
             useForPayForward_ = payIndex->forwardingTermStructure().empty();
             useForRecForward_ = recIndex->forwardingTermStructure().empty();
             // we need to check that we set at least one curve for bootstrapping
-            QL_REQUIRE( useForDiscount_ || useForPayForward_ || useForRecForward_,
-                "No yield curve to be set for bootstrapping.")
+            QL_REQUIRE(useForDiscount_ || useForPayForward_ || useForRecForward_,
+                "No yield curve to be set for bootstrapping.");
             // we need to set up indices and discount curves with relinkable handles to set them appropriately later
             if (!useForDiscount_)   discountRelinkableHandle_ = RelinkableHandle<YieldTermStructure>(discountCurve.currentLink());
             if (!useForPayForward_) payRelinkableHandle_      = RelinkableHandle<YieldTermStructure>(payIndex->forwardingTermStructure().currentLink());
@@ -152,8 +152,8 @@ namespace QuantLib {
         useForPayForward_    = payIndex->forwardingTermStructure().empty();
         useForRecForward_    = recIndex->forwardingTermStructure().empty();
         // we need to check that we set at least one curve for bootstrapping
-        QL_REQUIRE( useForPayDiscount_ || useForRecDiscount_ || useForPayForward_ || useForRecForward_,
-                "No yield curve to be set for bootstrapping.")
+        QL_REQUIRE(useForPayDiscount_ || useForRecDiscount_ || useForPayForward_ || useForRecForward_,
+            "No yield curve to be set for bootstrapping.");
         // we need to set up indices and discount curves with relinkable handles to set them appropriately later
         if (!useForPayDiscount_) payDisRelinkableHandle_ = RelinkableHandle<YieldTermStructure>(payDiscCurve.currentLink());
         if (!useForRecDiscount_) recDisRelinkableHandle_ = RelinkableHandle<YieldTermStructure>(recDiscCurve.currentLink());
