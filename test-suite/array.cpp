@@ -101,6 +101,8 @@ void ArrayTest::testConstruction() {
                         << "\n    copy:      " << a6[i]);
     }
 
+    #ifdef QL_USE_DISPOSABLE
+
     // creation of disposable array
     Array temp1(size, value);
     Disposable<Array> temp2(temp1);
@@ -162,6 +164,8 @@ void ArrayTest::testConstruction() {
                         << "\n    required:  " << value
                         << "\n    resulting: " << a9[i]);
     }
+
+    #endif
 
     // transform
     Array a10(5);
@@ -242,7 +246,7 @@ void ArrayTest::testArrayResize() {
 
 
 test_suite* ArrayTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("array tests");
+    auto* suite = BOOST_TEST_SUITE("array tests");
     suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testConstruction));
     suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testArrayFunctions));
     suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testArrayResize));

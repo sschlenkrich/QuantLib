@@ -68,7 +68,7 @@ namespace QuantLib {
                                      const DayCounter& dc = DayCounter(),
 								     const VolatilityType& volatilityType = Lognormal);
         //@}
-        virtual ~OptionletVolatilityStructure() {}
+        ~OptionletVolatilityStructure() override = default;
         //! \name Volatility and Variance
         //@{
         //! returns the volatility for a given option tenor and strike rate

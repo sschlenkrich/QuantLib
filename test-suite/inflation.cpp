@@ -43,6 +43,8 @@
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 
+#include <functional>
+
 
 using boost::unit_test_framework::test_suite;
 
@@ -72,23 +74,17 @@ namespace inflation_test {
             new FlatForward(evaluationDate, 0.05, Actual360()));
     }
 
-    template <class T, class U, class I>
+    template <class T>
     std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
-            Datum iiData[], Size N,
-            const ext::shared_ptr<I> &ii, const Period &observationLag,
-            const Calendar &calendar,
-            const BusinessDayConvention &bdc,
-            const DayCounter &dc,
-            const Handle<YieldTermStructure>& yTS) {
+        const std::vector<Datum>& iiData,
+        std::function<ext::shared_ptr<BootstrapHelper<T> >(const Handle<Quote>&, const Date&)>
+            makeHelper) {
 
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
-        for (Size i=0; i<N; i++) {
-            Date maturity = iiData[i].date;
-            Handle<Quote> quote(ext::shared_ptr<Quote>(
-                new SimpleQuote(iiData[i].rate/100.0)));
-            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
-                quote, observationLag, maturity,
-                calendar, bdc, dc, ii, yTS));
+        for (Datum datum : iiData) {
+            Date maturity = datum.date;
+            Handle<Quote> quote(ext::shared_ptr<Quote>(new SimpleQuote(datum.rate / 100.0)));
+            auto anInstrument = makeHelper(quote, maturity);
             instruments.push_back(anInstrument);
         }
 
@@ -345,7 +341,7 @@ void InflationTest::testZeroTermStructure() {
     ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
 
     // now build the zero inflation curve
-    Datum zcData[] = {
+    std::vector<Datum> zcData = {
         { Date(13, August, 2008), 2.93 },
         { Date(13, August, 2009), 2.95 },
         { Date(13, August, 2010), 2.965 },
@@ -363,14 +359,15 @@ void InflationTest::testZeroTermStructure() {
     };
 
     Period observationLag = Period(2,Months);
-    DayCounter dc = Thirty360();
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
     Frequency frequency = Monthly;
-    std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
-    makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
-                ZeroInflationIndex>(zcData, LENGTH(zcData), ii,
-                                    observationLag,
-                                    calendar, bdc, dc,
-                                    Handle<YieldTermStructure>(nominalTS));
+
+    auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
+        return ext::make_shared<ZeroCouponInflationSwapHelper>(
+            quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex,
+            Handle<YieldTermStructure>(nominalTS));
+    };
+    auto helpers = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelper);
 
     Rate baseZeroRate = zcData[0].rate/100.0;
     ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
@@ -384,7 +381,7 @@ void InflationTest::testZeroTermStructure() {
     // and that the helpers give the correct impled rates
     const Real eps = 0.00000001;
     bool forceLinearInterpolation = false;
-    for (Size i=0; i<LENGTH(zcData); i++) {
+    for (Size i=0; i<zcData.size(); i++) {
         BOOST_REQUIRE_MESSAGE(std::fabs(zcData[i].rate/100.0
             - pZITS->zeroRate(zcData[i].date, observationLag, forceLinearInterpolation)) < eps,
             "ZITS zeroRate != instrument "
@@ -413,9 +410,8 @@ void InflationTest::testZeroTermStructure() {
     // we are testing UKRPI which is not interpolated
     Date bd = hz->baseDate();
     Real bf = ii->fixing(bd);
-    for (Size i=0; i<testIndex.size();i++) {
-        Date d = testIndex[i];
-        Real z = hz->zeroRate(d, Period(0,Days));
+    for (const auto& d : testIndex) {
+        Real z = hz->zeroRate(d, Period(0, Days));
         Real t = hz->dayCounter().yearFraction(bd, d);
         if(!ii->interpolated()) // because fixing constant over period
             t = hz->dayCounter().yearFraction(bd,
@@ -459,12 +455,12 @@ void InflationTest::testZeroTermStructure() {
 
     ext::shared_ptr<ZeroInflationIndex> zii = ext::dynamic_pointer_cast<ZeroInflationIndex>(ii);
     BOOST_REQUIRE_MESSAGE(zii,"dynamic_pointer_cast to ZeroInflationIndex from UKRPI failed");
-    ZeroCouponInflationSwap nzcis(ZeroCouponInflationSwap::Payer,
-                                     1000000.0,
-                                     evaluationDate,
-                                     zcData[6].date,    // end date = maturity
-                                     calendar, bdc, dc, zcData[6].rate/100.0, // fixed rate
-                                     zii, observationLag);
+    ZeroCouponInflationSwap nzcis(Swap::Payer,
+                                  1000000.0,
+                                  evaluationDate,
+                                  zcData[6].date,    // end date = maturity
+                                  calendar, bdc, dc, zcData[6].rate/100.0, // fixed rate
+                                  zii, observationLag, CPI::AsIndex);
 
     // N.B. no coupon pricer because it is not a coupon, effect of inflation curve via
     //      inflation curve attached to the inflation index.
@@ -501,12 +497,13 @@ void InflationTest::testZeroTermStructure() {
     // now build the zero inflation curve
     // same data, bigger lag or it will be a self-contradiction
     Period observationLagyes = Period(3,Months);
-    std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpersyes =
-    makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
-    ZeroInflationIndex>(zcData, LENGTH(zcData), iiyes,
-                        observationLagyes,
-                        calendar, bdc, dc,
-                        Handle<YieldTermStructure>(nominalTS));
+
+    auto makeHelperYes = [&](const Handle<Quote>& quote, const Date& maturity) {
+        return ext::make_shared<ZeroCouponInflationSwapHelper>(
+            quote, observationLagyes, maturity, calendar, bdc, dc, iiyes, CPI::AsIndex,
+            Handle<YieldTermStructure>(nominalTS));
+    };
+    auto helpersyes = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelperYes);
 
     ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITSyes(
             new PiecewiseZeroInflationCurve<Linear>(
@@ -518,7 +515,7 @@ void InflationTest::testZeroTermStructure() {
     // first check that the zero rates on the curve match the data
     // and that the helpers give the correct impled rates
     forceLinearInterpolation = false;   // still
-    for (Size i=0; i<LENGTH(zcData); i++) {
+    for (Size i=0; i<zcData.size(); i++) {
         BOOST_CHECK_MESSAGE(std::fabs(zcData[i].rate/100.0
                     - pZITSyes->zeroRate(zcData[i].date, observationLagyes, forceLinearInterpolation)) < eps,
                     "ZITS INTERPOLATED zeroRate != instrument "
@@ -548,9 +545,8 @@ void InflationTest::testZeroTermStructure() {
     // we are testing UKRPI which is FAKE interpolated for testing here
     bd = hz->baseDate();
     bf = iiyes->fixing(bd);
-    for (Size i=0; i<testIndex.size();i++) {
-        Date d = testIndex[i];
-        Real z = hz->zeroRate(d, Period(0,Days));
+    for (const auto& d : testIndex) {
+        Real z = hz->zeroRate(d, Period(0, Days));
         Real t = hz->dayCounter().yearFraction(bd, d);
         Real calc = bf * pow( 1+z, t);
         if (t<=0) calc = iiyes->fixing(d); // still historical
@@ -565,18 +561,17 @@ void InflationTest::testZeroTermStructure() {
     }
 
 
-
     //===========================================================================================
     // Test zero coupon swap
 
     ext::shared_ptr<ZeroInflationIndex> ziiyes = ext::dynamic_pointer_cast<ZeroInflationIndex>(iiyes);
     BOOST_REQUIRE_MESSAGE(ziiyes,"dynamic_pointer_cast to ZeroInflationIndex from UKRPI-I failed");
-    ZeroCouponInflationSwap nzcisyes(ZeroCouponInflationSwap::Payer,
+    ZeroCouponInflationSwap nzcisyes(Swap::Payer,
                                      1000000.0,
                                      evaluationDate,
                                      zcData[6].date,    // end date = maturity
                                      calendar, bdc, dc, zcData[6].rate/100.0, // fixed rate
-                                     ziiyes, observationLagyes);
+                                     ziiyes, observationLagyes, CPI::AsIndex);
 
     // N.B. no coupon pricer because it is not a coupon, effect of inflation curve via
     //      inflation curve attached to the inflation index.
@@ -837,7 +832,7 @@ void InflationTest::testYYTermStructure() {
     ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
 
     // now build the YoY inflation curve
-    Datum yyData[] = {
+    std::vector<Datum> yyData = {
         { Date(13, August, 2008), 2.95 },
         { Date(13, August, 2009), 2.95 },
         { Date(13, August, 2010), 2.93 },
@@ -856,15 +851,15 @@ void InflationTest::testYYTermStructure() {
     };
 
     Period observationLag = Period(2,Months);
-    DayCounter dc = Thirty360();
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
 
     // now build the helpers ...
-    std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
-    makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
-    YoYInflationIndex>(yyData, LENGTH(yyData), iir,
-                       observationLag,
-                       calendar, bdc, dc,
-                       Handle<YieldTermStructure>(nominalTS));
+    auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
+        return ext::make_shared<YearOnYearInflationSwapHelper>(
+            quote, observationLag, maturity, calendar, bdc, dc, iir,
+            Handle<YieldTermStructure>(nominalTS));
+    };
+    auto helpers = makeHelpers<YoYInflationTermStructure>(yyData, makeHelper);
 
     Rate baseYYRate = yyData[0].rate/100.0;
     ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
@@ -881,13 +876,11 @@ void InflationTest::testYYTermStructure() {
     // usual swap engine
     Handle<YieldTermStructure> hTS(nominalTS);
     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
-    ext::shared_ptr<InflationCouponPricer> pricer =
-        ext::make_shared<YoYInflationCouponPricer>(hTS);
 
     // make sure that the index has the latest yoy term structure
     hy.linkTo(pYYTS);
 
-    for (Size j = 1; j < LENGTH(yyData); j++) {
+    for (Size j = 1; j < yyData.size(); j++) {
 
         from = nominalTS->referenceDate();
         to = yyData[j].date;
@@ -898,21 +891,19 @@ void InflationTest::testYYTermStructure() {
         .backwards()
         ;
 
-        YearOnYearInflationSwap yyS2(YearOnYearInflationSwap::Payer,
-                                        1000000.0,
-                                        yoySchedule,//fixed schedule, but same as yoy
-                                        yyData[j].rate/100.0,
-                                        dc,
-                                        yoySchedule,
-                                        iir,
-                                        observationLag,
-                                        0.0,        //spread on index
-                                        dc,
-                                        UnitedKingdom());
+        YearOnYearInflationSwap yyS2(Swap::Payer,
+                                     1000000.0,
+                                     yoySchedule,//fixed schedule, but same as yoy
+                                     yyData[j].rate/100.0,
+                                     dc,
+                                     yoySchedule,
+                                     iir,
+                                     observationLag,
+                                     0.0,        //spread on index
+                                     dc,
+                                     UnitedKingdom());
 
         yyS2.setPricingEngine(sppe);
-        setCouponPricer(yyS2.yoyLeg(), pricer);
-
 
         BOOST_CHECK_MESSAGE(fabs(yyS2.NPV())<eps,"fresh yoy swap NPV!=0 from TS "
                 <<"swap quote for pt " << j
@@ -936,20 +927,19 @@ void InflationTest::testYYTermStructure() {
         .backwards()
         ;
 
-        YearOnYearInflationSwap yyS3(YearOnYearInflationSwap::Payer,
-                                    1000000.0,
-                                    yoySchedule,//fixed schedule, but same as yoy
-                                    yyData[jj].rate/100.0,
-                                    dc,
-                                    yoySchedule,
-                                    iir,
-                                    observationLag,
-                                    0.0,        //spread on index
-                                    dc,
-                                    UnitedKingdom());
+        YearOnYearInflationSwap yyS3(Swap::Payer,
+                                     1000000.0,
+                                     yoySchedule,//fixed schedule, but same as yoy
+                                     yyData[jj].rate/100.0,
+                                     dc,
+                                     yoySchedule,
+                                     iir,
+                                     observationLag,
+                                     0.0,        //spread on index
+                                     dc,
+                                     UnitedKingdom());
 
         yyS3.setPricingEngine(sppe);
-        setCouponPricer(yyS3.yoyLeg(), pricer);
 
         BOOST_CHECK_MESSAGE(fabs(yyS3.NPV())< 20000.0,
                             "unexpected size of aged YoY swap, aged "
@@ -1038,7 +1028,7 @@ void InflationTest::testPeriod() {
 
 test_suite* InflationTest::suite() {
 
-    test_suite* suite = BOOST_TEST_SUITE("Inflation tests");
+    auto* suite = BOOST_TEST_SUITE("Inflation tests");
 
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testPeriod));
 

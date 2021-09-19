@@ -4,6 +4,7 @@
 #include <ql/experimental/termstructures/corrtermstructureStrike.hpp>
 #include <ql/experimental/termstructures/localcorrsurfaceabf.hpp>
 #include <ql/experimental/termstructures/localcorrtermstructure.hpp>
+#include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
 #include <ql/experimental/termstructures/multicurvesensitivities.hpp>
 
 #include <ql/experimental/termstructures/Helper/all.hpp>

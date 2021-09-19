@@ -38,6 +38,8 @@ QL_TEST_SRCS = \
 	covariance.cpp \
 	creditdefaultswap.cpp \
 	creditriskplus.cpp \
+	crosscurrencyratehelpers.cpp \
+	currency.cpp \
 	curvestates.cpp \
 	dates.cpp \
 	daycounters.cpp \
@@ -79,6 +81,7 @@ QL_TEST_SRCS = \
 	inflationcpicapfloor.cpp \
 	inflationcpiswap.cpp \
 	inflationvolatility.cpp \
+	inflationzciisinterpolation.cpp \
 	instruments.cpp \
 	integrals.cpp \
 	interestrates.cpp \
@@ -128,12 +131,14 @@ QL_TEST_SRCS = \
 	rounding.cpp \
 	sampledcurve.cpp \
 	schedule.cpp \
+	settings.cpp \
 	shortratemodels.cpp \
 	sofrfutures.cpp \
 	solvers.cpp \
 	spreadoption.cpp \
 	squarerootclvmodel.cpp \
 	stats.cpp \
+	subperiodcoupons.cpp \
 	swap.cpp \
 	swapforwardmappings.cpp \
 	swaption.cpp \
@@ -156,7 +161,8 @@ QL_TEST_SRCS = \
 	varianceswaps.cpp \
 	volatilitymodels.cpp \
 	vpp.cpp \
-	zabr.cpp
+	zabr.cpp \
+	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
 	speedlevel.hpp \
@@ -197,6 +203,8 @@ QL_TEST_HDRS = \
 	covariance.hpp \
 	creditdefaultswap.hpp \
 	creditriskplus.hpp \
+	crosscurrencyratehelpers.hpp \
+	currency.hpp \
 	curvestates.hpp \
 	dates.hpp \
 	daycounters.hpp \
@@ -238,6 +246,7 @@ QL_TEST_HDRS = \
 	inflationcpicapfloor.hpp \
 	inflationcpiswap.hpp \
 	inflationvolatility.hpp \
+	inflationzciisinterpolation.hpp \
 	instruments.hpp \
 	integrals.hpp \
 	interestrates.hpp \
@@ -287,12 +296,14 @@ QL_TEST_HDRS = \
 	rounding.hpp \
 	sampledcurve.hpp \
 	schedule.hpp \
+	settings.hpp \
 	shortratemodels.hpp \
 	sofrfutures.hpp \
 	solvers.hpp \
 	spreadoption.hpp \
 	squarerootclvmodel.hpp \
 	stats.hpp \
+	subperiodcoupons.hpp \
 	swap.hpp \
 	swapforwardmappings.hpp \
 	swaption.hpp \
@@ -316,7 +327,8 @@ QL_TEST_HDRS = \
 	varianceswaps.hpp \
 	volatilitymodels.hpp \
 	vpp.hpp \
-	zabr.hpp
+	zabr.hpp \
+	zerocouponswap.hpp
 
 QL_TESTS = ${QL_TEST_SRCS} ${QL_TEST_HDRS}
 

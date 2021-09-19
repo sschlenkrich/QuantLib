@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,20 +21,20 @@
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    InflationIndex::InflationIndex(const std::string& familyName,
-                                   const Region& region,
+    InflationIndex::InflationIndex(std::string familyName,
+                                   Region region,
                                    bool revised,
                                    bool interpolated,
                                    Frequency frequency,
                                    const Period& availabilityLag,
-                                   const Currency& currency)
-    : familyName_(familyName), region_(region),
-      revised_(revised), interpolated_(interpolated),
-      frequency_(frequency), availabilityLag_(availabilityLag),
-      currency_(currency) {
+                                   Currency currency)
+    : familyName_(std::move(familyName)), region_(std::move(region)), revised_(revised),
+      interpolated_(interpolated), frequency_(frequency), availabilityLag_(availabilityLag),
+      currency_(std::move(currency)) {
         name_ = region_.name() + " " + familyName_;
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
@@ -50,7 +51,7 @@ namespace QuantLib {
                                    bool forceOverwrite) {
 
         std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
-        Size n = lim.second - lim.first + 1;
+        Size n = static_cast<QuantLib::Size>(lim.second - lim.first) + 1;
         std::vector<Date> dates(n);
         std::vector<Rate> rates(n);
         for (Size i=0; i<n; ++i) {
@@ -62,18 +63,17 @@ namespace QuantLib {
                           rates.begin(), forceOverwrite);
     }
 
-    ZeroInflationIndex::ZeroInflationIndex(
-                      const std::string& familyName,
-                      const Region& region,
-                      bool revised,
-                      bool interpolated,
-                      Frequency frequency,
-                      const Period& availabilityLag,
-                      const Currency& currency,
-                      const Handle<ZeroInflationTermStructure>& zeroInflation)
-    : InflationIndex(familyName, region, revised, interpolated,
-                     frequency, availabilityLag, currency),
-      zeroInflation_(zeroInflation) {
+    ZeroInflationIndex::ZeroInflationIndex(const std::string& familyName,
+                                           const Region& region,
+                                           bool revised,
+                                           bool interpolated,
+                                           Frequency frequency,
+                                           const Period& availabilityLag,
+                                           const Currency& currency,
+                                           Handle<ZeroInflationTermStructure> zeroInflation)
+    : InflationIndex(
+          familyName, region, revised, interpolated, frequency, availabilityLag, currency),
+      zeroInflation_(std::move(zeroInflation)) {
         registerWith(zeroInflation_);
     }
 
@@ -155,7 +155,7 @@ namespace QuantLib {
         // the term structure is relative to the fixing value at the base date.
         Date baseDate = zeroInflation_->baseDate();
         QL_REQUIRE(!needsForecast(baseDate),
-                   name() << " index fixing at base date is not available");
+                   name() << " index fixing at base date " << baseDate << " is not available");
         Real baseFixing = fixing(baseDate);
         Date effectiveFixingDate;
         if (interpolated()) {
@@ -189,19 +189,18 @@ namespace QuantLib {
 
     // these still need to be fixed to latest versions
 
-    YoYInflationIndex::YoYInflationIndex(
-            const std::string& familyName,
-            const Region& region,
-            bool revised,
-            bool interpolated,
-            bool ratio,
-            Frequency frequency,
-            const Period& availabilityLag,
-            const Currency& currency,
-            const Handle<YoYInflationTermStructure>& yoyInflation)
-    : InflationIndex(familyName, region, revised, interpolated,
-                     frequency, availabilityLag, currency),
-      ratio_(ratio), yoyInflation_(yoyInflation) {
+    YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
+                                         const Region& region,
+                                         bool revised,
+                                         bool interpolated,
+                                         bool ratio,
+                                         Frequency frequency,
+                                         const Period& availabilityLag,
+                                         const Currency& currency,
+                                         Handle<YoYInflationTermStructure> yoyInflation)
+    : InflationIndex(
+          familyName, region, revised, interpolated, frequency, availabilityLag, currency),
+      ratio_(ratio), yoyInflation_(std::move(yoyInflation)) {
         registerWith(yoyInflation_);
     }
 
@@ -339,4 +338,14 @@ namespace QuantLib {
                                             availabilityLag_, currency_, h);
     }
 
+
+    CPI::InterpolationType
+    detail::CPI::effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
+                                            const QuantLib::CPI::InterpolationType& type) {
+        if (type == QuantLib::CPI::AsIndex) {
+            return index->interpolated() ? QuantLib::CPI::Linear : QuantLib::CPI::Flat;
+        } else {
+            return type;
+        }
+    }
 }

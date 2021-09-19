@@ -32,10 +32,6 @@ namespace QuantLib {
 
 
     //Multiplicative Seasonality on price = on CPI/RPI/HICP/etc
-    //
-    MultiplicativePriceSeasonality::MultiplicativePriceSeasonality() {
-    }
-
 
     void MultiplicativePriceSeasonality::validate() const
     {

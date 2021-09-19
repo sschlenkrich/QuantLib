@@ -62,14 +62,14 @@ namespace QuantLib {
       protected:
         ConvertibleBond(const ext::shared_ptr<Exercise>& exercise,
                         Real conversionRatio,
-                        const DividendSchedule& dividends,
+                        DividendSchedule dividends,
                         const CallabilitySchedule& callability,
                         const Handle<Quote>& creditSpread,
                         const Date& issueDate,
                         Natural settlementDays,
                         const Schedule& schedule,
                         Real redemption);
-        void performCalculations() const;
+        void performCalculations() const override;
         Real conversionRatio_;
         CallabilitySchedule callability_;
         DividendSchedule dividends_;
@@ -161,17 +161,18 @@ namespace QuantLib {
         option(const ConvertibleBond* bond,
                const ext::shared_ptr<Exercise>& exercise,
                Real conversionRatio,
-               const DividendSchedule& dividends,
-               const CallabilitySchedule& callability,
-               const Handle<Quote>& creditSpread,
-               const Leg& cashflows,
-               const DayCounter& dayCounter,
-               const Schedule& schedule,
+               DividendSchedule dividends,
+               CallabilitySchedule callability,
+               Handle<Quote> creditSpread,
+               Leg cashflows,
+               DayCounter dayCounter,
+               Schedule schedule,
                const Date& issueDate,
                Natural settlementDays,
                Real redemption);
 
-        void setupArguments(PricingEngine::arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+
       private:
         const ConvertibleBond* bond_;
         Real conversionRatio_;
@@ -209,7 +210,7 @@ namespace QuantLib {
 
         Natural settlementDays;
         Real redemption;
-        void validate() const;
+        void validate() const override;
     };
 
     class ConvertibleBond::option::engine

@@ -32,8 +32,7 @@
 
 #include <ql/math/interpolations/xabrinterpolation.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
-
-#include <boost/assign/list_of.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -46,24 +45,24 @@ class SABRWrapper {
                 const std::vector<Real> &addParams)
         : t_(t), forward_(forward), params_(params),
           shift_(addParams.size() == 0 ? 0.0 : addParams[0]),
-	      useNormalVols_(((addParams.size() > 1)&(addParams[1]>0.0)) ? (true) : (false)) {
+          useNormalVols_(((addParams.size() > 1)&(addParams[1]>0.0)) ? (true) : (false)) {
         QL_REQUIRE(forward_ + shift_ > 0.0, "forward+shift must be positive: "
                                                  << forward_ << " with shift "
                                                  << shift_ << " not allowed");
         validateSabrParameters(params[0], params[1], params[2], params[3]);
     }
     Real volatility(const Real x) {
-		Real vol=0.0;
-		if (useNormalVols_) vol = unsafeNormalSabrVolatility(x+shift_, forward_+shift_, t_, params_[0], params_[1], params_[2], params_[3]);
+        Real vol=0.0;
+        if (useNormalVols_) vol = unsafeNormalSabrVolatility(x+shift_, forward_+shift_, t_, params_[0], params_[1], params_[2], params_[3]);
         else                vol = shiftedSabrVolatility(x, forward_, t_, params_[0], params_[1], params_[2], params_[3], shift_);
-		return vol;
+        return vol;
     }
 
   private:
     const Real t_, &forward_;
     const std::vector<Real> &params_;
     const Real shift_;
-	const bool useNormalVols_;
+    const bool useNormalVols_;
 };
 
 struct SABRSpecs {
@@ -134,12 +133,12 @@ struct SABRSpecs {
         return y;
     }
     Real weight(const Real strike, const Real forward, const Real stdDev, const std::vector<Real> &addParams) {
-		Real shift = (addParams.size()>0) ? (addParams[0]) : 0.0;
-		bool useNormalVols = ((addParams.size()>1)&(addParams[1]>0.0)) ? (true) : (false);
-		Real vega = 0.0;
-		if (useNormalVols) vega = bachelierBlackFormulaStdDevDerivative(strike+shift, forward+shift, stdDev,1.0);
-		else               vega = blackFormulaStdDevDerivative(strike, forward, stdDev, 1.0, shift);
-		return vega;
+        Real shift = (addParams.size()>0) ? (addParams[0]) : 0.0;
+        bool useNormalVols = ((addParams.size()>1)&(addParams[1]>0.0)) ? (true) : (false);
+        Real vega = 0.0;
+        if (useNormalVols) vega = bachelierBlackFormulaStdDevDerivative(strike+shift, forward+shift, stdDev,1.0);
+        else               vega = blackFormulaStdDevDerivative(strike, forward, stdDev, 1.0, shift);
+        return vega;
     }
     typedef SABRWrapper type;
     ext::shared_ptr<type> instance(const Time t, const Real &forward,
@@ -172,17 +171,17 @@ class SABRInterpolation : public Interpolation {
                       const Real errorAccept = 0.0020,
                       const bool useMaxError = false,
                       const Size maxGuesses = 50,
-					  const Real shift = 0.0,
-					  const bool useNormalVols = false ) {
+                      const Real shift = 0.0,
+                      const bool useNormalVols = false ) {
 
-		Real useNVols = (useNormalVols) ? (1.0) : (0.0);
+        Real useNVols = (useNormalVols) ? (1.0) : (0.0);
         impl_ = ext::shared_ptr<Interpolation::Impl>(
             new detail::XABRInterpolationImpl<I1, I2, detail::SABRSpecs>(
                 xBegin, xEnd, yBegin, t, forward,
-                boost::assign::list_of(alpha)(beta)(nu)(rho),
-                boost::assign::list_of(alphaIsFixed)(betaIsFixed)(nuIsFixed)(rhoIsFixed),
+                {alpha, beta, nu, rho},
+                {alphaIsFixed, betaIsFixed, nuIsFixed, rhoIsFixed},
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
-                maxGuesses, boost::assign::list_of(shift)(useNVols)));
+                maxGuesses, {shift}));
         coeffs_ = ext::dynamic_pointer_cast<
             detail::XABRCoeffHolder<detail::SABRSpecs> >(impl_);
     }
@@ -218,17 +217,16 @@ class SABR {
          bool nuIsFixed,
          bool rhoIsFixed,
          bool vegaWeighted = false,
-         const ext::shared_ptr<EndCriteria>& endCriteria = ext::shared_ptr<EndCriteria>(),
-         const ext::shared_ptr<OptimizationMethod>& optMethod =
-             ext::shared_ptr<OptimizationMethod>(),
+         ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+         ext::shared_ptr<OptimizationMethod> optMethod = ext::shared_ptr<OptimizationMethod>(),
          const Real errorAccept = 0.0020,
          const bool useMaxError = false,
          const Size maxGuesses = 50,
          const Real shift = 0.0)
     : t_(t), forward_(forward), alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
       alphaIsFixed_(alphaIsFixed), betaIsFixed_(betaIsFixed), nuIsFixed_(nuIsFixed),
-      rhoIsFixed_(rhoIsFixed), vegaWeighted_(vegaWeighted), endCriteria_(endCriteria),
-      optMethod_(optMethod), errorAccept_(errorAccept), useMaxError_(useMaxError),
+      rhoIsFixed_(rhoIsFixed), vegaWeighted_(vegaWeighted), endCriteria_(std::move(endCriteria)),
+      optMethod_(std::move(optMethod)), errorAccept_(errorAccept), useMaxError_(useMaxError),
       maxGuesses_(maxGuesses), shift_(shift) {}
     template <class I1, class I2>
     Interpolation interpolate(const I1 &xBegin, const I1 &xEnd,
