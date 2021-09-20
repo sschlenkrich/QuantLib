@@ -179,9 +179,10 @@ namespace QuantLib {
         class GFunctionAffine : public GFunction {
           public:
             GFunctionAffine(const CmsCoupon& coupon);
-			Real operator()(Real x)       { return a_ * (x - swaprate_) + discount_ / annuity_; }
-			Real firstDerivative(Real x)  { return a_;  }
-			Real secondDerivative(Real x) { return 0.0; }
+            Real operator()(Real x) override { return a_ * (x - swaprate_) + discount_ / annuity_; }
+            Real firstDerivative(Real x) override { return a_; }
+            Real secondDerivative(Real x) override { return 0.0; }
+
           protected:
             Real a_, swaprate_, discount_, annuity_;
         };
@@ -348,11 +349,10 @@ namespace QuantLib {
             GFunctionFactory::YieldCurveModel modelOfYieldCurve,
             const Handle<Quote>& meanReversion);
       protected:
-        Real optionletPrice(Option::Type optionType, Real strike) const;
-        Real swapletPrice() const;
-        virtual Real capletPrice(Rate effectiveCap) const;
-        virtual Real floorletPrice(Rate effectiveFloor) const;
-
+        Real optionletPrice(Option::Type optionType, Real strike) const override;
+        Real swapletPrice() const override;
+        Real capletPrice(Rate effectiveCap) const override;
+        Real floorletPrice(Rate effectiveFloor) const override;
     };
 
 }

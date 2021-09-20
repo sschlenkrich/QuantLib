@@ -35,7 +35,8 @@ namespace QuantLib {
     private:
         ext::shared_ptr<VanillaLocalVolModel>  model_;
     protected:
-        virtual Volatility volatilityImpl(Rate strike) const;
+      Volatility volatilityImpl(Rate strike) const override;
+
     public:
         VanillaLocalVolModelSmileSection(
             const ext::shared_ptr<VanillaLocalVolModel>&    model,
@@ -45,44 +46,49 @@ namespace QuantLib {
             : SmileSection(model->timeToExpiry(), dc, type, shift), model_(model) {}
 
         VanillaLocalVolModelSmileSection(
-            const Date&                                   expiryDate,
-            const Rate&                                   forward,
-            const std::vector<Rate>&                      relativeStrikes,
-            const std::vector<Volatility>&                smileVolatilities,
-            const Real                                    extrapolationRelativeStrike,
-            const Real                                    extrapolationSlope,
-            bool                                          vegaWeighted = false,
-            const ext::shared_ptr<EndCriteria>&           endCriteria = ext::shared_ptr<EndCriteria>(new EndCriteria(100, 10, 1.0e-6, 1.0e-6, 1.0e-6)),
-            const ext::shared_ptr<OptimizationMethod>&    method = ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1.0e-6, 1.0e-6, 1.0e-6)),
-            const DayCounter&                             dc = Actual365Fixed(),
-            const Date&                                   referenceDate = Date(),
-            const VolatilityType                          type = Normal,
-            const Rate                                    shift = 0.0,
-            const ext::shared_ptr<VanillaLocalVolModel>&  model = ext::shared_ptr<VanillaLocalVolModel>(),
-            const Real                                    minSlope = -3.0,   //  lower boundary for m in calibration
-            const Real                                    maxSlope =  3.0,   //  upper boundary for m in calibration
-            const Real                                    alpha = 1.0e-4);   //  Tikhonov alpha
+            const Date& expiryDate,
+            const Rate& forward,
+            const std::vector<Rate>& relativeStrikes,
+            const std::vector<Volatility>& smileVolatilities,
+            Real extrapolationRelativeStrike,
+            Real extrapolationSlope,
+            bool vegaWeighted = false,
+            const ext::shared_ptr<EndCriteria>& endCriteria =
+                ext::shared_ptr<EndCriteria>(new EndCriteria(100, 10, 1.0e-6, 1.0e-6, 1.0e-6)),
+            const ext::shared_ptr<OptimizationMethod>& method =
+                ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1.0e-6, 1.0e-6, 1.0e-6)),
+            const DayCounter& dc = Actual365Fixed(),
+            const Date& referenceDate = Date(),
+            VolatilityType type = Normal,
+            Rate shift = 0.0,
+            const ext::shared_ptr<VanillaLocalVolModel>& model =
+                ext::shared_ptr<VanillaLocalVolModel>(),
+            Real minSlope = -3.0, //  lower boundary for m in calibration
+            Real maxSlope = 3.0,  //  upper boundary for m in calibration
+            Real alpha = 1.0e-4); //  Tikhonov alpha
 
         VanillaLocalVolModelSmileSection(
-            const Date&                                       expiryDate,
-            const Rate&                                       forward,
-            const Volatility&                                 atmVolatility,
+            const Date& expiryDate,
+            const Rate& forward,
+            const Volatility& atmVolatility,
             const ext::shared_ptr<VanillaLocalVolModelSmileSection>& smile1,
             const ext::shared_ptr<VanillaLocalVolModelSmileSection>& smile2,
-            const Real&                                       rho,
-            const bool                                        calcSimple = true,  // use only ATM vol for x-grid calculation
-            const DayCounter&                                 dc = Actual365Fixed(),
-            const Date&                                       referenceDate = Date(),
-            const VolatilityType                              type = Normal,
-            const Rate                                        shift = 0.0);
+            const Real& rho,
+            bool calcSimple = true, // use only ATM vol for x-grid calculation
+            const DayCounter& dc = Actual365Fixed(),
+            const Date& referenceDate = Date(),
+            VolatilityType type = Normal,
+            Rate shift = 0.0);
 
-        // SmileSection interface 
-        virtual Real minStrike() const { return model_->underlyingS().front(); }
-        virtual Real maxStrike() const { return model_->underlyingS().back();  }
-        virtual Real atmLevel()  const { return model_->forward();             }
+        // SmileSection interface
+        Real minStrike() const override { return model_->underlyingS().front(); }
+        Real maxStrike() const override { return model_->underlyingS().back(); }
+        Real atmLevel() const override { return model_->forward(); }
 
         // overload optionPrice() as a basis for implied volatility calculation
-        virtual Real optionPrice(Rate strike, Option::Type type = Option::Call, Real discount = 1.0) const;
+        Real optionPrice(Rate strike,
+                         Option::Type type = Option::Call,
+                         Real discount = 1.0) const override;
 
         // inspector
         inline const ext::shared_ptr<VanillaLocalVolModel>&  model() const { return model_; }

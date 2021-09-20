@@ -42,15 +42,12 @@ namespace QuantLib {
         const std::vector< Period > swapTerms_;
         const ext::shared_ptr<SwapIndex> index_;  // a template for all the swap index per swap terms
     protected:
-        virtual ext::shared_ptr<SmileSection> smileSectionImpl(
-            Time optionTime,
-            Time swapLength) const;
+      ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
+                                                     Time swapLength) const override;
 
-        virtual Volatility volatilityImpl(Time optionTime,
-            Time swapLength,
-            Rate strike) const {
-            return smileSectionImpl(optionTime, swapLength)->volatility(strike);
-        }
+      Volatility volatilityImpl(Time optionTime, Time swapLength, Rate strike) const override {
+          return smileSectionImpl(optionTime, swapLength)->volatility(strike);
+      }
 
     public:
         VanillaLocalVolSwaptionVTS(
@@ -59,14 +56,13 @@ namespace QuantLib {
             const std::vector< Period >&                                                            swapTerms,
             const ext::shared_ptr<SwapIndex>&                                                       index);
 
-        virtual VolatilityType volatilityType() const { return atmVolTS_->volatilityType(); }
+        VolatilityType volatilityType() const override { return atmVolTS_->volatilityType(); }
 
-        virtual const Date&   referenceDate() const { return atmVolTS_->referenceDate(); }
-        virtual const Period& maxSwapTenor()  const { return atmVolTS_->maxSwapTenor();  }
-        virtual       Date    maxDate()       const { return atmVolTS_->maxDate();       }
-        virtual       Rate    minStrike()     const { return atmVolTS_->minStrike();     }
-        virtual       Rate    maxStrike()     const { return atmVolTS_->maxStrike();     }
-
+        const Date& referenceDate() const override { return atmVolTS_->referenceDate(); }
+        const Period& maxSwapTenor() const override { return atmVolTS_->maxSwapTenor(); }
+        Date maxDate() const override { return atmVolTS_->maxDate(); }
+        Rate minStrike() const override { return atmVolTS_->minStrike(); }
+        Rate maxStrike() const override { return atmVolTS_->maxStrike(); }
     };
 
 

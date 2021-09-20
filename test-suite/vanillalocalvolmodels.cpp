@@ -99,9 +99,11 @@ namespace {
     Handle<YieldTermStructure> getYTS(const std::vector<Period>& terms, const std::vector<Real>& rates, const Real spread = 0.0) {
         Date today = Settings::instance().evaluationDate();
         std::vector<Date> dates;
-        for (Size k = 0; k < terms.size(); ++k) dates.push_back(NullCalendar().advance(today, terms[k], Unadjusted));
+        for (auto term : terms)
+            dates.push_back(NullCalendar().advance(today, term, Unadjusted));
         std::vector<Real> ratesPlusSpread(rates);
-        for (Size k = 0; k < ratesPlusSpread.size(); ++k) ratesPlusSpread[k] += spread;
+        for (double& k : ratesPlusSpread)
+            k += spread;
         ext::shared_ptr<YieldTermStructure> ts = ext::shared_ptr<YieldTermStructure>(new InterpolatedZeroCurve<Cubic>(
             dates, ratesPlusSpread, Actual365Fixed(), NullCalendar()));
         return RelinkableHandle<YieldTermStructure>(ts);
@@ -173,31 +175,32 @@ namespace {
     
     Handle<SwaptionVolatilityStructure> getSwaptionVTS() {
         std::vector< std::vector<Real> > swaptionVols;
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData01m, swAtmRowData01m + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData02m, swAtmRowData02m + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData03m, swAtmRowData03m + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData06m, swAtmRowData06m + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData09m, swAtmRowData09m + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData01y, swAtmRowData01y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData18m, swAtmRowData18m + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData02y, swAtmRowData02y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData03y, swAtmRowData03y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData04y, swAtmRowData04y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData05y, swAtmRowData05y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData06y, swAtmRowData06y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData07y, swAtmRowData07y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData08y, swAtmRowData08y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData09y, swAtmRowData09y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData10y, swAtmRowData10y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData15y, swAtmRowData15y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData20y, swAtmRowData20y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData25y, swAtmRowData25y + 14));
-        swaptionVols.push_back(std::vector<Real>(swAtmRowData30y, swAtmRowData30y + 14));
+        swaptionVols.emplace_back(swAtmRowData01m, swAtmRowData01m + 14);
+        swaptionVols.emplace_back(swAtmRowData02m, swAtmRowData02m + 14);
+        swaptionVols.emplace_back(swAtmRowData03m, swAtmRowData03m + 14);
+        swaptionVols.emplace_back(swAtmRowData06m, swAtmRowData06m + 14);
+        swaptionVols.emplace_back(swAtmRowData09m, swAtmRowData09m + 14);
+        swaptionVols.emplace_back(swAtmRowData01y, swAtmRowData01y + 14);
+        swaptionVols.emplace_back(swAtmRowData18m, swAtmRowData18m + 14);
+        swaptionVols.emplace_back(swAtmRowData02y, swAtmRowData02y + 14);
+        swaptionVols.emplace_back(swAtmRowData03y, swAtmRowData03y + 14);
+        swaptionVols.emplace_back(swAtmRowData04y, swAtmRowData04y + 14);
+        swaptionVols.emplace_back(swAtmRowData05y, swAtmRowData05y + 14);
+        swaptionVols.emplace_back(swAtmRowData06y, swAtmRowData06y + 14);
+        swaptionVols.emplace_back(swAtmRowData07y, swAtmRowData07y + 14);
+        swaptionVols.emplace_back(swAtmRowData08y, swAtmRowData08y + 14);
+        swaptionVols.emplace_back(swAtmRowData09y, swAtmRowData09y + 14);
+        swaptionVols.emplace_back(swAtmRowData10y, swAtmRowData10y + 14);
+        swaptionVols.emplace_back(swAtmRowData15y, swAtmRowData15y + 14);
+        swaptionVols.emplace_back(swAtmRowData20y, swAtmRowData20y + 14);
+        swaptionVols.emplace_back(swAtmRowData25y, swAtmRowData25y + 14);
+        swaptionVols.emplace_back(swAtmRowData30y, swAtmRowData30y + 14);
         std::vector< std::vector< Handle<Quote> > > swaptionVolQuotes;
-        for (Size i = 0; i < swaptionVols.size(); ++i) {
+        for (auto& swaptionVol : swaptionVols) {
             std::vector< Handle<Quote> > row;
-            for (Size j = 0; j < swaptionVols[i].size(); ++j) row.push_back(
-                RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(swaptionVols[i][j]))));
+            for (Size j = 0; j < swaptionVol.size(); ++j)
+                row.push_back(RelinkableHandle<Quote>(
+                    ext::shared_ptr<Quote>(new SimpleQuote(swaptionVol[j]))));
             swaptionVolQuotes.push_back(row);
         }
         ext::shared_ptr<SwaptionVolatilityStructure> tmp(new SwaptionVolatilityMatrix(TARGET(), Following, swAtmExpiryTerms, swAtmSwapTerms, swaptionVolQuotes, Actual365Fixed(),true, Normal));
@@ -258,11 +261,11 @@ namespace {
     }
 
     void testSwaptionVTSSmileInterpolation(
-        const ext::shared_ptr<SwaptionVolatilityStructure>      swVTS,
-        const ext::shared_ptr<VanillaLocalVolModelSmileSection> smile,
-        const Period&                                           expTerm,
-        const Period&                                           swapTerm,
-        const Real                                              tolerance) {
+        const ext::shared_ptr<SwaptionVolatilityStructure>& swVTS,
+        const ext::shared_ptr<VanillaLocalVolModelSmileSection>& smile,
+        const Period& expTerm,
+        const Period& swapTerm,
+        const Real tolerance) {
         for (Real relStrike = -0.05; relStrike <= 0.05; relStrike += 0.001) {
             Rate fwd  = smile->atmLevel();
             Real vol1 = smile->volatility(fwd+relStrike);
@@ -478,7 +481,7 @@ void VanillaLocalVolModelTest::testSwaptionVTSInterpolation() {
 
 
 test_suite* VanillaLocalVolModelTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("VanillaLocalVolModel tests");
+    auto* suite = BOOST_TEST_SUITE("VanillaLocalVolModel tests");
     suite->add(QUANTLIB_TEST_CASE(&VanillaLocalVolModelTest::testNormalModelBoundaryCase));
     suite->add(QUANTLIB_TEST_CASE(&VanillaLocalVolModelTest::testShiftedLognormalModelBoundaryCase));
     suite->add(QUANTLIB_TEST_CASE(&VanillaLocalVolModelTest::testSmileCalibration));
