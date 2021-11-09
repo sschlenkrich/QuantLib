@@ -23,6 +23,7 @@
 #include <ql/experimental/models/all.hpp>
 #include <ql/experimental/processes/all.hpp>
 #include <ql/experimental/risk/all.hpp>
+#include <ql/experimental/sabrswaptioncube/all.hpp>
 #include <ql/experimental/shortrate/all.hpp>
 #include <ql/experimental/swaptions/all.hpp>
 #include <ql/experimental/templatemodels/all.hpp>

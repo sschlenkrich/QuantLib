@@ -155,7 +155,7 @@ QL_TEST_SRCS = \
 	twoassetcorrelationoption.cpp \
 	ultimateforwardtermstructure.cpp \
 	utilities.cpp \
-	vanillalocalvolmodels.cpp
+	vanillalocalvolmodels.cpp \
 	variancegamma.cpp \
 	varianceoption.cpp \
 	varianceswaps.cpp \

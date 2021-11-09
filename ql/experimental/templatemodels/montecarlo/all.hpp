@@ -9,3 +9,4 @@
 #include <ql/experimental/templatemodels/montecarlo/mcsimulationT.hpp>
 #include <ql/experimental/templatemodels/montecarlo/ratespayoffT.hpp>
 
+#include <ql/experimental/templatemodels/montecarlo/scripting/all.hpp>

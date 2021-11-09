@@ -503,16 +503,21 @@ AC_CONFIG_FILES([
     ql/experimental/models/Makefile
     ql/experimental/processes/Makefile
     ql/experimental/risk/Makefile
+    ql/experimental/sabrswaptioncube/Makefile
     ql/experimental/shortrate/Makefile
     ql/experimental/swaptions/Makefile
     ql/experimental/templatemodels/Makefile
     ql/experimental/templatemodels/auxilliaries/Makefile
+    ql/experimental/templatemodels/commodity/Makefile
+    ql/experimental/templatemodels/hullwhite/Makefile
     ql/experimental/templatemodels/hybrid/Makefile
     ql/experimental/templatemodels/montecarlo/Makefile
     ql/experimental/templatemodels/montecarlo/scripting/Makefile
     ql/experimental/templatemodels/multiasset/Makefile
+    ql/experimental/templatemodels/qgaussian/Makefile
     ql/experimental/templatemodels/qgaussian2/Makefile
     ql/experimental/templatemodels/stochvol/Makefile
+    ql/experimental/templatemodels/vanillalocalvol/Makefile
     ql/experimental/termstructures/Makefile
     ql/experimental/termstructures/Helper/Makefile
     ql/experimental/termstructures/localCorrFX/Makefile
