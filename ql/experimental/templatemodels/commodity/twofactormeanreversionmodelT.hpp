@@ -32,6 +32,10 @@ namespace QuantLib {
     //
     template <class DateType, class PassiveType, class ActiveType>
     class TwoFactorMeanReversionModelT : public StochasticProcessT<DateType,PassiveType,ActiveType> {
+        // from base class
+        using typename StochasticProcessT<DateType,PassiveType,ActiveType>::MatA;
+
+
     protected:
     
         // container class definitions

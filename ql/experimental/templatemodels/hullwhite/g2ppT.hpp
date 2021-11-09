@@ -29,6 +29,13 @@ namespace QuantLib {
     //
     template <class DateType, class PassiveType, class ActiveType>
     class G2ppT : public StochasticProcessT<DateType,PassiveType,ActiveType> {
+        // from base class
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VecD;
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VecP;
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VecA;
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::MatA;
+
+
     private:
         ActiveType sigma_, eta_, a_, b_, rho_;
         Handle<YieldTermStructure> termStructure_;  // the yield curve is   

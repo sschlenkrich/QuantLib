@@ -35,11 +35,13 @@
 
 namespace QuantLib {
 
-    class TemplateModel : public virtual Observable { };
-
     // Declaration of the quasi-Gaussian model class
     template <class DateType, class PassiveType, class ActiveType>
     class QuasiGaussianModelT : public StochasticProcessT<DateType, PassiveType, ActiveType> {
+        // from base class
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VolEvolv;
+
+
     protected:
 
         // container class definitions
@@ -106,7 +108,7 @@ namespace QuantLib {
                 // check dimensions
                 QL_REQUIRE(y.size()==d,"TemplateQuasiGaussianModel::State Assignment: y-row dimension mismatch.");
                 for (size_t k=0; k<d; ++k) {
-                    QL_REQUIRE(y[k].size()==d,"TemplateQuasiGaussianModel::State Assignment: y-column dimension mismatch.")
+                    QL_REQUIRE(y[k].size()==d,"TemplateQuasiGaussianModel::State Assignment: y-column dimension mismatch.");
                 }
                 X.resize(d+d*d+1+1);
                 for (size_t k=0; k<d; ++k) X[k]       = x[k];
@@ -315,7 +317,7 @@ namespace QuantLib {
             const MatP &                Gamma,   // (benchmark rate) correlation matrix
             // stochastic volatility process parameters
             const PassiveType           theta,   // mean reversion speed
-            const VolEvolv              volEvolv  = FullTruncation,
+            const VolEvolv              volEvolv  = VolEvolv::FullTruncation,
             const VecP &                procLimit = VecP(0),     // stochastic process limits
             const bool                  useSwapRateScaling = true
             ) : termStructure_(termStructure), d_(d), times_(times), lambda_(lambda), alpha_(alpha), b_(b), eta_(eta),
@@ -528,7 +530,7 @@ namespace QuantLib {
 
         // integrate X1 = X0 + drift()*dt + diffusion()*dW*sqrt(dt)
         inline void evolve( const DateType t0, const VecA& X0, const DateType dt, const VecD& dW, VecA& X1 ) {
-            if (volEvolv() == LocalGaussian) {
+            if (volEvolv() == VolEvolv::LocalGaussian) {
                 evolveAsLocalGaussian(t0, X0, dt, dW, X1);  // this is not really good coding style
                 return;
             }
@@ -541,10 +543,10 @@ namespace QuantLib {
                 for (size_t j=0; j<dW.size(); ++j) X1[i] += b[i][j]*dW[j];
                 X1[i] = X0[i] + a[i]*dt + X1[i]*sqrt(dt);
             }
-            if (volEvolv()==FullTruncation) {
+            if (volEvolv()==VolEvolv::FullTruncation) {
                 if (X1[X1.size()-2]<0.0) X1[X1.size()-2] = 0.0;
             }
-            if (volEvolv()==LogNormalApproximation) {
+            if (volEvolv()==VolEvolv::LogNormalApproximation) {
                 ActiveType e = expectationZ(t0, X0[X0.size()-2], dt);
                 ActiveType v = varianceZ(t0, X0[X0.size()-2], dt);
                 //ActiveType dZ = dW[dW.size()-2];  // last risk factor is for vol process

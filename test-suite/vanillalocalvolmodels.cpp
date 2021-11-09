@@ -37,7 +37,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace vanilla_local_vol_models_test {
 
     // auxilliary data
     Period termsData[] = {
@@ -351,6 +351,9 @@ void VanillaLocalVolModelTest::testShiftedLognormalModelBoundaryCase() {
 
 void VanillaLocalVolModelTest::testSmileCalibration() {
     BOOST_TEST_MESSAGE("Testing smile calibration to market data...");
+
+    using namespace vanilla_local_vol_models_test;
+
     std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
     smiles.resize(5);   // 1y, 2y, 5y, 10y, 30y swaps
     smiles[0].push_back(getSmileSection(Period( 1, Years), Period( 1, Years), smile01x01, 1));
@@ -369,6 +372,9 @@ void VanillaLocalVolModelTest::testSmileCalibration() {
 
 void VanillaLocalVolModelTest::testSmileInterpolation() {
     BOOST_TEST_MESSAGE("Testing smile interpolation accross expiries and swap terms...");
+
+    using namespace vanilla_local_vol_models_test;
+
     std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
     smiles.resize(5);   // 1y, 2y, 5y, 10y, 30y swaps
     // we do not want to run the smile calibration test here
@@ -432,6 +438,9 @@ void VanillaLocalVolModelTest::testSmileInterpolation() {
 
 void VanillaLocalVolModelTest::testSwaptionVTSInterpolation() {
     BOOST_TEST_MESSAGE("Testing interpolation via SwaptionVTS...");   
+
+    using namespace vanilla_local_vol_models_test;
+
     std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
     smiles.resize(5);   // 1y, 2y, 5y, 10y, 30y swaps
     // we do not want to run the smile calibration test here

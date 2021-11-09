@@ -30,6 +30,12 @@ namespace QuantLib {
     private:
         ActiveType S0_, curv_, skew_, sigma0_, theta_, nu_, rho_;
     public:
+        // from base class
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VecP;
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VecA;
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::MatA;
+
+
         // constructor
         QuadraticLVSVModelT( ActiveType S0, 
                              ActiveType curv, 

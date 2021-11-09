@@ -33,6 +33,13 @@ namespace QuantLib {
     private:
         ActiveType S0_, lambda_, alpha_, beta_, rho_, nu_;
     public:
+        // from base class
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VecD;
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VecP;
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VecA;
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::MatA;
+
+
         // constructor
         ShiftedSABRModelT( ActiveType S0, 
                            ActiveType lambda, 

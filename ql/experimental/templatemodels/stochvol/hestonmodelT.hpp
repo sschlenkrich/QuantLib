@@ -61,7 +61,7 @@ namespace QuantLib {
         inline const ActiveType& v0()    const { return v0_;    }
         // maths
         inline bool fellerConstraint() {
-            return (sigma >= 0.0 && sigma*sigma < 2.0*kappa*theta);
+            return (sigma() >= 0.0 && sigma()*sigma() < 2.0*kappa()*theta());
         }
         // undiscounted expectation of vanilla payoff
         inline ActiveType vanillaOption(const PassiveType forwardPrice,
@@ -139,7 +139,7 @@ namespace QuantLib {
                 const complex t1 = t0_+complex(0, -rpsig);
                 const complex d  = sqrt(t1*t1 - sigma2_*phi*complex(-phi, (j_== 1)? 1 : -1));
                 const complex ex = exp(-d*ActiveType(term_));
-                const complex addOnTerm =  0.0;
+                const complex addOnTerm =  complex(0.0);
                 if (phi != 0.0) {
                     if (sigma_ > 1e-5) {
                         const complex p = (t1-d)/(t1+d);

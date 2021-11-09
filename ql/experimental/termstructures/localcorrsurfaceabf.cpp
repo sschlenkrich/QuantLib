@@ -47,7 +47,7 @@ namespace QuantLib {
 	void LocalCorrSurfaceABF::localCorrImpl(RealStochasticProcess::MatA& corrMatrix, Time t, const RealStochasticProcess::VecA& X0,
 		bool extrapolate) {
 		Real lambda;
-		QL_REQUIRE(times_.size()>0,"Local correlation model not calibrated yet.")
+		QL_REQUIRE(times_.size()>0,"Local correlation model not calibrated yet.");
 		if (t < times_[1]) { //first time step in grid does not depend on F,a,b.
 			lambda = localCorrImplTeq0(t,X0, extrapolate);
 		}

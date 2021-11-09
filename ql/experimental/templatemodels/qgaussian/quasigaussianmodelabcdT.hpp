@@ -21,6 +21,27 @@ namespace QuantLib {
     // Declaration of the quasi-Gaussian model class
     template <class DateType, class PassiveType, class ActiveType>
     class QuasiGaussianModelAbcdT : public QuasiGaussianModelT<DateType, PassiveType, ActiveType> {
+        // from base class
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VolEvolv;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::d_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::times_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::lambda_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::b_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::alpha_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::eta_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::delta_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::chi_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::Gamma_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::theta_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::z0_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::procLimit_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::termStructure_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::volEvolv_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::useSwapRateScaling_;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::factorMatrices;
+        using QuasiGaussianModelT<DateType, PassiveType, ActiveType>::maxidx;
+
+
     protected:
 
         // container class definitions
@@ -133,7 +154,7 @@ namespace QuantLib {
             const MatP &                Gamma,   // (benchmark rate) correlation matrix
             // stochastic volatility process parameters
             const PassiveType           theta,   // mean reversion speed
-            const VolEvolv              volEvolv  = FullTruncation,
+            const VolEvolv              volEvolv  = VolEvolv::FullTruncation,
             const VecP &                procLimit = VecP(0)     // stochastic process limits
             ) { // call base model default constructor
                 // initialise members manually...
@@ -159,7 +180,7 @@ namespace QuantLib {
             }
 
         // clone the model
-        virtual ext::shared_ptr<QuasiGaussianModelT> clone() { return ext::shared_ptr<QuasiGaussianModelT>(new QuasiGaussianModelAbcdT(*this)); }
+        virtual ext::shared_ptr<QuasiGaussianModelT<DateType, PassiveType, ActiveType>> clone() { return ext::shared_ptr<QuasiGaussianModelT<DateType, PassiveType, ActiveType>>(new QuasiGaussianModelAbcdT(*this)); }
 
         // parameter functions based on abcd parametrisation
         // f(t) = [ a + b*t ] e^{-c*t} + d
