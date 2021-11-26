@@ -28,7 +28,16 @@ namespace QuantLib {
     //
     template <class DateType, class PassiveType, class ActiveType>
     class TwoFactorLognormalModelT : public TwoFactorMeanReversionModelT<DateType,PassiveType,ActiveType> {
-    
+        // from base class
+        using typename TwoFactorMeanReversionModelT<DateType,PassiveType,ActiveType>::VecD;
+        using typename TwoFactorMeanReversionModelT<DateType,PassiveType,ActiveType>::VecP;
+        using typename TwoFactorMeanReversionModelT<DateType,PassiveType,ActiveType>::VecA;
+        using TwoFactorMeanReversionModelT<DateType,PassiveType,ActiveType>::rho_;
+        using TwoFactorMeanReversionModelT<DateType,PassiveType,ActiveType>::futureTS_;
+        using TwoFactorMeanReversionModelT<DateType,PassiveType,ActiveType>::a_;
+        using TwoFactorMeanReversionModelT<DateType,PassiveType,ActiveType>::b_;
+
+
     public:
         // constructor
         
@@ -40,7 +49,7 @@ namespace QuantLib {
                                const PassiveType                     b,
                                const PassiveType                     rho 
                                )
-        : TwoFactorMeanReversionModelT(futureTS,times,sigma,eta,a,b,rho) {
+        : TwoFactorMeanReversionModelT<DateType,PassiveType,ActiveType>(futureTS,times,sigma,eta,a,b,rho) {
             // check for valid parameter inputs
         }
     

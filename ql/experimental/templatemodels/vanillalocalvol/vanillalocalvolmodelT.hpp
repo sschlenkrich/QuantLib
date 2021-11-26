@@ -26,6 +26,13 @@ namespace QuantLib {
 
     template <class DateType, class PassiveType, class ActiveType>    
     class VanillaLocalVolModelT : public StochasticProcessT<DateType,PassiveType,ActiveType> {
+        // from base class
+        using typename StochasticProcessT<DateType,PassiveType,ActiveType>::VecD;
+        using typename StochasticProcessT<DateType,PassiveType,ActiveType>::VecP;
+        using typename StochasticProcessT<DateType,PassiveType,ActiveType>::VecA;
+        using typename StochasticProcessT<DateType,PassiveType,ActiveType>::MatA;
+
+
     private:
         // input parameters
         DateType    T_;                    // time to expiry (in years)

@@ -25,7 +25,7 @@
 
 namespace QuantLib {
 
-    namespace {
+    namespace FxFwdRateHelperDummyNamespace {
         void no_deletion(YieldTermStructure*) {}
     }
 
@@ -75,7 +75,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        ext::shared_ptr<YieldTermStructure> temp(t, FxFwdRateHelperDummyNamespace::no_deletion);
 
         if(bootstrapBaseOrCounter_ == FxFwdRateHelper::Base){
            cntrCcyDiscRelinkableHandle_.linkTo(*cntrCcyDiscTermStructureHandle_, observer);

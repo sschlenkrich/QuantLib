@@ -49,6 +49,10 @@ namespace QuantLib {
     // Declaration of the quasi-Gaussian model class
     template <class DateType, class PassiveType, class ActiveType>
     class QGSwaptionModelT : public TimeDependentStochVolModelT<DateType,PassiveType,ActiveType> {
+        // from base class
+        using typename TimeDependentStochVolModelT<DateType, PassiveType, ActiveType>::MidPointIntegration;
+
+
     protected:
 
         // container class definitions
@@ -75,7 +79,7 @@ namespace QuantLib {
         ext::shared_ptr< QuasiGaussianModelT<DateType,PassiveType,ActiveType> >   model_;
 
         // reference to averaging algorithm
-        ext::shared_ptr< TimeDependentStochVolModelT<DateType,PassiveType,ActiveType>::MidPointIntegration>  mp_;
+        ext::shared_ptr< MidPointIntegration >  mp_;
 
         // vanilla swap specs for this model
         Swap               swap_;

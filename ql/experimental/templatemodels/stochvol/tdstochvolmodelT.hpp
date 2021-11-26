@@ -48,6 +48,14 @@ namespace QuantLib {
         virtual ActiveType  rho()                     = 0;
         virtual ActiveType  S0()                      = 0;
 
+        // from base class
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VecD;
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VecP;
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VecA;
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::MatA;
+        using typename StochasticProcessT<DateType, PassiveType, ActiveType>::VolEvolv;
+        using StochasticProcessT<DateType, PassiveType, ActiveType>::volEvolv;
+
 
         // helper functions for vol averaging, Piterbarg, 10.2.4
         inline static ActiveType A_CIR ( ActiveType c1, ActiveType c2, ActiveType z0, ActiveType theta, ActiveType eta, DateType dt ) {
@@ -141,11 +149,11 @@ namespace QuantLib {
             // S-variable
             X1[0] = X0[0] + a[0]*dt + b[0][0]*dW[0]*sqrt(dt);
             // z-variable
-            if (volEvolv()==FullTruncation) {
+            if (volEvolv()==VolEvolv::FullTruncation) {
                 X1[1] = X0[1] + a[1]*dt + (b[1][0]*dW[0]+b[1][1]*dW[1])*sqrt(dt);
                 return;
             }
-            if (volEvolv()==LogNormalApproximation) {
+            if (volEvolv()==VolEvolv::LogNormalApproximation) {
                 ActiveType e = expectationZ(t0, X0[1], dt);
                 ActiveType v = varianceZ(t0, X0[1], dt);
                 ActiveType dZ = rho()*dW[0] + sqrt(1-rho()*rho())*dW[1];
@@ -383,48 +391,50 @@ namespace QuantLib {
                 return avLambda;
             };
         };
-
-        // piecewise constant parameters and numerical integration
-        class PWCAnalytical : public TimeDependentStochVolModelT {
-        private:
-            ext::shared_ptr<PieceWiseConstant>    pwc_;
-            ext::shared_ptr<MidPointIntegration>  mp_;
-            VolEvolv volEvolv_;
-        public:
-            PWCAnalytical(const std::vector<DateType>&    times,
-                          const std::vector<ActiveType>&  lambda,
-                          const std::vector<ActiveType>&  b,
-                          const std::vector<ActiveType>&  eta,
-                          const ActiveType                L,
-                          const ActiveType                theta,
-                          const ActiveType                m,
-                          const ActiveType                z0,
-                          const ActiveType                rho,
-                          const ActiveType                S0,
-                          const VolEvolv                  volEvolv = FullTruncation )
-                :    pwc_(new PieceWiseConstant(times,lambda,b,eta,L,theta,m,z0,rho,S0)),
-                     mp_(new MidPointIntegration(this,times)), volEvolv_(volEvolv) {}						
-            // inspectors
-            virtual ActiveType  lambda( const DateType t)  { return pwc_->lambda(t);    }
-            virtual ActiveType  b(      const DateType t)  { return pwc_->b(t) ;        }
-            virtual ActiveType  eta(    const DateType t)  { return pwc_->eta(t);       }
-            virtual ActiveType  L()                        { return pwc_->L();          }
-            virtual ActiveType  theta()                    { return pwc_->theta();      }
-            virtual ActiveType  m()                        { return pwc_->m();          }
-            virtual ActiveType  z0()                       { return pwc_->z0();         }
-            virtual ActiveType  rho()                      { return pwc_->rho();        }
-            virtual ActiveType  S0()                       { return pwc_->S0();         }
-            virtual VolEvolv    volEvolv()                 { return volEvolv_;          }
-            // averaging formula implementations
-            virtual ActiveType  averageLambda( const DateType T) { return mp_->averageLambda( T ); }
-            virtual ActiveType  averageB     ( const DateType T) { return mp_->averageB( T );      }
-            virtual ActiveType  averageEta   ( const DateType T) { return mp_->averageEta( T );    }
-        };
-
-
     };
 
+    // piecewise constant parameters and numerical integration
+    template <class DateType, class PassiveType, class ActiveType>
+    class PWCAnalytical : public TimeDependentStochVolModelT<DateType,PassiveType,ActiveType> {
+        // from base class
+        using typename TimeDependentStochVolModelT<DateType, PassiveType, ActiveType>::PieceWiseConstant;
+        using typename TimeDependentStochVolModelT<DateType, PassiveType, ActiveType>::MidPointIntegration;
+        using typename TimeDependentStochVolModelT<DateType, PassiveType, ActiveType>::VolEvolv;
 
+    private:
+        ext::shared_ptr<PieceWiseConstant>    pwc_;
+        ext::shared_ptr<MidPointIntegration>  mp_;
+        VolEvolv volEvolv_;
+    public:
+        PWCAnalytical(const std::vector<DateType>&    times,
+                        const std::vector<ActiveType>&  lambda,
+                        const std::vector<ActiveType>&  b,
+                        const std::vector<ActiveType>&  eta,
+                        const ActiveType                L,
+                        const ActiveType                theta,
+                        const ActiveType                m,
+                        const ActiveType                z0,
+                        const ActiveType                rho,
+                        const ActiveType                S0,
+                        const VolEvolv                  volEvolv = VolEvolv::FullTruncation )
+            :    pwc_(new PieceWiseConstant(times,lambda,b,eta,L,theta,m,z0,rho,S0)),
+                    mp_(new MidPointIntegration(this,times)), volEvolv_(volEvolv) {}						
+        // inspectors
+        virtual ActiveType  lambda( const DateType t)  { return pwc_->lambda(t);    }
+        virtual ActiveType  b(      const DateType t)  { return pwc_->b(t) ;        }
+        virtual ActiveType  eta(    const DateType t)  { return pwc_->eta(t);       }
+        virtual ActiveType  L()                        { return pwc_->L();          }
+        virtual ActiveType  theta()                    { return pwc_->theta();      }
+        virtual ActiveType  m()                        { return pwc_->m();          }
+        virtual ActiveType  z0()                       { return pwc_->z0();         }
+        virtual ActiveType  rho()                      { return pwc_->rho();        }
+        virtual ActiveType  S0()                       { return pwc_->S0();         }
+        virtual VolEvolv    volEvolv()                 { return volEvolv_;          }
+        // averaging formula implementations
+        virtual ActiveType  averageLambda( const DateType T) { return mp_->averageLambda( T ); }
+        virtual ActiveType  averageB     ( const DateType T) { return mp_->averageB( T );      }
+        virtual ActiveType  averageEta   ( const DateType T) { return mp_->averageEta( T );    }
+    };
 
 }
 

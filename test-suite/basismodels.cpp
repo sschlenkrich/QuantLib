@@ -39,7 +39,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace basis_models_test {
 
     // auxiliary data
     Period termsData[] = {
@@ -231,16 +231,25 @@ namespace {
 void BasismodelsTest::testSwaptioncfsContCompSpread() {
     BOOST_TEST_MESSAGE(
         "Testing deterministic tenor basis model with continuous compounded spreads...");
+
+    using namespace basis_models_test;
+
     testSwaptioncfs(true);
 }
 
 void BasismodelsTest::testSwaptioncfsSimpleCompSpread() {
     BOOST_TEST_MESSAGE("Testing deterministic tenor basis model with simple compounded spreads...");
+
+    using namespace basis_models_test;
+
     testSwaptioncfs(false);
 }
 
 void BasismodelsTest::testTenoroptionletvts() {
     BOOST_TEST_MESSAGE("Testing volatility transformation for caplets/floorlets...");
+
+    using namespace basis_models_test;
+
     // market data and floating rate index
     Real spread = 0.01;
     Handle<YieldTermStructure> discYTS = getYTS(terms, discRates);
@@ -325,6 +334,9 @@ void BasismodelsTest::testTenoroptionletvts() {
 
 void BasismodelsTest::testTenorswaptionvts() {
     BOOST_TEST_MESSAGE("Testing volatility transformation for swaptions...");
+
+    using namespace basis_models_test;
+
     // market data and floating rate index
     Real spread = 0.01;
     Handle<YieldTermStructure> discYTS = getYTS(terms, discRates);

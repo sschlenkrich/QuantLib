@@ -15,7 +15,7 @@
 namespace QuantLib {
 
     // dummy
-    namespace {
+    namespace TenorSwapRateHelperDummyNamespace {
         void no_deletion(YieldTermStructure*) {}
     }
 
@@ -105,7 +105,7 @@ namespace QuantLib {
 
     void TenorSwapRateHelper::setTermStructure(YieldTermStructure* ts) {
         // this initialisation is intended to be done only once
-        ext::shared_ptr<YieldTermStructure> temp(ts, no_deletion);
+        ext::shared_ptr<YieldTermStructure> temp(ts, TenorSwapRateHelperDummyNamespace::no_deletion);
         if (useForDiscount_)    discountRelinkableHandle_.linkTo(temp,false);
         if (useForPayForward_)  payRelinkableHandle_.linkTo(temp,false);
         if (useForRecForward_)  recRelinkableHandle_.linkTo(temp,false);
@@ -181,7 +181,7 @@ namespace QuantLib {
 
     void XCCYSwapRateHelper::setTermStructure(YieldTermStructure* ts) {
         // this initialisation is intended to be done only once
-        ext::shared_ptr<YieldTermStructure> temp(ts, no_deletion);
+        ext::shared_ptr<YieldTermStructure> temp(ts, TenorSwapRateHelperDummyNamespace::no_deletion);
         if (useForPayDiscount_) payDisRelinkableHandle_.linkTo(temp,false);
         if (useForRecDiscount_) recDisRelinkableHandle_.linkTo(temp,false);
         if (useForPayForward_)  payForRelinkableHandle_.linkTo(temp,false);

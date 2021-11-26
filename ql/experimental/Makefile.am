@@ -2,7 +2,7 @@
 SUBDIRS = amortizingbonds asian averageois barrieroption basismodels \
           callablebonds catbonds commodities convertiblebonds coupons credit \
           exoticoptions finitedifferences forward fx inflation lattices \
-          math mcbasket models processes risk shortrate swaptions \
+          math mcbasket models processes risk sabrswaptioncube shortrate swaptions \
           templatemodels termstructures vanillalocalvolmodel variancegamma \
           varianceoption volatility
 
@@ -37,10 +37,11 @@ libExperimental_la_LIBADD = \
     models/libModels.la \
     processes/libProcesses.la \
     risk/libRisk.la \
+    sabrswaptioncube/libSabrSwaptionCube.la \
     shortrate/libShortRate.la \
     swaptions/libSwaptions.la \
     templatemodels/libTemplatemodels.la \
-    termstructures/libTermstructures.la \
+    termstructures/libTermStructures.la \
     vanillalocalvolmodel/libVanillaLocalVolModels.la \
     variancegamma/libVarianceGamma.la \
     varianceoption/libVarianceOption.la \

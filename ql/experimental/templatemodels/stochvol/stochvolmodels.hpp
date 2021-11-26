@@ -32,7 +32,7 @@ namespace QuantLib {
     typedef StochVolModelT<QuantLib::Time,QuantLib::Real,QuantLib::Real> RealStochVolModel;
 
     typedef TimeDependentStochVolModelT<QuantLib::Time,QuantLib::Real,QuantLib::Real> RealTDStochVolModel;
-    typedef TimeDependentStochVolModelT<QuantLib::Time,QuantLib::Real,QuantLib::Real>::PWCAnalytical RealPWCStochVolModel;
+    typedef PWCAnalytical<QuantLib::Time,QuantLib::Real,QuantLib::Real> RealPWCStochVolModel;
 
     typedef ShiftedSABRModelT<QuantLib::Time,QuantLib::Real,QuantLib::Real> RealShiftedSABRModel;
 
