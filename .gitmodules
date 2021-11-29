@@ -1,3 +1,0 @@
-[submodule "ql/experimental/templatemodels/montecarlo/scripting"]
-	path = ql/experimental/templatemodels/montecarlo/scripting
-	url = https://github.com/sschlenkrich/ExpressionParser
