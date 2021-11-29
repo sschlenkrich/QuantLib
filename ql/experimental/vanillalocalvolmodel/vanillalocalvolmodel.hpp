@@ -67,25 +67,25 @@ namespace QuantLib {
         void initializeDeepInTheModelParameters();
 
         // determine the lower and upper bounds for integration
-        inline Real lowerBoundX() { return  -extrapolationStdevs_ * sqrt(T_) + mu_; }
-        inline Real upperBoundX() { return   extrapolationStdevs_ * sqrt(T_) + mu_; }		
+        inline Real lowerBoundX() const { return -extrapolationStdevs_ * sqrt(T_) + mu_; }
+        inline Real upperBoundX() const { return extrapolationStdevs_ * sqrt(T_) + mu_; }
 
         // this is an unsafe method specifying the vol function sigma(S) on the individual segments
-        Real localVol(const bool isRightWing, const Size k, const Real S);
+        Real localVol(bool isRightWing, Size k, Real S);
 
         // this is an unsafe method specifying the underlying level S(x) on the individual segments
-        Real underlyingS(const bool isRightWing, const Size k, const Real x);
+        Real underlyingS(bool isRightWing, Size k, Real x);
 
         // this is an unsafe method specifying the underlying level x(S) on the individual segments
-        Real underlyingX(const bool isRightWing, const Size k, const Real S);
+        Real underlyingX(bool isRightWing, Size k, Real S);
 
         // this is an unsafe method specifying the primitive function F(x) = \int [alpha S(x) + nu] p(x) dx
         // on the individual segments
-        Real primitiveF(const bool isRightWing, const Size k, const Real x);
+        Real primitiveF(bool isRightWing, Size k, Real x);
 
         // this is an unsafe method specifying the primitive function F(x) = \int [alpha S(x) + nu]^2 p(x) dx
         // on the individual segments
-        Real primitiveFSquare(const bool isRightWing, const Size k, const Real x);
+        Real primitiveFSquare(bool isRightWing, Size k, Real x);
 
         // this is an unsafe method to calculate the S-grid for a given x-grid
         // it is intended as a preprocessing step in conjunction with smile interplation
@@ -104,75 +104,73 @@ namespace QuantLib {
 
     public:
         // construct model based on S-grid
-        VanillaLocalVolModel(
-            const Time                T,
-            const Real                S0,
-            const Real                sigmaATM,
-            const std::vector<Real>&  Sp,
-            const std::vector<Real>&  Sm,
-            const std::vector<Real>&  Mp,
-            const std::vector<Real>&  Mm,
-            // controls for calibration
-            const Size                maxCalibrationIters = 5,
-            const Size                onlyForwardCalibrationIters = 0,
-            const bool                adjustATMFlag = true,
-            const bool                enableLogging = false,
-            const bool                useInitialMu  = false,
-            const Real                initialMu     = 0.0 );
+      VanillaLocalVolModel(Time T,
+                           Real S0,
+                           Real sigmaATM,
+                           const std::vector<Real>& Sp,
+                           const std::vector<Real>& Sm,
+                           const std::vector<Real>& Mp,
+                           const std::vector<Real>& Mm,
+                           // controls for calibration
+                           Size maxCalibrationIters = 5,
+                           Size onlyForwardCalibrationIters = 0,
+                           bool adjustATMFlag = true,
+                           bool enableLogging = false,
+                           bool useInitialMu = false,
+                           Real initialMu = 0.0);
 
-        // construct model based on x-grid
-        VanillaLocalVolModel(
-            const Time                T,
-            const Real                S0,
-            const Real                sigmaATM,
-            const Real                sigma0,
-            const std::vector<Real>&  Xp,
-            const std::vector<Real>&  Xm,
-            const std::vector<Real>&  Mp,
-            const std::vector<Real>&  Mm,
-            // controls for calibration
-            const Size                maxCalibrationIters = 5,
-            const Size                onlyForwardCalibrationIters = 0,
-            const bool                adjustATMFlag = true,
-            const bool                enableLogging = false,
-            const bool                useInitialMu  = false,
-            const Real                initialMu     = 0.0);
+      // construct model based on x-grid
+      VanillaLocalVolModel(Time T,
+                           Real S0,
+                           Real sigmaATM,
+                           Real sigma0,
+                           const std::vector<Real>& Xp,
+                           const std::vector<Real>& Xm,
+                           const std::vector<Real>& Mp,
+                           const std::vector<Real>& Mm,
+                           // controls for calibration
+                           Size maxCalibrationIters = 5,
+                           Size onlyForwardCalibrationIters = 0,
+                           bool adjustATMFlag = true,
+                           bool enableLogging = false,
+                           bool useInitialMu = false,
+                           Real initialMu = 0.0);
 
-        // inspectors
+      // inspectors
 
-        inline const std::vector<std::string> logging() { return logging_; }
-        inline const Time timeToExpiry()         { return T_;       }
-        inline const Real forward()              { return S0_;      }
-        inline const Real sigmaATM()             { return sigmaATM_; }
-        inline const Real alpha()                { return alpha_;   }
-        inline const Real mu()                   { return mu_;      }
-        inline const Real nu()                   { return nu_;      }
-        inline const Size maxCalibrationIters()  { return maxCalibrationIters_; }
-        inline const Size onlyForwardCalibrationIters() { return onlyForwardCalibrationIters_; }
-        inline const bool adjustATMFlag()        { return adjustATM_; }
-        inline const bool enableLogging()        { return enableLogging_; }
-        inline const bool useInitialMu()         { return useInitialMu_;  }
-        inline const Real initialMu()            { return initialMu_;     }
+      inline std::vector<std::string> logging() { return logging_; }
+      inline Time timeToExpiry() const { return T_; }
+      inline Real forward() const { return S0_; }
+      inline Real sigmaATM() const { return sigmaATM_; }
+      inline Real alpha() const { return alpha_; }
+      inline Real mu() const { return mu_; }
+      inline Real nu() const { return nu_; }
+      inline Size maxCalibrationIters() const { return maxCalibrationIters_; }
+      inline Size onlyForwardCalibrationIters() const { return onlyForwardCalibrationIters_; }
+      inline bool adjustATMFlag() const { return adjustATM_; }
+      inline bool enableLogging() const { return enableLogging_; }
+      inline bool useInitialMu() const { return useInitialMu_; }
+      inline Real initialMu() const { return initialMu_; }
 
-        // attributes in more convenient single-vector format
+      // attributes in more convenient single-vector format
 
-        const std::vector<Real> underlyingX();
-        const std::vector<Real> underlyingS();
-        const std::vector<Real> localVol();
-        const std::vector<Real> localVolSlope();
+      const std::vector<Real> underlyingX();
+      const std::vector<Real> underlyingS();
+      const std::vector<Real> localVol();
+      const std::vector<Real> localVolSlope();
 
-        // model function evaluations
+      // model function evaluations
 
-        const Real localVol(Real S); 
-        const Real underlyingS(Real x);
+      const Real localVol(Real S);
+      const Real underlyingS(Real x);
 
-        // calculating expectations - that is the actual purpose of that model
+      // calculating expectations - that is the actual purpose of that model
 
-        // calculate the forward price of an OTM option
-        const Real expectation(bool isRightWing, Real strike);
+      // calculate the forward price of an OTM option
+      const Real expectation(bool isRightWing, Real strike);
 
-        // calculate the forward price of an OTM power option with payoff 1_{S>K}(S-K)^2
-        const Real variance(bool isRightWing, Real strike);
+      // calculate the forward price of an OTM power option with payoff 1_{S>K}(S-K)^2
+      const Real variance(bool isRightWing, Real strike);
 
     };
 

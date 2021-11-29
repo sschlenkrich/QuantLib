@@ -64,21 +64,21 @@ namespace QuantLib {
 		// inspectors
 		const std::vector<Time>& times() const { return times_; }
 		const Matrix strikeMatrix();  // we can't pass a reference since we need to set up the matrix
-		const Matrix localVolMatrix() { return *localVolMatrix_; }
+                Matrix localVolMatrix() { return *localVolMatrix_; }
 
-        Date maxDate() const override;
-        Time maxTime() const override;
-        Real minStrike() const override;
-        Real maxStrike() const override;
+                Date maxDate() const override;
+                Time maxTime() const override;
+                Real minStrike() const override;
+                Real maxStrike() const override;
 
-        template <class Interpolator>
-        void setInterpolation(const Interpolator& i = Interpolator()) {
-            for (Size j=0; j < times_.size(); ++j) {
-                localVolInterpol_[j] = i.interpolate(
-                    strikes_[j]->begin(), strikes_[j]->end(),
-                    localVolMatrix_->column_begin(j));
-            }
-            notifyObservers();
+                template <class Interpolator>
+                void setInterpolation(const Interpolator& i = Interpolator()) {
+                    for (Size j = 0; j < times_.size(); ++j) {
+                        localVolInterpol_[j] =
+                            i.interpolate(strikes_[j]->begin(), strikes_[j]->end(),
+                                          localVolMatrix_->column_begin(j));
+                    }
+                    notifyObservers();
         }
 
       protected:

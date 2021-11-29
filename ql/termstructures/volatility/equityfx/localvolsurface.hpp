@@ -106,9 +106,9 @@ namespace QuantLib {
 		};
 
 	protected:
-		Volatility localVolImpl(Time, Real) const;
-		
-	private:
+          Volatility localVolImpl(Time, Real) const override;
+
+        private:
 		ext::shared_ptr<FixedLocalVolSurface> surface_;
 		std::vector<Time> gridTimes_;
 		std::vector<ext::shared_ptr<std::vector<Real> > > strikes_;
