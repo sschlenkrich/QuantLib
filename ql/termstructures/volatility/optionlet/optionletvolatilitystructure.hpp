@@ -107,7 +107,7 @@ namespace QuantLib {
         ext::shared_ptr<SmileSection> smileSection(Time optionTime,
                                                      bool extr = false) const;
         //@}
-        virtual VolatilityType volatilityType() const;
+        VolatilityType volatilityType() const override;
         virtual Real displacement() const;
 
       protected:
