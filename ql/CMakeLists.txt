@@ -234,7 +234,6 @@ set(QL_SOURCES
     experimental/templatemodels/hullwhite/fixedratebondoption.cpp
     experimental/templatemodels/hullwhite/hullwhitemodels.cpp
     experimental/templatemodels/hybrid/hybridmodels.cpp
-    experimental/templatemodels/montecarlo/scripting/ExpressionParser.cpp
     experimental/templatemodels/montecarlo/scripting/Lexer.cpp
     experimental/templatemodels/montecarlo/scripting/Parser.cpp
     experimental/templatemodels/montecarlo/scripting/expression.cpp

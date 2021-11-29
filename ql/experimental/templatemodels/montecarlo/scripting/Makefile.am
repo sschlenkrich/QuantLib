@@ -13,7 +13,6 @@ this_include_HEADERS = \
 
 cpp_files = \
     expression.cpp \
-    ExpressionParser.cpp \
     flexbisondriver.cpp \
     Lexer.cpp \
     Parser.cpp
