@@ -1,6 +1,6 @@
 /*!
 \brief MinimAD a minimum purpose AD tool
-Copyright (C) Sebastian Schlenkrich, June 2012
+Copyright (C) 2012 Sebastian Schlenkrich
 Version 2.0
 
 MinimAD provides an Algorithmic Differentiation framework

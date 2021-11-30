@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2019, Cord Harms
+ Copyright (C) 2019 Cord Harms
 
 */
 

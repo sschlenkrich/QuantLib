@@ -1,6 +1,6 @@
 /*!
      \brief Complex a template implementation for complex arithmetics
-        Copyright (C) Sebastian Schlenkrich, March 2012
+        Copyright (C) 2012 Sebastian Schlenkrich
         Version 1.0
 */
 
