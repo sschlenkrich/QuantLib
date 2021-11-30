@@ -84,31 +84,26 @@ namespace QuantLib {
         void accept(AcyclicVisitor&);
         //@}
     protected:
-        void initializeDates();
-
-        //Bootstrap direction, i.e. which curve is going to be bootstrapped
-        BootstrapType bootstrapBaseOrCounter_;
-
-        //general parameters
-        Natural spotLag_;
-        Calendar spotLagCalendar_;
-        BusinessDayConvention spotLagConvention_;
-        Real   unit_;
-        Period swapTerm_;
-
         //currency pair
         Currency baseCurrency_;
         Currency counterCurrency_;
         Rate   fxSpot_;
-
+        //general parameters
+        Natural spotLag_;
+        Calendar spotLagCalendar_;
+        BusinessDayConvention spotLagConvention_;
+        Period swapTerm_;
+        Real   unit_;
         Handle<YieldTermStructure> baseCcyDiscTermStructureHandle_;
         Handle<YieldTermStructure> cntrCcyDiscTermStructureHandle_;
-        
+        //Bootstrap direction, i.e. which curve is going to be bootstrapped
+        BootstrapType bootstrapBaseOrCounter_;
 
         //curve going to be optimized
         RelinkableHandle<YieldTermStructure> baseCcyDiscRelinkableHandle_;
         RelinkableHandle<YieldTermStructure> cntrCcyDiscRelinkableHandle_;
 
+        void initializeDates();
      };
 
 }

@@ -22,8 +22,8 @@ namespace QuantLib {
 
     class BasisSwapEngine : public BasisSwap::engine {
     protected:
-        std::vector<Real>                       fxForDom_;
         std::vector<Handle<YieldTermStructure>> discCurves_;
+        std::vector<Real>                       fxForDom_;
         boost::optional<bool>                   includeSettlementDateFlows_;
         Date                                    settlementDate_, npvDate_;
     public:
