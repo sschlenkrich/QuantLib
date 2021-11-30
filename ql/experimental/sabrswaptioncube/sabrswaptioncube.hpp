@@ -63,8 +63,8 @@ namespace QuantLib {
         virtual Rate maxStrike() const { return 100; }
 
         // optionlet interface
-        virtual ext::shared_ptr<SmileSection> smileSectionImpl( Time optionTime) const { return smileSectionImpl(optionTime,0.0); }
-        virtual Volatility volatilityImpl(Time optionTime, Rate strike) const { return volatilityImpl(optionTime,0.0,strike); }
+        // virtual ext::shared_ptr<SmileSection> smileSectionImpl( Time optionTime) const { return smileSectionImpl(optionTime,0.0); }
+        // virtual Volatility volatilityImpl(Time optionTime, Rate strike) const { return volatilityImpl(optionTime,0.0,strike); }
 
     };
 
