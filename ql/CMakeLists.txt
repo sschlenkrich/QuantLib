@@ -1,4 +1,5 @@
 set(QL_SOURCES
+    buildinfo.cpp
     cashflow.cpp
     cashflows/averagebmacoupon.cpp
     cashflows/capflooredcoupon.cpp
@@ -957,6 +958,7 @@ set(QL_SOURCES
 set(QL_HEADERS
     auto_link.hpp
     auto_ptr.hpp
+    buildinfo.hpp
     cashflow.hpp
     cashflows/averagebmacoupon.hpp
     cashflows/capflooredcoupon.hpp
