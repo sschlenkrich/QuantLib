@@ -249,7 +249,7 @@ namespace QuantLib {
     ext::shared_ptr<QGLocalvolModel::QGSwaprateModel> QGLocalvolModel::qGSwapRateModel(const SwapCashFlows& scf, const Real obsTime) {
         std::vector<Real> swapRateModelTimes{ 0.0, obsTime };
         sigmaMode_ = Parent; // switch-off sigma_x calculation; we only need yield curve information
-        ext::shared_ptr<QGSwaprateModel> swapRateModel(new QGSwaprateModel(boost::static_pointer_cast<QuasiGaussianModel>(shared_from_this()),
+        ext::shared_ptr<QGSwaprateModel> swapRateModel(new QGSwaprateModel(ext::static_pointer_cast<QuasiGaussianModel>(shared_from_this()),
             scf.floatTimes(), scf.floatWeights(), scf.fixedTimes(), scf.annuityWeights(), swapRateModelTimes, false));
         sigmaMode_ = Calibration; // switch-on sigma_x calculation for simulation and evolve calls
         return swapRateModel;
@@ -454,7 +454,7 @@ namespace QuantLib {
 
 
     void QGLocalvolModelBackwardFlavor::simulateAndCalibrate() {
-        Initialiser init(boost::static_pointer_cast<QGLocalvolModelBackwardFlavor>(shared_from_this()));
+        Initialiser init(ext::static_pointer_cast<QGLocalvolModelBackwardFlavor>(shared_from_this()));
         // run simulation and calibration
         for (size_t idx = 0; idx < times().size(); ++idx) {
             // simulate next step T[idx-1] to T[idx], note X[] starts at 0
@@ -546,7 +546,7 @@ namespace QuantLib {
 
     void QGLocalvolModelForwardFlavor::simulateAndCalibrate() {
         QL_REQUIRE(volTS_->volatilityType() == VolatilityType::Normal, "Normal volatilities required.");
-        Initialiser init(boost::static_pointer_cast<QGLocalvolModelBackwardFlavor>(shared_from_this()));
+        Initialiser init(ext::static_pointer_cast<QGLocalvolModelBackwardFlavor>(shared_from_this()));
         simulation_->simulate(1);
 
         // run actual simulation and calibration
@@ -645,7 +645,7 @@ namespace QuantLib {
 
     void QGLocalvolModelAnalyticFlavor::simulateAndCalibrate() {
         QL_REQUIRE(volTS_->volatilityType() == VolatilityType::Normal, "Normal volatilities required.");
-        Initialiser init(boost::static_pointer_cast<QGLocalvolModelBackwardFlavor>(shared_from_this()));
+        Initialiser init(ext::static_pointer_cast<QGLocalvolModelBackwardFlavor>(shared_from_this()));
         simulation_->simulate(1);
 
         // run actual simulation and calibration
@@ -736,7 +736,7 @@ namespace QuantLib {
 
     void QGLocalvolModelMonteCarloFlavor::simulateAndCalibrate() {
         QL_REQUIRE(volTS_->volatilityType() == VolatilityType::Normal, "Normal volatilities required.");
-        Initialiser init(boost::static_pointer_cast<QGLocalvolModelBackwardFlavor>(shared_from_this()));
+        Initialiser init(ext::static_pointer_cast<QGLocalvolModelBackwardFlavor>(shared_from_this()));
         simulation_->simulate(1);
 
         // run actual simulation and calibration
@@ -844,7 +844,7 @@ namespace QuantLib {
 
     void QGLocalvolModelForwardStochVolFlavor::simulateAndCalibrate() {
         QL_REQUIRE(volTS_->volatilityType() == VolatilityType::Normal, "Normal volatilities required.");
-        Initialiser init(boost::static_pointer_cast<QGLocalvolModelBackwardFlavor>(shared_from_this()));
+        Initialiser init(ext::static_pointer_cast<QGLocalvolModelBackwardFlavor>(shared_from_this()));
         simulation_->simulate(1);
 
         // run actual simulation and calibration

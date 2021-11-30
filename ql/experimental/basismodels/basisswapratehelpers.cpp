@@ -239,13 +239,13 @@ namespace QuantLib {
         // notional payment legs...
         Leg payNtlExchange, recNtlExchange;
         ext::shared_ptr<Coupon> coupon; // temp variable for easy access
-        coupon = boost::dynamic_pointer_cast<Coupon>(payLeg.front());
+        coupon = ext::dynamic_pointer_cast<Coupon>(payLeg.front());
         payNtlExchange.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(-payNotionals[0],coupon->accrualStartDate())));
-        coupon = boost::dynamic_pointer_cast<Coupon>(payLeg.back());
+        coupon = ext::dynamic_pointer_cast<Coupon>(payLeg.back());
         payNtlExchange.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(+payNotionals[0],coupon->date())));
-        coupon = boost::dynamic_pointer_cast<Coupon>(recLeg.front());
+        coupon = ext::dynamic_pointer_cast<Coupon>(recLeg.front());
         recNtlExchange.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(-recNotionals[0],coupon->accrualStartDate())));
-        coupon = boost::dynamic_pointer_cast<Coupon>(recLeg.back());
+        coupon = ext::dynamic_pointer_cast<Coupon>(recLeg.back());
         recNtlExchange.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(+recNotionals[0],coupon->date())));
         if (fxResetable) {
             // we need to calculate variable notionals and rebuild the respective legs
@@ -254,7 +254,7 @@ namespace QuantLib {
             // http://ssrn.com/abstract=1601866
             // we distinguish expected notional and interest payments for detailed cash flow analysis
             if (spreadOnRecLeg_) { // adjust the pay leg
-                coupon = boost::dynamic_pointer_cast<Coupon>(payLeg.front());
+                coupon = ext::dynamic_pointer_cast<Coupon>(payLeg.front());
                 payNotionals[0] = 1.0/payFxForDom_ * recDisRelinkableHandle_->discount(coupon->accrualStartDate())/payDisRelinkableHandle_->discount(coupon->accrualStartDate());
                 for (Size i=1; i<payNotionals.size(); ++i) {
                     payNotionals[i] = 1.0/payFxForDom_ * recDisRelinkableHandle_->discount(payLeg[i-1]->date())/payDisRelinkableHandle_->discount(payLeg[i-1]->date());
@@ -271,7 +271,7 @@ namespace QuantLib {
                 }
                 payNtlExchange.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(payNotionals[payNotionals.size()-1],payLeg[payLeg.size()-1]->date())));
             } else { // adjust the receive leg
-                coupon = boost::dynamic_pointer_cast<Coupon>(recLeg.front());
+                coupon = ext::dynamic_pointer_cast<Coupon>(recLeg.front());
                 recNotionals[0] = 1.0/recFxForDom_ * payDisRelinkableHandle_->discount(coupon->accrualStartDate())/recDisRelinkableHandle_->discount(coupon->accrualStartDate());
                 for (Size i=1; i<recNotionals.size(); ++i) {
                     recNotionals[i] = 1.0/recFxForDom_ * payDisRelinkableHandle_->discount(recLeg[i-1]->date())/recDisRelinkableHandle_->discount(recLeg[i-1]->date());

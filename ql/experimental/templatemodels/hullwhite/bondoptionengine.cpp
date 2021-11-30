@@ -74,7 +74,7 @@ namespace QuantLib {
         ext::shared_ptr<Coupon> coupon;
         // set up cash flows
         for (Size i=0; i<arguments_.cashflows.size(); ++i) {
-            coupon = boost::dynamic_pointer_cast<Coupon>(arguments_.cashflows[i]);
+            coupon = ext::dynamic_pointer_cast<Coupon>(arguments_.cashflows[i]);
             if (coupon) { // cast is ok
                 startDate = coupon->accrualStartDate();
             }
@@ -136,7 +136,7 @@ namespace QuantLib {
             }
         }
         // if we have an AD-enabeled model report vega(s) here...
-        ext::shared_ptr<MinimADHullWhiteModel> amodel = boost::dynamic_pointer_cast<MinimADHullWhiteModel>(model_);
+        ext::shared_ptr<MinimADHullWhiteModel> amodel = ext::dynamic_pointer_cast<MinimADHullWhiteModel>(model_);
         if (amodel) {
             // derivative of Bermudan price w.r.t. short rate vola
             std::vector<QuantLib::Real> vegas = amodel->bermudanVega();

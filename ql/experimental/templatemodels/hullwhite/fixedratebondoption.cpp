@@ -36,20 +36,20 @@ namespace QuantLib {
         // evaluate strike paid at exercise, assume deterministic strike paid at next start date (settlement date)
         for (Size k=0; k<exerciseDates_.size(); ++k) {
             Size floatIdx=0;
-            while ( (exerciseDates_[k]>(boost::dynamic_pointer_cast<Coupon>(floatLeg[floatIdx]))->accrualStartDate()) && (floatIdx<floatLeg.size()-1)) ++floatIdx;
-            if (exerciseDates_[k]>(boost::dynamic_pointer_cast<Coupon>(floatLeg[floatIdx])->accrualStartDate())) {
+            while ( (exerciseDates_[k]>(ext::dynamic_pointer_cast<Coupon>(floatLeg[floatIdx]))->accrualStartDate()) && (floatIdx<floatLeg.size()-1)) ++floatIdx;
+            if (exerciseDates_[k]>(ext::dynamic_pointer_cast<Coupon>(floatLeg[floatIdx])->accrualStartDate())) {
                 dirtyStrikeValues_.push_back(0.0);  // if there is no coupon left the strike is trivially equal to zero
             } else {
-                Real nominal      = (boost::dynamic_pointer_cast<Coupon>(floatLeg[floatIdx]))->nominal();
+                Real nominal      = (ext::dynamic_pointer_cast<Coupon>(floatLeg[floatIdx]))->nominal();
                 Real dfExercise   = discountCurve->discount(exerciseDates_[k]);
-                Real dfSettlement = discountCurve->discount((boost::dynamic_pointer_cast<Coupon>(floatLeg[floatIdx]))->accrualStartDate());
+                Real dfSettlement = discountCurve->discount((ext::dynamic_pointer_cast<Coupon>(floatLeg[floatIdx]))->accrualStartDate());
                 dirtyStrikeValues_.push_back(nominal*dfSettlement/dfExercise);				
             }
         }
         // evaluate floating leg deterministic spreads
         Leg spreadLeg;
         for (Size k=0; k<floatLeg.size(); ++k) {
-            ext::shared_ptr<Coupon> coupon = boost::dynamic_pointer_cast<Coupon>(floatLeg[k]);
+            ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(floatLeg[k]);
             if (!coupon) QL_FAIL("FloatingLeg CashFlow is no Coupon.");
             Date startDate = coupon->accrualStartDate();
             if (startDate>Settings::instance().evaluationDate()) { // consider only future cash flows
@@ -78,22 +78,22 @@ namespace QuantLib {
             if (i>=fixedLeg.size())  { cashflows_.push_back(spreadLeg[j]); ++j; continue; }
             if (j>=spreadLeg.size()) { cashflows_.push_back(fixedLeg[i]);  ++i; continue; }
             // here we have i<fixedLeg.size() && j<spreadLeg.size()
-            ext::shared_ptr<Coupon> fixedCoupon = boost::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
+            ext::shared_ptr<Coupon> fixedCoupon = ext::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
             if (!fixedCoupon) QL_FAIL("FixedLeg CashFlow is no Coupon.");
-            ext::shared_ptr<Coupon> spreadCoupon = boost::dynamic_pointer_cast<Coupon>(spreadLeg[j]);
+            ext::shared_ptr<Coupon> spreadCoupon = ext::dynamic_pointer_cast<Coupon>(spreadLeg[j]);
             if (!spreadCoupon) QL_FAIL("SpreadLeg CashFlow is no Coupon.");
             if (fixedCoupon->accrualStartDate()<=spreadCoupon->accrualStartDate()) { cashflows_.push_back(fixedLeg[i]);  ++i; }
             else                                                                   { cashflows_.push_back(spreadLeg[j]); ++j; }
         }  // while ...
         // finally, add the notional at the last date
-        ext::shared_ptr<Coupon> lastFloatCoupon = boost::dynamic_pointer_cast<Coupon>(floatLeg.back());
+        ext::shared_ptr<Coupon> lastFloatCoupon = ext::dynamic_pointer_cast<Coupon>(floatLeg.back());
         cashflows_.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(lastFloatCoupon->nominal(),lastFloatCoupon->accrualEndDate())));
     }
 
      const std::vector< QuantLib::Date > FixedRateBondOption::startDates() {
          std::vector< QuantLib::Date > dates;
          for (Size k=0; k<cashflows_.size(); ++k) {
-             ext::shared_ptr<Coupon> coupon = boost::dynamic_pointer_cast<Coupon>(cashflows_[k]);
+             ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(cashflows_[k]);
              Date startDate = cashflows_[k]->date(); // default, e.g. for redemptions
              if (coupon) startDate = coupon->accrualStartDate();
              dates.push_back(startDate);

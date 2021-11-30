@@ -52,7 +52,7 @@ namespace QuantLib {
         compTime["SvAdj"]   = 0.0;
         compTime["Simul"]   = 0.0;
 
-        Initialiser init(boost::static_pointer_cast<QGLocalvolModelBackwardFlavor>(shared_from_this()));
+        Initialiser init(ext::static_pointer_cast<QGLocalvolModelBackwardFlavor>(shared_from_this()));
         simulation_->simulate(1);
 
         QL_REQUIRE(nStrikes_ > 1, "nStrikes_ > 1 required");

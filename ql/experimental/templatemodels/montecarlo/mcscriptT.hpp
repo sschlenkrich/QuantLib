@@ -130,7 +130,7 @@ namespace QuantLib {
             const std::vector<DateType>&       fixingTimes,
             const std::vector<PassiveType>&    fixingValues) {
             ext::shared_ptr<typename MCBase::Asset>  assetPayoff =
-                boost::dynamic_pointer_cast<typename MCBase::Asset>(payoff);
+                ext::dynamic_pointer_cast<typename MCBase::Asset>(payoff);
             QL_REQUIRE(assetPayoff, "Payoff is no Asset");
             QL_REQUIRE(fixingTimes.size() == fixingValues.size(), "fixingTimes.size()==fixingValues.size() required");
             std::vector< std::pair<DateType, PassiveType> > history;
