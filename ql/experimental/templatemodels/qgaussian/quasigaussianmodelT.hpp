@@ -239,10 +239,10 @@ namespace QuantLib {
                 }
             }
             // finished
-            delete A;
-            delete U;
-            delete S;
-            delete VT;
+            delete[] A;
+            delete[] U;
+            delete[] S;
+            delete[] VT;
             return ok;
         }
 
@@ -378,14 +378,14 @@ namespace QuantLib {
 
         inline ActiveType G(const size_t i, const DateType t, const DateType T) { return (1.0-exp(-chi_[i]*(T-t)))/chi_[i]; }
 
-        inline
+        inline virtual
         ActiveType shortRate ( const DateType t, const VecA& x ) {
             ActiveType r = termStructure_->forwardRate(t,t,Continuous);
             for (size_t k=0; k<d_; ++k) r += x[k];
             return r;
         }
 
-        inline
+        inline virtual
         ActiveType forwardRate( const DateType t, const DateType T, const VecA& x, const MatA&  y) {
             ActiveType f = termStructure_->forwardRate(T,T,Continuous);  // check t,T
             for (size_t i=0; i<d_; ++i) {
@@ -396,7 +396,7 @@ namespace QuantLib {
             return f;
         }
 
-        inline
+        inline virtual
         ActiveType ZeroBond( const DateType t, const DateType T, const VecA& x, const MatA&  y) {
             QL_REQUIRE(t<=T,"QuasiGaussianModel ZeroBond t <= T required");
             if (t==T) return (ActiveType)1.0;
@@ -460,11 +460,11 @@ namespace QuantLib {
         // with dX = a[t,X(t)] dt + b[t,X(t)] dW
 
         // dimension of X
-        inline size_t size()    { return d_ + d_*d_ + 1 + 1; }
+        inline virtual size_t size()    { return d_ + d_*d_ + 1 + 1; }
         // stochastic factors of x and z (maybe distinguish if trivially eta=0)
-        inline size_t factors() { return d_ + 1; }
+        inline virtual size_t factors() { return d_ + 1; }
         // initial values for simulation
-        inline VecP initialValues() {
+        inline virtual VecP initialValues() {
             VecP X(size());
             for (size_t k=0; k<d_ + d_*d_; ++k) X[k] = 0.0;  // x(0), y(0)
             X[d_+d_*d_]                              = 1.0;  // z(0)
@@ -473,7 +473,7 @@ namespace QuantLib {
         }
 
         // a[t,X(t)]
-        inline VecA drift( const DateType t, const VecA& X) {
+        inline virtual VecA drift( const DateType t, const VecA& X) {
             VecA a(size());
             State state(X,d_);
             // x-variable [ y(t)*1 - chi*x(t) ]
@@ -502,7 +502,7 @@ namespace QuantLib {
         }
 
         // b[t,X(t)]
-        inline MatA diffusion( const DateType t, const VecA& X) {
+        inline virtual MatA diffusion( const DateType t, const VecA& X) {
             MatA b(size());
             for (size_t k=0; k<size(); ++k) b[k].resize(factors());
             State state(X,d_);
@@ -529,7 +529,7 @@ namespace QuantLib {
         }
 
         // integrate X1 = X0 + drift()*dt + diffusion()*dW*sqrt(dt)
-        inline void evolve( const DateType t0, const VecA& X0, const DateType dt, const VecD& dW, VecA& X1 ) {
+        inline virtual void evolve( const DateType t0, const VecA& X0, const DateType dt, const VecD& dW, VecA& X1 ) {
             if (volEvolv() == VolEvolv::LocalGaussian) {
                 evolveAsLocalGaussian(t0, X0, dt, dW, X1);  // this is not really good coding style
                 return;
@@ -650,12 +650,12 @@ namespace QuantLib {
         }
 
 
-        inline ActiveType numeraire(const DateType t, const VecA& X) {
+        inline virtual ActiveType numeraire(const DateType t, const VecA& X) {
             State state(X,d_);
             return exp(state.s);
         }
 
-        inline ActiveType zeroBond(const DateType t, const DateType T, const VecA& X) {
+        inline virtual ActiveType zeroBond(const DateType t, const DateType T, const VecA& X) {
             State state(X,d_);
             return ZeroBond(t, T, state.x, state.y);
         }

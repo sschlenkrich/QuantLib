@@ -85,7 +85,7 @@ namespace QuantLib {
         const std::vector<std::string>&                                                 aliases,
         const std::vector<ext::shared_ptr<QuantLib::LocalVolSurface>>&                  localVolSurfaces,
         const RealStochasticProcess::MatA&                                              correlations)
-        : localVolSurfaces_(localVolSurfaces), termStructure_(termStructure){
+        : termStructure_(termStructure), localVolSurfaces_(localVolSurfaces){
     
         initProcessesFromSurface();
         DT_ = RealStochasticProcess::MatA(MultiAssetBSModel(termStructure, aliases, processes_, correlations).DT_);
@@ -114,11 +114,11 @@ namespace QuantLib {
 
 
     // initial values for simulation
-    inline RealStochasticProcess::VecP MultiAssetBSModel::initialValues() {
+    RealStochasticProcess::VecP MultiAssetBSModel::initialValues() {
         return RealStochasticProcess::VecP(size(), 0.0);
     }
     // a[t,X(t)]
-    inline RealStochasticProcess::VecA MultiAssetBSModel::drift(const QuantLib::Time t, const VecA& X) {
+    RealStochasticProcess::VecA MultiAssetBSModel::drift(const QuantLib::Time t, const VecA& X) {
         RealStochasticProcess::VecA nu(processes_.size());
         // todo: make sure all processes use same domestic/riskfree rate...
         for (Size k = 0; k < processes_.size(); ++k) {
@@ -128,7 +128,7 @@ namespace QuantLib {
         return nu;
     }
     // b[t,X(t)]
-    inline RealStochasticProcess::MatA MultiAssetBSModel::diffusion(const QuantLib::Time t, const VecA& X) {
+    RealStochasticProcess::MatA MultiAssetBSModel::diffusion(const QuantLib::Time t, const VecA& X) {
         RealStochasticProcess::MatA b(DT_);
         for (Size i = 0; i < size(); ++i) {
             QuantLib::Real S = processes_[i]->x0() * std::exp(X[i]);
@@ -140,7 +140,7 @@ namespace QuantLib {
         return b;
     }
 
-    inline void MultiAssetBSModel::evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1) {
+    void MultiAssetBSModel::evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1) {
         // we approximate the local vol diffusion by a Black-Scholes process on [t, t+dt]
         for (Size i = 0; i < X1.size(); ++i) {
             X1[i] = 0.0;

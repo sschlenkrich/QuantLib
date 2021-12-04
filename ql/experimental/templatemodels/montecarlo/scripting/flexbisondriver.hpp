@@ -19,10 +19,16 @@ Copyright (C) 2017 Sebastian Schlenkrich
 #include <map>
 #include <ql/shared_ptr.hpp>
 
+#if defined(QL_PATCH_MSVC)
 #pragma warning( push )
 #pragma warning( disable : 4146)
+#endif
+
 #include "location.hh"
+
+#if defined(QL_PATCH_MSVC)
 #pragma warning( pop ) 
+#endif
 
 namespace QuantLib {
 

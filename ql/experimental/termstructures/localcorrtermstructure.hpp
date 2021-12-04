@@ -49,43 +49,43 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        LocalCorrTermStructure(const std::vector<boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>>& processes,
-							   const boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			   processToCal );
-		LocalCorrTermStructure(const std::vector<boost::shared_ptr<QuantLib::HestonSLVProcess>>& processes,
-			const boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			   processToCal);
+        LocalCorrTermStructure(const std::vector<ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>>& processes,
+                               const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			   processToCal );
+        LocalCorrTermStructure(const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>& processes,
+            const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			   processToCal);
 
-		//! initialize with a fixed reference date
+        //! initialize with a fixed reference date
         //@}
         virtual ~LocalCorrTermStructure() {}
         //! \name Local correlation
         //@{
         void localCorr(RealStochasticProcess::MatA& correlationMatrix, 
-							const Date& d,
-							const RealStochasticProcess::VecA& X0,
+                            const Date& d,
+                            const RealStochasticProcess::VecA& X0,
                             bool extrapolate = false);
         void localCorr(RealStochasticProcess::MatA& correlationMatrix,
-							Time t,
-							const RealStochasticProcess::VecA& X0, 
+                            Time t,
+                            const RealStochasticProcess::VecA& X0, 
                             bool extrapolate = false);
         //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
-		//! \name TermStructure interface
-		//@{
-		const Date& referenceDate() const;
-		DayCounter dayCounter() const;
-		Date maxDate() const;
-		//@}
-		//! \name CorrelationTermStructure interface
-		//@{
-		Real minStrike(Natural ulId) const;
-		Real maxStrike(Natural ulId) const;
+        //! \name TermStructure interface
+        //@{
+        const Date& referenceDate() const;
+        DayCounter dayCounter() const;
+        Date maxDate() const;
+        //@}
+        //! \name CorrelationTermStructure interface
+        //@{
+        Real minStrike(Natural ulId) const;
+        Real maxStrike(Natural ulId) const;
 
 
-		std::vector<boost::shared_ptr<QuantLib::HestonSLVProcess>>& getProcesses() { return processes_; };
-		boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>& getProcessToCal() { return processToCal_; };
+        std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>& getProcesses() { return processes_; };
+        ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>& getProcessToCal() { return processToCal_; };
 
       protected:
         /*! \name Calculations
@@ -98,10 +98,10 @@ namespace QuantLib {
         //@{
         //! local corr calculation
         virtual void localCorrImpl(RealStochasticProcess::MatA& corrMatrix, Time t, const RealStochasticProcess::VecA& X0,
-			bool extrapolate = false) = 0;
+            bool extrapolate = false) = 0;
         //@}
-		std::vector<boost::shared_ptr<QuantLib::HestonSLVProcess>>				processes_;
-		boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>			    processToCal_;
+        std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>				processes_;
+        ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>			    processToCal_;
     };
 
 }

@@ -22,15 +22,15 @@
 namespace QuantLib {
 
     LocalCorrSurfaceABF::LocalCorrSurfaceABF(
-		const std::vector<boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>>& processes,
-		const boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			    processToCal)
+		const std::vector<ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>>& processes,
+		const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			    processToCal)
     : LocalCorrTermStructure(processes, processToCal){
 		assetTemp_ = std::vector<QuantLib::Real>(processes_.size());
     }
 
 	LocalCorrSurfaceABF::LocalCorrSurfaceABF(
-		const std::vector<boost::shared_ptr<QuantLib::HestonSLVProcess>>& processes,
-		const boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			    processToCal)
+		const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>& processes,
+		const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			    processToCal)
 		: LocalCorrTermStructure(processes, processToCal) {
 		assetTemp_ = std::vector<QuantLib::Real>(processes_.size());
 	}

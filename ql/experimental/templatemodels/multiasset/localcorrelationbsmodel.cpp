@@ -40,7 +40,7 @@ namespace QuantLib {
     }
 
 
-    inline void LocalCorrelationBSModel::evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1) {
+    void LocalCorrelationBSModel::evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1) {
         // we merely need to calculate the correlation matrix
         localCorrTermStructure_->localCorr(corrMatrix_, t0, X0 , true); //true because first X0 are always 0 in simulation.
         //DT_ = TemplateAuxilliaries::svdSqrt(corrMatrix_);

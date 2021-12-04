@@ -19,74 +19,73 @@
 
 #include <ql/experimental/termstructures/localcorrtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
-    LocalCorrTermStructure::LocalCorrTermStructure(const std::vector<boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>>& processes, 
-												   const boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&								   processToCal)
+    LocalCorrTermStructure::LocalCorrTermStructure(const std::vector<ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>>& processes, 
+                                                   const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&								   processToCal)
     : CorrelationTermStructureStrike(processes[0]->blackVolatility()->referenceDate(), 
-		processes[0]->blackVolatility()->calendar(), 
-		processes[0]->blackVolatility()->businessDayConvention(), 
-		processes[0]->blackVolatility()->dayCounter()), processToCal_(processToCal){
-	
-		processes_ = std::vector<boost::shared_ptr<QuantLib::HestonSLVProcess>>(processes.size());
-		
-		for (size_t i = 0; i < processes_.size(); i++)
-		{
-			processes_[i] = boost::shared_ptr<QuantLib::HestonSLVProcess >( new QuantLib::HestonSLVProcess(
-				boost::shared_ptr<QuantLib::HestonProcess >(new QuantLib::HestonProcess(
-						processes[i]->riskFreeRate(), processes[i]->dividendYield(), 
-						Handle<Quote>(boost::make_shared<SimpleQuote>(processes[i]->x0())),1.0,
-						0.0,0.0,0.0,0.0))
-				, boost::shared_ptr<LocalVolTermStructure>(processes[i]->localVolatility().currentLink())));
-		}
-	
-	}
+        processes[0]->blackVolatility()->calendar(), 
+        processes[0]->blackVolatility()->businessDayConvention(), 
+        processes[0]->blackVolatility()->dayCounter()), processToCal_(processToCal){
+    
+        processes_ = std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>(processes.size());
+        
+        for (size_t i = 0; i < processes_.size(); i++)
+        {
+            processes_[i] = ext::shared_ptr<QuantLib::HestonSLVProcess >( new QuantLib::HestonSLVProcess(
+                ext::shared_ptr<QuantLib::HestonProcess >(new QuantLib::HestonProcess(
+                        processes[i]->riskFreeRate(), processes[i]->dividendYield(), 
+                        Handle<Quote>(ext::make_shared<SimpleQuote>(processes[i]->x0())),1.0,
+                        0.0,0.0,0.0,0.0))
+                , ext::shared_ptr<LocalVolTermStructure>(processes[i]->localVolatility().currentLink())));
+        }
+    
+    }
 
-	LocalCorrTermStructure::LocalCorrTermStructure(const std::vector<boost::shared_ptr<QuantLib::HestonSLVProcess>>& processes,
-		const boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			   processToCal) 
-		: CorrelationTermStructureStrike(processes[0]->leverageFct()->referenceDate(),
-			processes[0]->leverageFct()->calendar(),
-			processes[0]->leverageFct()->businessDayConvention(),
-			processes[0]->leverageFct()->dayCounter()), processToCal_(processToCal), processes_(processes) {}
+    LocalCorrTermStructure::LocalCorrTermStructure(const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>& processes,
+        const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			   processToCal) 
+        : CorrelationTermStructureStrike(processes[0]->leverageFct()->referenceDate(),
+            processes[0]->leverageFct()->calendar(),
+            processes[0]->leverageFct()->businessDayConvention(),
+            processes[0]->leverageFct()->dayCounter()), processToCal_(processToCal), processes_(processes) {}
 
     void LocalCorrTermStructure::localCorr(RealStochasticProcess::MatA& corrMatrix, 
-											   const Date& d,
-											   const RealStochasticProcess::VecA& X0,
+                                               const Date& d,
+                                               const RealStochasticProcess::VecA& X0,
                                                bool extrapolate) {
         
-		for (size_t i = 0; i < X0.size(); i++)
-		{
-			checkRange(d, extrapolate);
-			checkStrike(X0[i], i, extrapolate);
-		} 
+        for (size_t i = 0; i < X0.size(); i++)
+        {
+            checkRange(d, extrapolate);
+            checkStrike(X0[i], i, extrapolate);
+        } 
         Time t = timeFromReference(d);
         
-		localCorrImpl(corrMatrix, t, X0,extrapolate);
+        localCorrImpl(corrMatrix, t, X0,extrapolate);
     }
 
     void LocalCorrTermStructure::localCorr(RealStochasticProcess::MatA& corrMatrix, 
-											   Time t,
-											   const RealStochasticProcess::VecA& X0,
+                                               Time t,
+                                               const RealStochasticProcess::VecA& X0,
                                                bool extrapolate) {
-		checkRange(t, extrapolate);
-		for (size_t i = 0; i < X0.size(); i++)
-		{
-			checkStrike(X0[i], i, extrapolate);
-		}
+        checkRange(t, extrapolate);
+        for (size_t i = 0; i < X0.size(); i++)
+        {
+            checkStrike(X0[i], i, extrapolate);
+        }
         localCorrImpl(corrMatrix, t, X0, extrapolate);
 
-		//cap to 1 and floor to -1:
-		for (size_t i = 0; i < corrMatrix.size(); i++)
-		{
-			for (size_t j = i+1; j < corrMatrix.size(); j++)
-			{
-				if (corrMatrix[i][j] > 1 || corrMatrix[i][j] < -1) {
-					QL_FAIL("Correlation values have to be checked and corrected by checkLambdaValue function.");
-				}
-			}
-		}
+        //cap to 1 and floor to -1:
+        for (size_t i = 0; i < corrMatrix.size(); i++)
+        {
+            for (size_t j = i+1; j < corrMatrix.size(); j++)
+            {
+                if (corrMatrix[i][j] > 1 || corrMatrix[i][j] < -1) {
+                    QL_FAIL("Correlation values have to be checked and corrected by checkLambdaValue function.");
+                }
+            }
+        }
     }
 
     void LocalCorrTermStructure::accept(AcyclicVisitor& v) {
@@ -98,29 +97,29 @@ namespace QuantLib {
             QL_FAIL("not a local-Correlation term structure visitor");
     }
 
-	const Date& LocalCorrTermStructure::referenceDate() const {
-		return processes_[0]->leverageFct()->referenceDate();
-	}
+    const Date& LocalCorrTermStructure::referenceDate() const {
+        return processes_[0]->leverageFct()->referenceDate();
+    }
 
-	DayCounter LocalCorrTermStructure::dayCounter() const {
-		return processes_[0]->leverageFct()->dayCounter();
-	}
+    DayCounter LocalCorrTermStructure::dayCounter() const {
+        return processes_[0]->leverageFct()->dayCounter();
+    }
 
-	Date LocalCorrTermStructure::maxDate() const {
-		Date minMaxDate = processes_[0]->leverageFct()->maxDate();
-		for (size_t i = 0; i < processes_.size(); i++)
-		{
-			if (minMaxDate < processes_[i]->leverageFct()->maxDate()) minMaxDate = processes_[i]->leverageFct()->maxDate();
-		}
-		return minMaxDate;
-	}
+    Date LocalCorrTermStructure::maxDate() const {
+        Date minMaxDate = processes_[0]->leverageFct()->maxDate();
+        for (size_t i = 0; i < processes_.size(); i++)
+        {
+            if (minMaxDate < processes_[i]->leverageFct()->maxDate()) minMaxDate = processes_[i]->leverageFct()->maxDate();
+        }
+        return minMaxDate;
+    }
 
-	Real LocalCorrTermStructure::minStrike(Natural ulId) const {
-		return processes_[ulId]->leverageFct()->minStrike();
-	}
+    Real LocalCorrTermStructure::minStrike(Natural ulId) const {
+        return processes_[ulId]->leverageFct()->minStrike();
+    }
 
-	Real LocalCorrTermStructure::maxStrike(Natural ulId) const {
-		return processes_[ulId]->leverageFct()->maxStrike();
-	}
+    Real LocalCorrTermStructure::maxStrike(Natural ulId) const {
+        return processes_[ulId]->leverageFct()->maxStrike();
+    }
 
 }

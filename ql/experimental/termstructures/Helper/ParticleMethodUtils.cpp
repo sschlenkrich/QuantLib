@@ -37,26 +37,26 @@ namespace QuantLib {
 		Time deltaT, Time tMin, Real kappa, Real sigmaAVR, Real exponentN, Real gridMinQuantile,
 		Real gridMaxQuantile, unsigned int ns1, unsigned int ns2) {
 		
-		boost::shared_ptr<KernelInterface> kernel;
+		ext::shared_ptr<KernelInterface> kernel;
 
 		if (kernelIn == "QuarticKernel") {
-			kernel = boost::shared_ptr<KernelInterface>(new QuarticKernel());
+			kernel = ext::shared_ptr<KernelInterface>(new QuarticKernel());
 		}
 		else {
 			QL_REQUIRE(false, "Kernel not supported. Supported is: QuarticKernel");
 		}
 
-		std::vector<boost::shared_ptr<QuantLib::HestonSLVProcess>> processes = surface->getProcesses();
-		boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>			    processToCal= surface->getProcessToCal();
+		std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>> processes = surface->getProcesses();
+		ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>			    processToCal= surface->getProcessToCal();
 
 		//build assetModel for simulation
-		boost::shared_ptr<YieldTermStructure> yld(new FlatForward(processToCal->blackVolatility()->referenceDate(),0, processToCal->blackVolatility()->dayCounter()));
+		ext::shared_ptr<YieldTermStructure> yld(new FlatForward(processToCal->blackVolatility()->referenceDate(),0, processToCal->blackVolatility()->dayCounter()));
 		Handle<YieldTermStructure> yldH = Handle<YieldTermStructure>(yld);
 		std::vector<std::string> aliases(2);
 		aliases[0] = "fx1";
 		aliases[1] = "fx2";
 		Handle<LocalCorrTermStructure> surfaceGen(surface.currentLink());
-		boost::shared_ptr<LocalCorrelationSLVModel> assetModel = boost::shared_ptr<LocalCorrelationSLVModel>((new LocalCorrelationSLVModel(yldH, aliases, processes, surfaceGen)));
+		ext::shared_ptr<LocalCorrelationSLVModel> assetModel = ext::shared_ptr<LocalCorrelationSLVModel>((new LocalCorrelationSLVModel(yldH, aliases, processes, surfaceGen)));
 
 		std::vector<Time>& times = surface->getTimes();
 		std::vector<std::vector<Real>>& strikes = surface->getStrikes();
@@ -211,7 +211,7 @@ namespace QuantLib {
 		return kappa*sigmaAVR* s0 * sqrt(t>tMin ? t : tMin) * mult;
 	}
 
-	Real ParticleMethodUtils::kernel(Real bandwidth, Real x, boost::shared_ptr<KernelInterface>& kernel) {
+	Real ParticleMethodUtils::kernel(Real bandwidth, Real x, ext::shared_ptr<KernelInterface>& kernel) {
 		QL_REQUIRE(bandwidth != 0, "Error in ParticleMethodUtils: bandwidth is not allowed to be zero.");
 		return kernel->value(x / bandwidth) / bandwidth;
 	}

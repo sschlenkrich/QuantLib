@@ -486,6 +486,8 @@ namespace QuantLib {
             if (useExpectedXY) evaluateExpXY();
         }
 
+        virtual ~QGSwaptionModelT() {}
+
         inline void evaluateExpXY() {
             // first we need y as it inputs to x
             for (size_t k=1; k<times_.size(); ++k) {

@@ -29,8 +29,8 @@ namespace QuantLib {
     */
     class LocalCorrelationSLVModel : public MultiAssetSLVModel {
     private:
-        RealStochasticProcess::MatA corrMatrix_;
         Handle<LocalCorrTermStructure> localCorrTermStructure_;
+        RealStochasticProcess::MatA corrMatrix_;
     public:
         LocalCorrelationSLVModel(const Handle<YieldTermStructure>&                                        termStructure,
                           const std::vector<std::string>&                                                 aliases,

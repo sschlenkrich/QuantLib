@@ -32,13 +32,14 @@ namespace QuantLib {
         std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>				 processes_;
         RealStochasticProcess::MatA                                              DT_;  // D^T D = Correlations
     public:
-        MultiAssetSLVModel(const Handle<YieldTermStructure>&                                               termStructure,
+        MultiAssetSLVModel(const Handle<YieldTermStructure>&                                              termStructure,
                           const std::vector<std::string>&                                                 aliases,
-                          const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>&				  processes,
+                          const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>&                 processes,
                           const RealStochasticProcess::MatA&                                              correlations);
-        MultiAssetSLVModel(const Handle<YieldTermStructure>&                                               termStructure,
-            const std::vector<std::string>&                                                 aliases,
-            const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>&				    processes);
+
+        MultiAssetSLVModel(const Handle<YieldTermStructure>&                                              termStructure,
+            const std::vector<std::string>&                                                               aliases,
+            const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>&	                              processes);
 
         // dimension of X -> [x1,x2,....,v1, v2,....]
         virtual size_t size() { return processes_.size()*2; }
@@ -51,7 +52,7 @@ namespace QuantLib {
         // b[t,X(t)], not tested
         virtual RealStochasticProcess::MatA diffusion(const QuantLib::Time t, const VecA& X);
 
-        inline virtual void evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1);
+        virtual void evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1);
 
         // default implementation, zero interest rates
         inline virtual QuantLib::Real numeraire(const QuantLib::Time t, const VecA& X) { return 1.0/termStructure_->discount(t); }

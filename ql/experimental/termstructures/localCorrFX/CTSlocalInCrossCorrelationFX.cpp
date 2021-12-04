@@ -24,16 +24,16 @@
 namespace QuantLib {
 
 	CTSlocalInCrossCorrelationFX::CTSlocalInCrossCorrelationFX(
-		const std::vector<boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>>& processes,
-		const boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			    processToCal)
+		const std::vector<ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>>& processes,
+		const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			    processToCal)
     : LocalCorrSurfaceABFFX(processes,processToCal){
 		//initializeF();
 		//setInterpolation<Linear>();
 	}
 
 	CTSlocalInCrossCorrelationFX::CTSlocalInCrossCorrelationFX(
-		const std::vector<boost::shared_ptr<QuantLib::HestonSLVProcess>>&				processes,
-		const boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			    processToCal,
+		const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>&				processes,
+		const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			    processToCal,
 		const RealStochasticProcess::MatA											    correlation)
 		: LocalCorrSurfaceABFFX(processes, processToCal,correlation) {
 		//initializeF();

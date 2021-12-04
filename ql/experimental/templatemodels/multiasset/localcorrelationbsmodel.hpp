@@ -28,8 +28,8 @@ namespace QuantLib {
     */
     class LocalCorrelationBSModel : public MultiAssetBSModel {
     private:
-        RealStochasticProcess::MatA corrMatrix_;
         Handle<LocalCorrTermStructure> localCorrTermStructure_;
+        RealStochasticProcess::MatA corrMatrix_;
     public:
         LocalCorrelationBSModel(const Handle<YieldTermStructure>&                                         termStructure,
                           const std::vector<std::string>&                                                 aliases,
@@ -40,7 +40,7 @@ namespace QuantLib {
             const std::vector<ext::shared_ptr<QuantLib::LocalVolSurface>>&				                  localVolSurfaces,
             const Handle<LocalCorrTermStructure>&											              localCorrTermStructure);
 
-        inline virtual void evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1);
+        virtual void evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1);
     };
 
 }

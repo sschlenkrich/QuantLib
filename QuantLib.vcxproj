@@ -885,6 +885,7 @@
     <ClInclude Include="ql\experimental\templatemodels\vanillalocalvol\vanillalocalvolmodelT.hpp" />
     <ClInclude Include="ql\experimental\termstructures\all.hpp" />
     <ClInclude Include="ql\experimental\termstructures\crosscurrencyratehelpers.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\localcorrtermstructure.hpp" />
     <ClInclude Include="ql\experimental\termstructures\multicurvesensitivities.hpp" />
     <ClInclude Include="ql\experimental\vanillalocalvolmodel\all.hpp" />
     <ClInclude Include="ql\experimental\vanillalocalvolmodel\vanillalocalvolmodel.hpp" />
@@ -2199,6 +2200,7 @@
     <ClCompile Include="ql\experimental\templatemodels\qgaussian2\qglocalvolmodel.cpp" />
     <ClCompile Include="ql\experimental\templatemodels\qgaussian2\qglsvmodel.cpp" />
     <ClCompile Include="ql\experimental\templatemodels\stochvol\stochvolcalibrator.cpp" />
+    <ClCompile Include="ql\experimental\termstructures\localcorrtermstructure.cpp" />
     <ClCompile Include="ql\experimental\vanillalocalvolmodel\vanillalocalvolmodel.cpp" />
     <ClCompile Include="ql\experimental\vanillalocalvolmodel\vanillalocalvolsmilesection.cpp" />
     <ClCompile Include="ql\experimental\vanillalocalvolmodel\vanillalocalvoltermstructures.cpp" />

@@ -46,7 +46,7 @@ namespace QuantLib {
 		  
 	  private:
 		  static Real bandwidth(Time t, Real s0, Real kappa, Real sigmaAVR, Real tMin, unsigned int numberOfPaths, Real exponentN);
-		  static Real kernel(Real bandwidth, Real x, boost::shared_ptr<KernelInterface>& kernel);
+		  static Real kernel(Real bandwidth, Real x, ext::shared_ptr<KernelInterface>& kernel);
 		  static size_t numberStrikeGrid(Time t, unsigned int ns1, unsigned int ns2);
 		  
     };

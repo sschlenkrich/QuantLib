@@ -53,13 +53,13 @@ namespace QuantLib {
         // stochastic factors of x and z (maybe distinguish if trivially eta=0)
         inline virtual size_t factors() { return processes_.size(); }
         // initial values for simulation
-        inline virtual RealStochasticProcess::VecP initialValues();
+        virtual RealStochasticProcess::VecP initialValues();
         // a[t,X(t)]
-        inline virtual RealStochasticProcess::VecA drift(const QuantLib::Time t, const VecA& X);
+        virtual RealStochasticProcess::VecA drift(const QuantLib::Time t, const VecA& X);
         // b[t,X(t)]
-        inline virtual RealStochasticProcess::MatA diffusion(const QuantLib::Time t, const VecA& X);
+        virtual RealStochasticProcess::MatA diffusion(const QuantLib::Time t, const VecA& X);
 
-        inline virtual void evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1);
+        virtual void evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1);
 
         // default implementation, zero interest rates
         inline virtual QuantLib::Real numeraire(const QuantLib::Time t, const VecA& X) { return 1.0/termStructure_->discount(t); }

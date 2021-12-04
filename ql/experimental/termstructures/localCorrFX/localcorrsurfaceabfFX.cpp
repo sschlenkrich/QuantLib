@@ -107,8 +107,8 @@ namespace QuantLib {
 
 
     LocalCorrSurfaceABFFX::LocalCorrSurfaceABFFX(
-		const std::vector<boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>>& processes,
-		const boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&  		    processToCal)
+		const std::vector<ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>>& processes,
+		const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&  		    processToCal)
     : LocalCorrSurfaceABF(processes, processToCal){
 		corr0_ = RealStochasticProcess::MatA(2);
 		corr1_ = RealStochasticProcess::MatA(2);
@@ -130,8 +130,8 @@ namespace QuantLib {
     }
 
 	LocalCorrSurfaceABFFX::LocalCorrSurfaceABFFX(
-		const std::vector<boost::shared_ptr<QuantLib::HestonSLVProcess>>&				processes,
-		const boost::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&  		    processToCal,
+		const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>&				processes,
+		const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&  		    processToCal,
 		const RealStochasticProcess::MatA											    correlations)
 		: LocalCorrSurfaceABF(processes, processToCal) {
 		

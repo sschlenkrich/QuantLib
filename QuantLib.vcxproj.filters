@@ -4660,6 +4660,9 @@
     </ClInclude>
     <ClInclude Include="ql\interestrate.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\localcorrtermstructure.hpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7463,6 +7466,9 @@
     </ClCompile>
     <ClCompile Include="ql\buildinfo.cpp" />
     <ClCompile Include="ql\interestrate.cpp" />
+    <ClCompile Include="ql\experimental\termstructures\localcorrtermstructure.cpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Flex Include="ql\experimental\templatemodels\montecarlo\scripting\lexer.l">

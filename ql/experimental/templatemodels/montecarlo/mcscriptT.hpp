@@ -436,7 +436,16 @@ namespace QuantLib {
                 ext::shared_ptr<PayoffType> p = payoff(tree->childs()[0], k);
                 if (p) return p->at(number);
                 QL_FAIL("Cannot interprete payoff");
-            }	
+            }
+            case Scripting::Expression::NEXT: {
+                QL_FAIL("Cannot interprete payoff");
+            }
+            case Scripting::Expression::ASSIGNMENT: {
+                QL_FAIL("Cannot interprete payoff");
+            }
+            case Scripting::Expression::UNKNOWNTYPE: {
+                QL_FAIL("Cannot interprete payoff");
+            }
             // we don't need a default because we returned in each of the previous cases
             } // finished all switch types
             // if we end up here there is an expression which we didn't interprete 

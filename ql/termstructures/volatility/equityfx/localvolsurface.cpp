@@ -23,7 +23,6 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <utility>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
-#include <boost/make_shared.hpp>
 #include <ql/timegrid.hpp>
 
 namespace QuantLib {
@@ -179,7 +178,7 @@ namespace QuantLib {
         gridTimes.push_back(blackTS->dayCounter().yearFraction(blackTS->referenceDate(), blackTS->maxDate()));
 
         ext::shared_ptr<TimeGrid> timeGrid;
-        timeGrid = boost::make_shared<TimeGrid>(gridTimes.begin(), gridTimes.end(),
+        timeGrid = ext::make_shared<TimeGrid>(gridTimes.begin(), gridTimes.end(),
             std::max(Size(2), Size(gridTimes.back()*timeStepsPerYear)));
 
         Size timeGridAmt = timeGrid->size();
@@ -193,7 +192,7 @@ namespace QuantLib {
         ds = (maxStrike() - minStrike()) / strikeGridAmt;
 
         for (size_t i = 0; i < timeGridAmt; i++) {
-            strikes_[i] = boost::make_shared<std::vector<Real> >(strikeGridAmt);
+            strikes_[i] = ext::make_shared<std::vector<Real> >(strikeGridAmt);
             strikes_[i]->at(0) = minStrike();
             (*localVolMatrix)[0][i] = LocalVolSurface::localVolImpl(timeGrid->at(i), strikes_[i]->at(0));
             for (size_t j = 1; j < strikeGridAmt; j++) {
@@ -204,7 +203,7 @@ namespace QuantLib {
 
         gridTimes_ = std::vector<Time>(timeGrid->begin(), timeGrid->end());
 
-        surface_ = boost::make_shared<FixedLocalVolSurface>(blackTS->referenceDate(), 
+        surface_ = ext::make_shared<FixedLocalVolSurface>(blackTS->referenceDate(), 
             gridTimes_, strikes_, localVolMatrix, blackTS->dayCounter());
         surface_->setInterpolation<Cubic>(); //Extrapolation will still be constant in strike, see localVolImpl
     }

@@ -69,7 +69,7 @@ namespace QuantLib {
         for (size_t k = 0; k < aliases.size(); ++k) index_[aliases[k]] = k; // not transferable from other constructor.
     }
     // initial values for simulation
-    inline RealStochasticProcess::VecP MultiAssetSLVModel::initialValues() {
+    RealStochasticProcess::VecP MultiAssetSLVModel::initialValues() {
         RealStochasticProcess::VecP init =  RealStochasticProcess::VecP(size(), 0.0);
         for (size_t i = 0; i < processes_.size(); i++)
         {
@@ -79,7 +79,7 @@ namespace QuantLib {
         return init;
     }
     // a[t,X(t)]
-    inline RealStochasticProcess::VecA MultiAssetSLVModel::drift(const QuantLib::Time t, const VecA& X) {
+    RealStochasticProcess::VecA MultiAssetSLVModel::drift(const QuantLib::Time t, const VecA& X) {
         RealStochasticProcess::VecA nu(processes_.size());
         // todo: make sure all processes use same domestic/riskfree rate...
         // remember: X=[x1,x2,....,v1, v2,....]
@@ -98,7 +98,7 @@ namespace QuantLib {
         return nu;
     }	
     // b[t,X(t)]
-    inline RealStochasticProcess::MatA MultiAssetSLVModel::diffusion(const QuantLib::Time t, const VecA& X) {
+    RealStochasticProcess::MatA MultiAssetSLVModel::diffusion(const QuantLib::Time t, const VecA& X) {
         RealStochasticProcess::MatA b(DT_);
         size_t amtProcesses = processes_.size();
         for (Size i = 0; i < processes_.size(); ++i) {
@@ -115,7 +115,7 @@ namespace QuantLib {
         return b;
     }
 
-    inline void MultiAssetSLVModel::evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1) {
+    void MultiAssetSLVModel::evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1) {
         
         size_t amtProcesses = processes_.size();
         QuantLib::Array tmp0(2);
