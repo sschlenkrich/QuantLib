@@ -35,6 +35,9 @@ namespace QuantLib {
         private:
             // The text to be parsed
             std::string text_;
+            // Whether parser traces should be generated.
+            bool trace_scanning_;
+            bool trace_parsing_;
             // The result of the parsing algorithm is an abstract syntax tree (AST)
             ext::shared_ptr<Expression> expressionTree_;
             // encapsulate the state for a reentrant scanner
@@ -46,9 +49,6 @@ namespace QuantLib {
             int returnValue_;
             // any error messages
             std::string errorMsg_;
-            // Whether parser traces should be generated.
-            bool trace_scanning_;
-            bool trace_parsing_;
 
         public:
             FlexBisonDriver(const std::string text,
