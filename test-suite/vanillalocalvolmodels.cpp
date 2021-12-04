@@ -199,6 +199,7 @@ namespace vanilla_local_vol_models_test {
         std::vector< std::vector< Handle<Quote> > > swaptionVolQuotes;
         for (auto& swaptionVol : swaptionVols) {
             std::vector< Handle<Quote> > row;
+            row.reserve(swaptionVol.size());
             for (double j : swaptionVol)
                 row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
             swaptionVolQuotes.push_back(row);
