@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file localcorrsurface.hpp
+/*! \file CTSlocalInCrossNegSkewFX.hpp
     \brief Local NegSkew surface derived ....
 */
 

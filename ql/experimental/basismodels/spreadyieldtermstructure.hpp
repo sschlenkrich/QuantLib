@@ -4,7 +4,7 @@
  Copyright (C) 2010 Sebastian Schlenkrich
 */
 
-/*! \file compoundedYTS.hpp
+/*! \file spreadyieldtermstructure.hpp
     \brief compounded yield term structure evaluating exp{ - ( z1 + alpha z2 ) t }
 */
 

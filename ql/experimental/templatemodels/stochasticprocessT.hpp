@@ -5,7 +5,7 @@
 
 */
 
-/*! \file templateprocess.hpp
+/*! \file stochasticprocessT.hpp
     \brief define interface for general multi-dimensional stochastic process
                
 */

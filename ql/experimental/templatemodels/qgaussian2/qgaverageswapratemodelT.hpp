@@ -124,6 +124,8 @@ namespace QuantLib {
             }
         }
 
+        virtual ~QGAverageSwaprateModelT() = default;
+
         inline ActiveType averageEta() {
             std::vector<DateType> times(QGSwaprateModelT<DateType,PassiveType,ActiveType>::modelTimes());
             std::vector<ActiveType> f(times.size());

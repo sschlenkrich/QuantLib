@@ -134,12 +134,13 @@ namespace QuantLib {
         const ext::shared_ptr<EndCriteria> endCriteria_;
         const ext::shared_ptr<OptimizationMethod> method_;
 		
+        mutable Date evaluationDate_;
+
 		// displaced diffusion SABR
 		Real shift_;
         // inputs and interpolation based on normal vols
         bool useNormalVols_; 
 
-        mutable Date evaluationDate_;
     };
 
     inline void SabrInterpolatedSmileSection::update() {

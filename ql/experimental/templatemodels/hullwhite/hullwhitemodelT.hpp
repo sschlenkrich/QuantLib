@@ -283,7 +283,7 @@ namespace QuantLib {
         shortRateGrid_.resize(dim);
         PassiveType vol = s / TemplateAuxilliaries::PhiInv(dim /(dim+1.0));
         for (size_t i=0; i<dim; ++i) shortRateGrid_[i] = TemplateAuxilliaries::PhiInv((i+1.0)/(dim+1.0))*vol + r0;
-        //shortRateGrid_ = TemplateAuxilliaries::GaußTschebyschowIntegral().getGrid(r0-s, r0+s, dim);
+        //shortRateGrid_ = TemplateAuxilliaries::Gauï¿½TschebyschowIntegral().getGrid(r0-s, r0+s, dim);
     }
 
     template <class DateType, class PassiveType, class ActiveType> 
@@ -357,7 +357,7 @@ namespace QuantLib {
             for (i=0; i<dim; ++i) {
                 V[k+1][k+1][i] = CouponBond( exercTimes[k], payTimes, cashFlows, shortRateGrid_[i],
                                              (ActiveType *) 0, idx_start );
-                V[k+1][k+1][i] = (cop*(V[k+1][k+1][i]-strikeValues[k])>0) ? cop*(V[k+1][k+1][i]-strikeValues[k]) : (ActiveType)0.0;         
+                V[k+1][k+1][i] = (Integer(cop)*(V[k+1][k+1][i]-strikeValues[k])>0) ? Integer(cop)*(V[k+1][k+1][i]-strikeValues[k]) : (ActiveType)0.0;         
                 /* evaluate Bermudan option */
                 V[0][k+1][i] = (V[k+1][k+1][i]>V[0][k+1][i]) ? V[k+1][k+1][i] : V[0][k+1][i];
             }

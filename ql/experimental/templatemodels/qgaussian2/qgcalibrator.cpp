@@ -174,7 +174,7 @@ namespace QuantLib {
         size_t idx=0;
         for (size_t i=0; i<swaprateModels.size(); ++i) {
             for (size_t j=0; j<swaprateModels[i].size(); ++j) {
-                Real sigmaATM, skew, smile;
+                Real sigmaATM=0.0, skew=0.0, smile=0.0;
                 if ((isOutput_[i][j] > 0.0) ||
                     (isOutput_[i][j + calibSwaptions_[i].size()] > 0.0) ||
                     (isOutput_[i][j + 2 * calibSwaptions_[i].size()] > 0.0)) {
@@ -247,7 +247,7 @@ namespace QuantLib {
                         reg[idx] = (model_->slope()[k][i] - model_->slope()[k - 1][i]) * calibrator_->penaltySlope_;
                         ++idx;
                     }
-                    break; // one sloüe suffices
+                    break; // one sloï¿½e suffices
                 }
             }
         }

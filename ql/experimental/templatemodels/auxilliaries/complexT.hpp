@@ -65,7 +65,7 @@ namespace Cpx {
         //! inspectors
         const Type& real()  const { return real_;  }
         const Type& imag() const { return imag_; }
-        //! \section IO steaming
+        //! IO steaming
         //! Apply IO to the real and imaginary component
         inline friend std::ostream& operator << (std::ostream &output, const Complex<Type> &x) {
             return output << "(" << x.real_ << "," << x.imag_ << ")";
@@ -97,14 +97,14 @@ namespace Cpx {
             return Complex<Type>( sqr_r*cos(phi_2), sqr_r*sin(phi_2) );
         }
 
-        //! \subsection Unary operators
+        //! Unary operators
         inline friend Complex<Type> operator + (const Complex<Type> &x ) {
             return x;
         }
         inline friend Complex<Type> operator - (const Complex<Type> &x ) {
             return Complex<Type>( -x.real_, -x.imag_ );
         }
-        //! \subsection Binary operators
+        //! Binary operators
         //! Complex x Complex
         inline friend Complex<Type> operator + (const Complex<Type> &x, const Complex<Type> &y ) {
             return Complex<Type>( x.real_ + y.real_, x.imag_ + y.imag_ );

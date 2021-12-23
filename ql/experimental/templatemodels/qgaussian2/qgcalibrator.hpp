@@ -50,14 +50,18 @@ namespace QuantLib {
         // we calibrate to strips of swaption volatilities; maybe also co-terminals can be relevant
         std::vector< ext::shared_ptr<SwapIndex> > swapIndices_;
 
+        // parameters for quasi-Gaussian swaption model
+        Real   modelTimesStepSize_;  // in year fractions
+        bool   useExpectedXY_;
+
+        // constraints for input model parameters
+        Real  sigmaMin_, sigmaMax_, slopeMin_, slopeMax_, etaMin_, etaMax_;
+
         // we want to control calibration by individual weights
         Real sigmaWeight_, slopeWeight_, etaWeight_;
 
         // apply a penalty on differing slope and skew values per factor
         Real penaltySigma_, penaltySlope_;
-
-        // constraints for input model parameters
-        Real  sigmaMin_, sigmaMax_, slopeMin_, slopeMax_, etaMin_, etaMax_;
 
         // transformation (-inf, +inf) -> (a, b)
         static const Real direct(const Real x, const Real a, const Real b) {
@@ -73,10 +77,6 @@ namespace QuantLib {
 
         // we need to know when to stop iterating
         EndCriteria endCriteria_;
-
-        // parameters for quasi-Gaussian swaption model
-        Real   modelTimesStepSize_;  // in year fractions
-        bool   useExpectedXY_;
 
         // we do some logging for degugging purposes
         std::vector< std::string > debugLog_;
@@ -178,6 +178,7 @@ namespace QuantLib {
                       const Real                                            penaltySlope,
                       const EndCriteria&                                    endCriteria );
 
+        virtual ~QGCalibrator() = default;
 
         // a single optimisation run
         Integer calibrate( const std::vector< std::vector< Real > >&  isInput,

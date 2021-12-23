@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file localcorrsurface.hpp
+/*! \file localcorrsurfaceabf.hpp
     \brief Local Correlation surface derived ....
 */
 

@@ -275,6 +275,8 @@ namespace QuantLib {
                 // we do nothing here, all the work is postponed to the (first) call of at
             }
 
+            virtual ~MinMax() = default;
+
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 if ((!regression_) && (z_.size() > 0) && (simulation_)) {  // only in this case we calculate the regression
                     VecA T(simulation_->nPaths(), (ActiveType)0.0);  // the actual trigger used for regression
@@ -329,6 +331,8 @@ namespace QuantLib {
                     // we do nothing here, all the work is postponed to the (first) call of at
                 }
 
+                virtual ~One() = default;
+
                 inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                     if ((!regression_) && (z_.size() > 0) && (simulation_)) {  // only in this case we calculate the regression
                         VecA T(simulation_->nPaths(), (ActiveType)0.0);  // the actual trigger used for regression
@@ -378,6 +382,8 @@ namespace QuantLib {
                     : x_(x), z_(z), simulation_(simulation), maxPolynDegree_(maxPolynDegree), PayoffType(observationTime) {
                     // we do nothing here, all the work is postponed to the (first) call of at
                 }
+
+                virtual ~Sum() = default;
 
                 inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                     if ((!regression_) && (z_.size() > 0) && (simulation_)) {  // only in this case we calculate the regression

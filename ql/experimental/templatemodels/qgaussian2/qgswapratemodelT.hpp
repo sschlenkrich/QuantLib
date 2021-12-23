@@ -439,6 +439,8 @@ namespace QuantLib {
             }
         }
 
+        virtual ~QGSwaprateModelT() = default;
+
         inline const ext::shared_ptr< QuasiGaussianModel2T<DateType, PassiveType, ActiveType> >&  model() { return model_; }
         inline const VecD& floatTimes()    { return swap_.floatTimes;   }
         inline const VecD& floatWeights()  { return swap_.floatWeights; }

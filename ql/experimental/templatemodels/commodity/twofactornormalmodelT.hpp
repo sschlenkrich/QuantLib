@@ -52,6 +52,8 @@ namespace QuantLib {
             // check for valid parameter inputs
         }
     
+        virtual ~TwoFactorNormalModelT() = default;
+
         // analytic formulas in base class
 
         // basic instruments

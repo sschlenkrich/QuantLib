@@ -282,6 +282,8 @@ namespace QuantLib {
                                   std::vector<DateType>        times )
                                   : model_(model), times_(times) { }
 
+            virtual ~MidPointIntegration() = default;
+
             // averaging formula implementations
             virtual ActiveType  averageEta   ( const DateType T) {
                 std::vector<DateType> times(getTimes(T));

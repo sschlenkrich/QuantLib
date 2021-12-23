@@ -48,6 +48,8 @@ namespace QuantLib {
             const std::vector<std::string>&                                                 aliases,
             const std::vector<ext::shared_ptr<QuantLib::LocalVolSurface>>&				    localVolSurfaces);
 
+        virtual ~MultiAssetBSModel() = default;
+
         // dimension of X
         inline virtual size_t size() { return processes_.size(); }
         // stochastic factors of x and z (maybe distinguish if trivially eta=0)

@@ -330,6 +330,8 @@ namespace QuantLib {
                 if (useSwapRateScaling_) rescaleAlphaB();
             }
 
+        virtual ~QuasiGaussianModelT() = default;
+
         // update model parameters (e.g. during calibration)
         void update( const MatA &                lambda,  // volatility
                      const MatA &                b,       // f-weighting
@@ -384,6 +386,10 @@ namespace QuantLib {
             for (size_t k=0; k<d_; ++k) r += x[k];
             return r;
         }
+
+        // the short rate over an integration period
+        // this is required for drift calculation in multi-asset and hybrid models
+        inline virtual ActiveType shortRate(const DateType t0, const DateType dt, const VecA& X0, const VecA& X1) { QL_FAIL("QuasiGaussianModelT: shortRate not implemented"); return 0; }
 
         inline virtual
         ActiveType forwardRate( const DateType t, const DateType T, const VecA& x, const MatA&  y) {

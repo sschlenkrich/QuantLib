@@ -41,6 +41,8 @@ namespace QuantLib {
             const std::vector<std::string>&                                                               aliases,
             const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>&	                              processes);
 
+        virtual ~MultiAssetSLVModel() = default;
+
         // dimension of X -> [x1,x2,....,v1, v2,....]
         virtual size_t size() { return processes_.size()*2; }
         // stochastic factors of x and z 

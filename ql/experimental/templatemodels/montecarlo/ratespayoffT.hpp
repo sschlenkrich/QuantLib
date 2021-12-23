@@ -5,7 +5,7 @@
 
 */
 
-/*! \file templatemcpayoff.hpp
+/*! \file ratespayoffT.hpp
     \brief generic payoff interface for MC simulation
     
 */
@@ -88,6 +88,8 @@ namespace QuantLib {
                 checkForConsistency();
             }
 
+            virtual ~GeneralSwaption() = default;
+
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 ActiveType floatleg = 0.0;
                 ActiveType annuity  = 0.0;
@@ -122,6 +124,8 @@ namespace QuantLib {
                       const ext::shared_ptr<SwapIndex>&     swapIndex,
                       const Handle<YieldTermStructure>&     discYTS    )
                       : GeneralSwaption(fixingTime,swapIndex,discYTS,0.0,0.0), swapIndex_(swapIndex), discYTS_(discYTS) { }
+
+            virtual ~SwapRate() = default;
 
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 ActiveType floatleg = 0.0;
@@ -182,7 +186,8 @@ namespace QuantLib {
                 oneOverDaycount_ = 1.0/daycount;
                 // tenor basis calculation
                 D_ = (1.0 + daycount*liborForward) * discYTS->discount(endDate) / discYTS->discount(startDate);
-            }			        
+            }
+            virtual ~LiborRate() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 return ( p->zeroBond(fixingTime_,startTime_) / p->zeroBond(fixingTime_,endTime_) * D_ - 1.0 ) * oneOverDaycount_;
             }
@@ -202,6 +207,7 @@ namespace QuantLib {
                          const Handle<YieldTermStructure>&     discYTS,
                          const std::string                     alias)
             : LiborRate(fixingTime, iborIndex, discYTS), alias_(alias) {}
+            virtual ~LiborRateCcy() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 return (p->zeroBond(LiborRate::fixingTime_, LiborRate::startTime_, alias_) / 
                         p->zeroBond(LiborRate::fixingTime_, LiborRate::endTime_, alias_) * LiborRate::D_ - 1.0) * 
@@ -250,6 +256,7 @@ namespace QuantLib {
                        const bool                            applyZCBAdjuster = false)
                 : PayoffType(x->observationTime()), x_(x),
                   startTime_(x->observationTime()), payTime_(x->observationTime()), applyZCBAdjuster_(applyZCBAdjuster) {}
+            virtual ~CashFlow() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) { 
                 return (applyZCBAdjuster_) ? (p->zeroBond(payTime_,payTime_)*x_->at(p)) : (x_->at(p))  ;
             }
@@ -314,6 +321,7 @@ namespace QuantLib {
                      const std::vector<DateType>&    payTimes,
                      const std::vector<PassiveType>& payWeights)
                 : PayoffType(obsTime), payTimes_(payTimes), payWeights_(payWeights) { }
+            virtual ~Annuity() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 ActiveType res = 0.0;
                 size_t N = (payTimes_.size()<payWeights_.size()) ? (payTimes_.size()) : (payWeights_.size());
@@ -351,6 +359,7 @@ namespace QuantLib {
                 }
                 // finished
             }
+            virtual ~ModelSwaption() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 ActiveType res = 0.0;
                 if (!isConsistent_) return res;
@@ -389,6 +398,7 @@ namespace QuantLib {
                               : PayoffType(0.0), times_(times), T1_(T1), T2_(T2) {
                 QL_REQUIRE(times_.size()>1,"ModelCorrelation: At least two observation times required.");
             }
+            virtual ~ModelCorrelation() = default;
             // payoff should NOT be discounted
             inline virtual ActiveType discountedAt(const ext::shared_ptr<PathType>& p) { return at(p); }
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
@@ -445,6 +455,7 @@ namespace QuantLib {
                                     : PayoffType(0.0), times_(times), T1_(T1), Term1_(Term1), T2_(T2), Term2_(Term2) {
                 QL_REQUIRE(times_.size()>1,"ModelCorrelation: At least two observation times required.");
             }
+            virtual ~ForwardRateCorrelation() = default;
             // payoff should NOT be discounted
             inline virtual ActiveType discountedAt(const ext::shared_ptr<PathType>& p) { return at(p); }
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {

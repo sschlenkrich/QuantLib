@@ -52,14 +52,14 @@ namespace QuantLib {
         // we calibrate to strips of swaption volatilities; maybe also co-terminals can be relevant
         std::vector< ext::shared_ptr<SwapIndex> > swapIndices_;
 
+        // constraints for input model parameters
+        Real  sigmaMin_, sigmaMax_, slopeMin_, slopeMax_, curveMin_, curveMax_;
+
         // we want to control calibration by individual weights
         Real sigmaWeight_, slopeWeight_, curveWeight_;
 
         // apply a penalty on differing slope and skew values per factor
         Real penaltySigma_, penaltySlope_, penaltyCurve_;
-
-        // constraints for input model parameters
-        Real  sigmaMin_, sigmaMax_, slopeMin_, slopeMax_, curveMin_, curveMax_;
 
         // transformation (-inf, +inf) -> (a, b)
         static const Real direct(const Real x, const Real a, const Real b) {
@@ -190,6 +190,7 @@ namespace QuantLib {
                       const Real                                            penaltyCurve,
                       const EndCriteria&                                    endCriteria );
 
+        virtual ~QGMonteCarloCalibrator() = default;
 
         // a single optimisation run
         Integer calibrate( const std::vector< std::vector< Real > >&  isInput,

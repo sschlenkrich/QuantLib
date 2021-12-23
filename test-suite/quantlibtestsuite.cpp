@@ -525,8 +525,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SwingOptionTest::suite(speed));
     test->add(TwoAssetBarrierOptionTest::suite());
     test->add(TwoAssetCorrelationOptionTest::suite());
-	test->add(VanillaLocalVolModelTest::suite());
-	test->add(VarianceGammaTest::suite());
+    test->add(VanillaLocalVolModelTest::suite());
+    test->add(VarianceGammaTest::suite());
     test->add(VarianceOptionTest::suite());
     test->add(VPPTest::suite(speed));
     test->add(ZabrTest::suite(speed));

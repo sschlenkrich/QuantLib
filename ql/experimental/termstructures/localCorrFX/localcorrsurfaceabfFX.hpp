@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file localcorrsurface.hpp
+/*! \file localcorrsurfaceabfFX.hpp
     \brief Local Correlation surface derived.
 	J. Guyon, 2013, A new Class of local correlation models
 */

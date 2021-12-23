@@ -81,6 +81,8 @@ namespace QuantLib {
             // check for valid parameter inputs
         }
 
+        virtual ~TwoFactorMeanReversionModelT() = default;
+
         // inspectors
         inline const ActiveType sigma(const DateType t) const { return sigma_[TemplateAuxilliaries::idx(times_,t)]; }
         inline const ActiveType eta  (const DateType t) const { return eta_[TemplateAuxilliaries::idx(times_,t)];   }

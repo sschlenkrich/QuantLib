@@ -382,6 +382,12 @@
     <Filter Include="experimental\templatemodels\hybrid">
       <UniqueIdentifier>{db386236-aeb3-422e-86d4-254ea7660c84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\termstructures\localCorrFX">
+      <UniqueIdentifier>{9a2b1c03-d07f-4352-8b23-f84931397fcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="experimental\termstructures\Helper">
+      <UniqueIdentifier>{7de1207e-258b-43ef-b410-ba60d7d7b582}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ql\methods\all.hpp">
@@ -4313,15 +4319,6 @@
     <ClInclude Include="ql\experimental\basismodels\all.hpp">
       <Filter>experimental\basismodels</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\basismodels\swaptioncfs.hpp">
-      <Filter>experimental\basismodels</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\basismodels\tenoroptionletvts.hpp">
-      <Filter>experimental\basismodels</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\basismodels\tenorswaptionvts.hpp">
-      <Filter>experimental\basismodels</Filter>
-    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\meshers\fdmcev1dmesher.hpp">
       <Filter>methods\finitedifferences\meshers</Filter>
     </ClInclude>
@@ -4419,7 +4416,6 @@
     <ClInclude Include="ql\experimental\sabrswaptioncube\sabrswaptioncube.hpp">
       <Filter>experimental\sabrswaptioncube</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\exercise\all.hpp" />
     <ClInclude Include="ql\experimental\basismodels\basisswap.hpp">
       <Filter>experimental\basismodels</Filter>
     </ClInclude>
@@ -4655,6 +4651,82 @@
     <ClInclude Include="ql\interestrate.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
     <ClInclude Include="ql\experimental\termstructures\localcorrtermstructure.hpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\auto_link.hpp" />
+    <ClInclude Include="ql\auto_ptr.hpp" />
+    <ClInclude Include="ql\cashflow.hpp" />
+    <ClInclude Include="ql\config.ansi.hpp" />
+    <ClInclude Include="ql\config.mingw.hpp" />
+    <ClInclude Include="ql\config.msvc.hpp" />
+    <ClInclude Include="ql\config.sun.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\localCorrFX\all.hpp">
+      <Filter>experimental\termstructures\localCorrFX</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\sabrswaptioncube\all.hpp">
+      <Filter>experimental\sabrswaptioncube</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\templatemodels\all.hpp">
+      <Filter>experimental\templatemodels</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\templatemodels\auxilliaries\all.hpp">
+      <Filter>experimental\templatemodels\auxilliaries</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\templatemodels\commodity\all.hpp">
+      <Filter>experimental\templatemodels\commodity</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\templatemodels\hullwhite\all.hpp">
+      <Filter>experimental\templatemodels\hullwhite</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\templatemodels\montecarlo\all.hpp">
+      <Filter>experimental\templatemodels\montecarlo</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\templatemodels\montecarlo\scripting\all.hpp">
+      <Filter>experimental\templatemodels\montecarlo\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\Helper\all.hpp">
+      <Filter>experimental\termstructures\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\templatemodels\multiasset\all.hpp">
+      <Filter>experimental\templatemodels\multiasset</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\templatemodels\vanillalocalvol\all.hpp">
+      <Filter>experimental\templatemodels\vanillalocalvol</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\templatemodels\stochvol\all.hpp">
+      <Filter>experimental\templatemodels\stochvol</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\templatemodels\qgaussian2\all.hpp">
+      <Filter>experimental\templatemodels\qgaussian2</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\templatemodels\qgaussian\all.hpp">
+      <Filter>experimental\templatemodels\qgaussian</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\corrtermstructureStrike.hpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\localCorrFX\CTSlocalInCrossCorrelationFX.hpp">
+      <Filter>experimental\termstructures\localCorrFX</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\localCorrFX\CTSlocalInCrossCovarianceFX.hpp">
+      <Filter>experimental\termstructures\localCorrFX</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\localCorrFX\CTSlocalInCrossNegSkewFX.hpp">
+      <Filter>experimental\termstructures\localCorrFX</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\localCorrFX\CTSlocalInCrossVolatilityFX.hpp">
+      <Filter>experimental\termstructures\localCorrFX</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\Helper\ParticleMethodUtils.hpp">
+      <Filter>experimental\termstructures\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\Helper\KernelInterface.hpp">
+      <Filter>experimental\termstructures\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\localcorrsurfaceabf.hpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\localCorrFX\localcorrsurfaceabfFX.hpp">
       <Filter>experimental\termstructures</Filter>
     </ClInclude>
   </ItemGroup>
@@ -7277,15 +7349,6 @@
     <ClCompile Include="ql\time\daycounters\actual365fixed.cpp">
       <Filter>time\daycounters</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\basismodels\swaptioncfs.cpp">
-      <Filter>experimental\basismodels</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\basismodels\tenoroptionletvts.cpp">
-      <Filter>experimental\basismodels</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\basismodels\tenorswaptionvts.cpp">
-      <Filter>experimental\basismodels</Filter>
-    </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\meshers\fdmcev1dmesher.cpp">
       <Filter>methods\finitedifferences\meshers</Filter>
     </ClCompile>
@@ -7367,12 +7430,6 @@
     <ClCompile Include="ql\pricingengines\bond\riskybondengine.cpp" />
     <ClCompile Include="ql\experimental\sabrswaptioncube\sabrswaptioncube.cpp">
       <Filter>experimental\sabrswaptioncube</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\cashflows\cpicoupon.cpp">
-      <Filter>cashflows</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\cashflows\cpicouponpricer.cpp">
-      <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\basismodels\basisswap.cpp">
       <Filter>experimental\basismodels</Filter>
@@ -7461,6 +7518,33 @@
     <ClCompile Include="ql\buildinfo.cpp" />
     <ClCompile Include="ql\interestrate.cpp" />
     <ClCompile Include="ql\experimental\termstructures\localcorrtermstructure.cpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\corrtermstructureStrike.cpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\localCorrFX\CTSlocalInCrossCorrelationFX.cpp">
+      <Filter>experimental\termstructures\localCorrFX</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\localCorrFX\CTSlocalInCrossCovarianceFX.cpp">
+      <Filter>experimental\termstructures\localCorrFX</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\localCorrFX\CTSlocalInCrossNegSkewFX.cpp">
+      <Filter>experimental\termstructures\localCorrFX</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\localCorrFX\CTSlocalInCrossVolatilityFX.cpp">
+      <Filter>experimental\termstructures\localCorrFX</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\templatemodels\hybrid\hybridmodels.cpp">
+      <Filter>experimental\templatemodels\hybrid</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\Helper\ParticleMethodUtils.cpp">
+      <Filter>experimental\termstructures\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\localcorrsurfaceabf.cpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\localCorrFX\localcorrsurfaceabfFX.cpp">
       <Filter>experimental\termstructures</Filter>
     </ClCompile>
   </ItemGroup>

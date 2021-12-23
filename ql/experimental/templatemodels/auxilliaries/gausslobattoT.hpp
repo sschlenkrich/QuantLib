@@ -23,10 +23,10 @@ namespace TemplateAuxilliaries {
         //! local types
         typedef double Real;
         //! attributes
-        mutable Type absAccuracy_;
-        mutable Type absError_;
-        mutable Type relAccuracy_;
         mutable size_t maxEvaluations_;
+        mutable Type absAccuracy_;
+        mutable Type relAccuracy_;
+        mutable Type absError_;
         mutable size_t evaluations_;
         const bool useConvergenceEstimate_;
         //! constants
@@ -41,7 +41,7 @@ namespace TemplateAuxilliaries {
                       Type relAccuracy = 0,
                       bool useConvergenceEstimate = true )
             : maxEvaluations_(maxEvaluations), absAccuracy_(absAccuracy), relAccuracy_(relAccuracy),
-              useConvergenceEstimate_(useConvergenceEstimate), absError_(0), evaluations_(0) {}
+              absError_(0), evaluations_(0), useConvergenceEstimate_(useConvergenceEstimate) {}
         //! inspectors
         Type absoluteAccuracy() const { return absAccuracy_;      }
         Type absoluteError()    const { return absError_;         }

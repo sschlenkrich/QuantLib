@@ -40,6 +40,8 @@ namespace QuantLib {
             const std::vector<ext::shared_ptr<QuantLib::LocalVolSurface>>&				                  localVolSurfaces,
             const Handle<LocalCorrTermStructure>&											              localCorrTermStructure);
 
+        virtual ~LocalCorrelationBSModel() = default;
+
         virtual void evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1);
     };
 

@@ -5,7 +5,7 @@
 
 */
 
-/*! \file templatemcsimulation.hpp
+/*! \file mcsimulationT.hpp
     \brief simulate and store paths of
 
     Process dX(t) = a(t,X) dt + b(t,X) dW
@@ -64,12 +64,12 @@ namespace QuantLib {
         VecD simTimes_;
         // time grid for process observation, subset of simTimes (store state at obsTimes_)
         VecD obsTimes_;
-        // allow time interpolation on path
-        bool timeInterpolation_;
-
         // Monte Carlo properties
         BigNatural  seed_;
         bool        richardsonExtrapolation_;
+
+        // allow time interpolation on path
+        bool timeInterpolation_;
 
         // we may precompute and store the Brownian increments
         bool storeBrownians_;

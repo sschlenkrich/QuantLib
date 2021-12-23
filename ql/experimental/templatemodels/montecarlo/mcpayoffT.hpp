@@ -5,7 +5,7 @@
 
 */
 
-/*! \file templatemcpayoff.hpp
+/*! \file mcpayoffT.hpp
     \brief generic payoff interface for MC simulation
     
 */
@@ -130,7 +130,8 @@ namespace QuantLib {
             ext::shared_ptr<PayoffType> x_;
         public:
             Clone(const ext::shared_ptr<PayoffType>&   x,
-                  const DateType                        observationTime) : PayoffType(observationTime), x_(x->at(observationTime)) {}
+                  const DateType                       observationTime) : PayoffType(observationTime), x_(x->at(observationTime)) {}
+            virtual ~Clone() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) { return x_->at(p); }
             inline virtual ext::shared_ptr<PayoffType> at(const DateType t) { return ext::shared_ptr<PayoffType>(new Clone(x_, t)); }
             inline virtual std::set<DateType> observationTimes() { return x_->observationTimes(); }
@@ -142,6 +143,7 @@ namespace QuantLib {
             ActiveType amount_;
         public:
             FixedAmount(const ActiveType amount) : PayoffType(0.0), amount_(amount) {}
+            virtual ~FixedAmount() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) { return amount_; }
             inline virtual ext::shared_ptr<PayoffType> at(const DateType t) { return ext::shared_ptr<PayoffType>(new FixedAmount(amount_)); }
         };
@@ -154,6 +156,7 @@ namespace QuantLib {
             Pay(const ext::shared_ptr<PayoffType>&   x,
                 const DateType                        payTime)
                 : PayoffType(payTime), x_(x) {}
+            virtual ~Pay() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) { return x_->at(p); }
             inline virtual ext::shared_ptr<PayoffType> at(const DateType t) { return ext::shared_ptr<PayoffType>(new Pay(x_->at(t), PayoffType::observationTime())); }
             inline virtual std::set<DateType> observationTimes() { return PayoffType::unionTimes(PayoffType::observationTimes(), x_->observationTimes()); }
@@ -165,6 +168,7 @@ namespace QuantLib {
             DateType payTime_;
         public:
             Cash(DateType obsTime, DateType payTime) : PayoffType(obsTime), payTime_(payTime) { }
+            virtual ~Cash() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 //if (payTime_<=observationTime()) return (ActiveType)1.0;
                 return p->zeroBond(PayoffType::observationTime(), payTime_);  // catch any exception in path, simulation or model
@@ -181,6 +185,7 @@ namespace QuantLib {
         public:
             ZeroBond(DateType obsTime, DateType payTime, const std::string alias)
                 : PayoffType(obsTime), payTime_(payTime), alias_(alias) { }
+            virtual ~ZeroBond() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 //if (payTime_<=observationTime()) return (ActiveType)1.0;
                 return p->zeroBond(PayoffType::observationTime(), payTime_, alias_);  // catch any exception in path, simulation or model
@@ -200,6 +205,7 @@ namespace QuantLib {
                 PayoffType(obsTime), alias_(alias) {
                 addFixings(fixings);
             }
+            virtual ~Asset() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 if ((PayoffType::observationTime() < 0.0) && (history_.size() > 0) && (history_[0].first <= PayoffType::observationTime()))
                     return fixedAssetValue_;  // past values are fixed
@@ -250,6 +256,7 @@ namespace QuantLib {
                 QL_REQUIRE(tStart_ < tEnd_, "AssetBarrierNoHit: tStart < tEnd required.");
                 QL_REQUIRE(downBarrier_ < upBarrier_, "AssetBarrierNoHit: downBarrier < upBarrier required.");
             }
+            virtual ~AssetBarrierNoHit() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) { return p->assetBarrierNoHit(tStart_, tEnd_, downBarrier_, upBarrier_, downOrUpOrBoth_, alias_); }
             inline virtual std::set<DateType> observationTimes() { std::set<DateType> s; s.insert(tStart_); s.insert(tEnd_); return s; }
         };
@@ -268,6 +275,7 @@ namespace QuantLib {
                 ActiveType V = callOrPut_ * (S - strike_);
                 return (V > 0.0) ? (V) : ((ActiveType)0.0);
             }
+            virtual ~VanillaOption() = default;
         };
 
         // cache result in case it is requested repeatedly
@@ -285,6 +293,7 @@ namespace QuantLib {
                 }
                 return lastPayoff_;
             }
+            virtual ~Cache() = default;
             inline virtual ext::shared_ptr<PayoffType> at(const DateType t) { return ext::shared_ptr<PayoffType>(new Cache(x_->at(t))); }
             inline virtual std::set<DateType> observationTimes() { return x_->observationTimes(); }
         };
@@ -301,6 +310,7 @@ namespace QuantLib {
                 const ext::shared_ptr<PayoffType>&   x,
                 const ext::shared_ptr<PayoffType>&   y)
                 : PayoffType(0.0), a_(a), x_(x), y_(y) {}
+            virtual ~Axpy() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 ActiveType res = a_ * x_->at(p);
                 if (y_) res += y_->at(p);
@@ -320,6 +330,7 @@ namespace QuantLib {
             Mult(const ext::shared_ptr<PayoffType>&   x,
                 const ext::shared_ptr<PayoffType>&   y)
                 : PayoffType(0.0), x_(x), y_(y) {}
+            virtual ~Mult() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 return x_->at(p) * y_->at(p);
             }
@@ -335,6 +346,7 @@ namespace QuantLib {
             Division(const ext::shared_ptr<PayoffType>&   x,
                 const ext::shared_ptr<PayoffType>&   y)
                 : PayoffType(0.0), x_(x), y_(y) {}
+            virtual ~Division() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 return x_->at(p) / y_->at(p);
             }
@@ -350,6 +362,7 @@ namespace QuantLib {
             Max(const ext::shared_ptr<PayoffType>&   x,
                 const ext::shared_ptr<PayoffType>&   y)
                 : PayoffType(0.0), x_(x), y_(y) {}
+            virtual ~Max() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 return (x_->at(p) > y_->at(p)) ? (x_->at(p)) : (y_->at(p));
             }
@@ -365,6 +378,7 @@ namespace QuantLib {
             Min(const ext::shared_ptr<PayoffType>&   x,
                 const ext::shared_ptr<PayoffType>&   y)
                 : PayoffType(0.0), x_(x), y_(y) {}
+            virtual ~Min() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 return (x_->at(p) < y_->at(p)) ? (x_->at(p)) : (y_->at(p));
             }
@@ -378,6 +392,7 @@ namespace QuantLib {
             ext::shared_ptr<PayoffType> x_;
         public:
             Exponential(const ext::shared_ptr<PayoffType>&   x) : PayoffType(0.0), x_(x) {}
+            virtual ~Exponential() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 return exp(x_->at(p));
             }
@@ -391,6 +406,7 @@ namespace QuantLib {
             ext::shared_ptr<PayoffType> x_;
         public:
             Logarithm(const ext::shared_ptr<PayoffType>&   x) : PayoffType(0.0), x_(x) {}
+            virtual ~Logarithm() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 return log(x_->at(p));
             }
@@ -404,6 +420,7 @@ namespace QuantLib {
             ext::shared_ptr<PayoffType> x_;
         public:
             Squareroot(const ext::shared_ptr<PayoffType>&   x) : PayoffType(0.0), x_(x) {}
+            virtual ~Squareroot() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 return sqrt(x_->at(p));
             }
@@ -441,6 +458,7 @@ namespace QuantLib {
                 if (op == "&&") op_ = &and_;
                 if (op == "||") op_ = &or_;
             }
+            virtual ~Logical() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 if ((*op_)(x_->at(p), y_->at(p))) return (ActiveType)(1.0);
                 else return (ActiveType)(0.0);
@@ -455,6 +473,7 @@ namespace QuantLib {
             IfThenElse(const ext::shared_ptr<PayoffType>&   x,
                 const ext::shared_ptr<PayoffType>&   y,
                 const ext::shared_ptr<PayoffType>&   z) : PayoffType(0.0), x_(x), y_(y), z_(z) {}
+            virtual ~IfThenElse() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 if (x_->at(p) != ((ActiveType)0.0)) return y_->at(p);
                 return z_->at(p);
@@ -483,6 +502,7 @@ namespace QuantLib {
                 QL_REQUIRE(underlyings_.size() > 0, "Basket underlyings required");
                 QL_REQUIRE(underlyings_.size() == weights_.size(), "Basket dimension mismatch");
             }
+            virtual ~Basket() = default;
             inline virtual ActiveType at(const ext::shared_ptr<PathType>& p) {
                 if (rainbow_) std::sort(underlyings_.begin(), underlyings_.end(), Descending(p));
                 ActiveType res = 0;

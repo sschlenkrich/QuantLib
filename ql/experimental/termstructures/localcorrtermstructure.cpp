@@ -22,8 +22,9 @@
 
 namespace QuantLib {
 
-    LocalCorrTermStructure::LocalCorrTermStructure(const std::vector<ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>>& processes, 
-                                                   const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&								   processToCal)
+    LocalCorrTermStructure::LocalCorrTermStructure(
+        const std::vector<ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>>&  processes, 
+        const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&               processToCal)
     : CorrelationTermStructureStrike(processes[0]->blackVolatility()->referenceDate(), 
         processes[0]->blackVolatility()->calendar(), 
         processes[0]->blackVolatility()->businessDayConvention(), 
@@ -43,12 +44,13 @@ namespace QuantLib {
     
     }
 
-    LocalCorrTermStructure::LocalCorrTermStructure(const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>& processes,
-        const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&			   processToCal) 
+    LocalCorrTermStructure::LocalCorrTermStructure(
+        const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>&   processes,
+        const ext::shared_ptr<QuantLib::GeneralizedBlackScholesProcess>&  processToCal) 
         : CorrelationTermStructureStrike(processes[0]->leverageFct()->referenceDate(),
             processes[0]->leverageFct()->calendar(),
             processes[0]->leverageFct()->businessDayConvention(),
-            processes[0]->leverageFct()->dayCounter()), processToCal_(processToCal), processes_(processes) {}
+            processes[0]->leverageFct()->dayCounter()), processes_(processes), processToCal_(processToCal) {}
 
     void LocalCorrTermStructure::localCorr(RealStochasticProcess::MatA& corrMatrix, 
                                                const Date& d,

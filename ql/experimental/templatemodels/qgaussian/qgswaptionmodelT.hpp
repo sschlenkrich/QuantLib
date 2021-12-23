@@ -78,14 +78,15 @@ namespace QuantLib {
         // reference to QG modelspecs
         ext::shared_ptr< QuasiGaussianModelT<DateType,PassiveType,ActiveType> >   model_;
 
-        // reference to averaging algorithm
-        ext::shared_ptr< MidPointIntegration >  mp_;
-
         // vanilla swap specs for this model
         Swap               swap_;
 
         // time grid for barX, barY evaluation
-        VecD               times_;   
+        VecD               times_;
+
+        // reference to averaging algorithm
+        ext::shared_ptr< MidPointIntegration >  mp_;
+
         std::vector<VecA>  barX_;     // E^A [ x(t) ] 
         std::vector<MatA>  barY_;     // E^A [ y(t) ] 
         VecA               x0_;       // = VecA(model_->factors()-1,0.0);
@@ -486,7 +487,7 @@ namespace QuantLib {
             if (useExpectedXY) evaluateExpXY();
         }
 
-        virtual ~QGSwaptionModelT() {}
+        virtual ~QGSwaptionModelT() = default;
 
         inline void evaluateExpXY() {
             // first we need y as it inputs to x

@@ -17,12 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fcfwdratehelpers.hpp
+/*! \file fxfwdratehelper.hpp
     \brief FX-Points rate helpers
 */
 
-#ifndef quantlib_fxfwdratehelpers_hpp
-#define quantlib_fxfwdratehelpers_hpp
+#ifndef quantlib_fxfwdratehelper_hpp
+#define quantlib_fxfwdratehelper_hpp
 
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/time/calendar.hpp>
@@ -94,8 +94,10 @@ namespace QuantLib {
         BusinessDayConvention spotLagConvention_;
         Period swapTerm_;
         Real   unit_;
+
         Handle<YieldTermStructure> baseCcyDiscTermStructureHandle_;
         Handle<YieldTermStructure> cntrCcyDiscTermStructureHandle_;
+
         //Bootstrap direction, i.e. which curve is going to be bootstrapped
         BootstrapType bootstrapBaseOrCounter_;
 

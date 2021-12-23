@@ -56,7 +56,7 @@ namespace QuantLib {
 
         //! initialize with a fixed reference date
         //@}
-        virtual ~LocalCorrTermStructure() {}
+        virtual ~LocalCorrTermStructure() = default;
         //! \name Local correlation
         //@{
         void localCorr(RealStochasticProcess::MatA& correlationMatrix, 

@@ -39,6 +39,8 @@ namespace QuantLib {
             const size_t                                           debugLevel = 1)
             : QGLocalvolModel(termStructure, volTS, chi, theta, eta, swapIndex, times, std::vector<Real>(), calcStochVolAdjustment, kernelWidth, nPaths, seed, debugLevel), nStrikes_(nStrikes), svKernelScaling_(svKernelScaling) {}
         // do the actual calculation
+
+        virtual ~QGLSVModel() = default;
         
         virtual void simulateAndCalibrate();
     };

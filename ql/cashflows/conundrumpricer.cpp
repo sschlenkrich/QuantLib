@@ -534,8 +534,8 @@ namespace QuantLib {
         Real fwprice  = bachelierBlackFormula(optionType,strike,swapRateValue_,stdev);
 		// E[ (S(T)-S(t))h(S(T)) ]
 		CumulativeNormalDistribution cumulativeOfNormal;
-		Real d       = optionType * (swapRateValue_ - strike) / stdev;
-		Real Phi     = optionType * cumulativeOfNormal(d);
+		Real d       = Integer(optionType) * (swapRateValue_ - strike) / stdev;
+		Real Phi     = Integer(optionType) * cumulativeOfNormal(d);
 		// convexity adjustment...
         Real firstDerivativeOfGAtForwardValue = gFunction_->firstDerivative( swapRateValue_);
 		Real CA      = firstDerivativeOfGAtForwardValue * annuity_ / discount_ * variance * Phi;

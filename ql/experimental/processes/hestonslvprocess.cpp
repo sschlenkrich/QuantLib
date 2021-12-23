@@ -136,6 +136,6 @@ namespace QuantLib {
     }
 
 	bool HestonSLVProcess::isLocalVolProcess() const {
-		return abs(kappa_) < QL_EPSILON && abs(sigma_) < QL_EPSILON && abs(v0_ - 1) < QL_EPSILON;
+		return fabs(kappa_) < QL_EPSILON && fabs(sigma_) < QL_EPSILON && fabs(v0_ - 1) < QL_EPSILON;
 	}
 }

@@ -5,7 +5,7 @@
 
 */
 
-/*! \file credithybridmodelT.hpp
+/*! \file spreadmodelT.hpp
     \brief (MC) pricing for multi-asset model with stochastic interest rates and stochastic credit spread
                
 */

@@ -139,7 +139,7 @@ namespace MinimAD {
 #endif		
         }
 
-        //! \section Modifiers of the graph representation that add and remove edges
+        //! Modifiers of the graph representation that add and remove edges
         //! method addResult is called only by method addArgument to ensure symetric references
         inline void addResult(const VARIABLE_TYPE &result, DerivativeType *p_derivative) {
 #ifdef STATIC_REFERENCES
@@ -354,7 +354,7 @@ namespace MinimAD {
 
     public:
         static double eliminations;
-        //! \section Constructors for Variable objects
+        //! Constructors for Variable objects
         //! Internal unary constructor
         Variable( const ValueType&                            value,
                   const VARIABLE_TYPE&                        argument,
@@ -399,7 +399,7 @@ namespace MinimAD {
             MSG( "DR: " << this )
             eliminate();
         }	
-        //! \section Inspectors	
+        //! Inspectors
         //! Returning a reference to the value component
         inline const ValueType& value() const { return value_; }
         inline const ValueType& val() const { return value_; }	
@@ -433,7 +433,7 @@ namespace MinimAD {
             */
             return zeroDerivative_;
         }	
-        //! \section Assignment operators	
+        //! Assignment operators
         //! Variable = Variable assignment
         inline VARIABLE_TYPE& operator = (const VARIABLE_TYPE& argument) {
             MSG( "Variable Active Assignment: " << this << " " << &argument )
@@ -452,53 +452,53 @@ namespace MinimAD {
             this->value_ = argument;
             return *this;
         }
-        //! \section Arithmetic-Assignment operators
-        //! \subsection Variable (OP)= Variable
+        //! Arithmetic-Assignment operators
+        //! Variable (OP)= Variable
         inline VARIABLE_TYPE& operator += (const VARIABLE_TYPE &x) { return *this = *this + x; }
         inline VARIABLE_TYPE& operator -= (const VARIABLE_TYPE &x) { return *this = *this - x; }
         inline VARIABLE_TYPE& operator *= (const VARIABLE_TYPE &x) { return *this = *this * x; }
         inline VARIABLE_TYPE& operator /= (const VARIABLE_TYPE &x) { return *this = *this / x; }
-        //! \subsection Variable (OP)= ValueType
+        //! Variable (OP)= ValueType
         inline VARIABLE_TYPE& operator += (const ValueType &x) { return *this = *this + x; }
         inline VARIABLE_TYPE& operator -= (const ValueType &x) { return *this = *this - x; }
         inline VARIABLE_TYPE& operator *= (const ValueType &x) { return *this = *this * x; }
         inline VARIABLE_TYPE& operator /= (const ValueType &x) { return *this = *this / x; }        
-        //! \section Relational operators
-        //! \subsection Variable x Variable
+        //! Relational operators
+        //! Variable x Variable
         inline bool operator >  (const VARIABLE_TYPE &x) { return this->value_ >  x.value_; }
         inline bool operator >= (const VARIABLE_TYPE &x) { return this->value_ >= x.value_; }
         inline bool operator <  (const VARIABLE_TYPE &x) { return this->value_ <  x.value_; }
         inline bool operator <= (const VARIABLE_TYPE &x) { return this->value_ <= x.value_; }
         inline bool operator != (const VARIABLE_TYPE &x) { return this->value_ != x.value_; }
         inline bool operator == (const VARIABLE_TYPE &x) { return this->value_ == x.value_; }
-        //! \subsection Variable x Variable (for left const operands)
+        //! Variable x Variable (for left const operands)
         inline friend bool operator >  (const VARIABLE_TYPE &x, const VARIABLE_TYPE &y) { return x.value_ >  y.value_; }
         inline friend bool operator >= (const VARIABLE_TYPE &x, const VARIABLE_TYPE &y) { return x.value_ >= y.value_; }
         inline friend bool operator <  (const VARIABLE_TYPE &x, const VARIABLE_TYPE &y) { return x.value_ <  y.value_; }
         inline friend bool operator <= (const VARIABLE_TYPE &x, const VARIABLE_TYPE &y) { return x.value_ <= y.value_; }
         inline friend bool operator != (const VARIABLE_TYPE &x, const VARIABLE_TYPE &y) { return x.value_ != y.value_; }
         inline friend bool operator == (const VARIABLE_TYPE &x, const VARIABLE_TYPE &y) { return x.value_ == y.value_; }
-        //! \subsection Variable x ValueType
+        //! Variable x ValueType
         inline bool operator >  (const ValueType &x) { return this->value_ >  x; }
         inline bool operator >= (const ValueType &x) { return this->value_ >= x; }
         inline bool operator <  (const ValueType &x) { return this->value_ <  x; }
         inline bool operator <= (const ValueType &x) { return this->value_ <= x; }
         inline bool operator != (const ValueType &x) { return this->value_ != x; }
         inline bool operator == (const ValueType &x) { return this->value_ == x; }
-        //! \subsection ValueType x Variable
+        //! ValueType x Variable
         inline friend bool operator >  (const ValueType &x, const VARIABLE_TYPE &y) { return x >  y.value_; }
         inline friend bool operator >= (const ValueType &x, const VARIABLE_TYPE &y) { return x >= y.value_; }
         inline friend bool operator <  (const ValueType &x, const VARIABLE_TYPE &y) { return x <  y.value_; }
         inline friend bool operator <= (const ValueType &x, const VARIABLE_TYPE &y) { return x <= y.value_; }
         inline friend bool operator != (const ValueType &x, const VARIABLE_TYPE &y) { return x != y.value_; }
         inline friend bool operator == (const ValueType &x, const VARIABLE_TYPE &y) { return x == y.value_; }
-        //! \section IO steaming
+        //! IO steaming
         //! Apply IO only to the value component
         inline friend std::ostream& operator << (std::ostream &output, const VARIABLE_TYPE &x) {
             return output << x.value_;
         }
-        //! \section Binary arithmetic operators
-        //! \subsection Variable x Variable
+        //! Binary arithmetic operators
+        //! Variable x Variable
         inline VARIABLE_TYPE operator + (const VARIABLE_TYPE &y ) {
             return VARIABLE_TYPE( this->value_ + y.value_, *this, y, (DerivativeType)1, (DerivativeType)1 );
         }
@@ -512,7 +512,7 @@ namespace MinimAD {
             ValueType tmp = this->value_ / y.value_;
             return VARIABLE_TYPE( tmp, *this, y, 1/y.value_, -tmp/y.value_ );
         }
-        //! \subsection Variable x Variable (for left const operands)
+        //! Variable x Variable (for left const operands)
         inline friend VARIABLE_TYPE operator + (const VARIABLE_TYPE &x, const VARIABLE_TYPE &y ) {
             return VARIABLE_TYPE( x.value_ + y.value_, x, y, (DerivativeType)1, (DerivativeType)1 );
         }
@@ -527,7 +527,7 @@ namespace MinimAD {
             return VARIABLE_TYPE( tmp, x, y, 1/y.value_, -tmp/y.value_ );
         }
 
-        //! \subsection Variable x ValueType
+        //! Variable x ValueType
         inline VARIABLE_TYPE operator + (const ValueType &y ) {
             return VARIABLE_TYPE( this->value_ + y, *this, (DerivativeType)1 );
         }
@@ -540,7 +540,7 @@ namespace MinimAD {
         inline VARIABLE_TYPE operator / (const ValueType &y ) {
             return VARIABLE_TYPE( this->value_ / y, *this, 1/y );
         }
-        //! \subsection ValueType x Variable
+        //! ValueType x Variable
         inline friend VARIABLE_TYPE operator + (const ValueType &x, const VARIABLE_TYPE &y ) {
             return VARIABLE_TYPE( x + y.value_, y, (DerivativeType)1 );
         }
@@ -554,14 +554,14 @@ namespace MinimAD {
             ValueType tmp = x / y.value_;
             return VARIABLE_TYPE( tmp, y, -tmp/y.value_ );
         }
-        //! \section Unary arithmetic operators
+        //! Unary arithmetic operators
         inline friend VARIABLE_TYPE operator + (const VARIABLE_TYPE &x) {
             return VARIABLE_TYPE( x.value_, x, (DerivativeType)1 );
         }
         inline friend VARIABLE_TYPE operator - (const VARIABLE_TYPE &x) {
             return VARIABLE_TYPE( -x.value_, x, (DerivativeType)(-1) );
         }
-        //! \section Intrinsic functions
+        //! Intrinsic functions
         inline friend VARIABLE_TYPE fabs(const VARIABLE_TYPE &x) {
             return (x.value_>=0.0) ? x : (-x);
         }
@@ -596,22 +596,21 @@ namespace MinimAD {
             ValueType den = x.value_ * x.value_ + y.value_ * y.value_;
             return VARIABLE_TYPE( atan2(y.value_,x.value_), y, x, x.value_/den, -y.value_/den );
         }
-        //! \section TODO: further intrinsic functions...
     };   // class Variable 
 
-    //! \section definition of static class attributes
+    //! Definition of static class attributes
     TEMPLATE_FUNCT_VARIABLE
     DerivativeType VARIABLE_TYPE::zeroDerivative_(0);
     TEMPLATE_FUNCT_VARIABLE
     double VARIABLE_TYPE::eliminations = 0;
 
-    //! \section double cast
+    //! Double cast
     template <class Type> inline double value        ( Type   x ) { return value(x.value()); }
     template <>           inline double value<double>( double x ) { return x;                }
 
 
-    //! \section Additional double x Variable operators; required for more complex Variable instantiations
-    //! \subsection Variable x double
+    //! Additional double x Variable operators; required for more complex Variable instantiations
+    //! Variable x double
     TEMPLATE_FUNCT_VARIABLE
     inline VARIABLE_TYPE operator + (const double &x, const VARIABLE_TYPE &y ) {
         return VARIABLE_TYPE( x + y.value(), y, (DerivativeType)1 );
@@ -629,7 +628,7 @@ namespace MinimAD {
         ValueType tmp = x / y.value();
         return VARIABLE_TYPE( tmp, y, -tmp/y.value() );
     }    
-    //! \subsection double x Variable
+    //! Double x Variable
     TEMPLATE_FUNCT_VARIABLE
     inline VARIABLE_TYPE operator + (const VARIABLE_TYPE &x, const double &y ) {
         return VARIABLE_TYPE( x.value() + y, x, (DerivativeType)1 );

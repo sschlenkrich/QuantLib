@@ -52,7 +52,9 @@ namespace QuantLib {
         : TwoFactorMeanReversionModelT<DateType,PassiveType,ActiveType>(futureTS,times,sigma,eta,a,b,rho) {
             // check for valid parameter inputs
         }
-    
+
+        virtual ~TwoFactorLognormalModelT() = default;
+
         // analytic formulas in base class
 
         inline virtual const ActiveType phi(const DateType t) const {

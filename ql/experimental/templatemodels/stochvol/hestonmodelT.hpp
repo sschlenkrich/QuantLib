@@ -93,8 +93,8 @@ namespace QuantLib {
         // f_1/2( u(x) ) / ( x c_inf ), u(x) = -ln(x) / c_inf
         class IntegrandTransformation  {
         protected:
+            boost::function<ActiveType(ActiveType)>  f_12_;
             ActiveType                                c_inf_;
-            boost::function<ActiveType (ActiveType)>  f_12_;
         public:
             IntegrandTransformation(  const ActiveType& c_inf, const boost::function<ActiveType (ActiveType)>& f_12)
                 : f_12_(f_12), c_inf_(c_inf) { }
@@ -108,10 +108,10 @@ namespace QuantLib {
         // key issue of Heston model, implements f_1/2 (phi) according to Gatherals approach
         class IntegrandGatheral {
         protected:
-            Size j_;                                 // evaluate f_1 or f_2
             const ActiveType kappa_, theta_, sigma_, v0_;  // copy of model parameters
             // helper variables
             const DateType   term_;
+            Size j_;                                 // evaluate f_1 or f_2
             const ActiveType x_, sx_, dd_;
             const ActiveType sigma2_, rsigma_;
             const ActiveType t0_;

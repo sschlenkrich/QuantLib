@@ -215,7 +215,7 @@ namespace QuantLib {
         size_t idx=0;
         for (size_t i=0; i<calibSwaptions_.size(); ++i) {
             for (size_t j=0; j<calibSwaptions_[i].size(); ++j) {
-                Real atmCall, highCall, lowPut;
+                Real atmCall=0.0, highCall=0.0, lowPut=0.0;
                 if ((isOutput_[i][j] > 0.0) ||
                     (isOutput_[i][j + calibSwaptions_[i].size()] > 0.0) ||
                     (isOutput_[i][j + 2 * calibSwaptions_[i].size()] > 0.0)) {

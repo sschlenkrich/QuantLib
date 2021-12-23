@@ -290,6 +290,8 @@ namespace QuantLib {
                 for (size_t k = 0; k < d_; ++k) f0_[k] = termStructure_->forwardRate(delta_[k], delta_[k], Continuous);
             }
 
+        virtual ~QuasiGaussianModel2T() = default;
+
         // helpers
 
         inline size_t maxidx( const size_t i ) { return (i<d_) ? i : d_-1; }

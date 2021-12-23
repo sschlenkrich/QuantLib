@@ -34,8 +34,8 @@ namespace QuantLib {
             std::vector< std::vector<Real> >(1, std::vector<Real>(1, 1.0)),             // Gamma
             0.1                                                                         // theta
         ),
-        volTS_(volTS), swapIndex_(swapIndex), stdDevGrid_(stdDevGrid), nPaths_(nPaths), seed_(seed), debugLevel_(debugLevel),
-        calcStochVolAdjustment_(false), kernelWidth_(0.0) {
+        volTS_(volTS), swapIndex_(swapIndex), stdDevGrid_(stdDevGrid), nPaths_(nPaths), seed_(seed),
+        calcStochVolAdjustment_(false), kernelWidth_(0.0), debugLevel_(debugLevel) {
         // we can't calibrate here because *this needs to be assigned to shared pointer first
     }
 
@@ -63,8 +63,8 @@ namespace QuantLib {
             std::vector< std::vector<Real> >(1, std::vector<Real>(1, 1.0)),             // Gamma
             theta                                                                       // theta
         ),
-        volTS_(volTS), swapIndex_(swapIndex), stdDevGrid_(stdDevGrid), calcStochVolAdjustment_(calcStochVolAdjustment),
-        kernelWidth_(kernelWidth), nPaths_(nPaths), seed_(seed), debugLevel_(debugLevel) {
+        volTS_(volTS), swapIndex_(swapIndex), stdDevGrid_(stdDevGrid), nPaths_(nPaths), seed_(seed),
+        calcStochVolAdjustment_(calcStochVolAdjustment), kernelWidth_(kernelWidth), debugLevel_(debugLevel) {
         // we can't calibrate here because *this needs to be assigned to shared pointer first
     }
 
@@ -205,13 +205,13 @@ namespace QuantLib {
                 Real vanVol = 0.0;
                 try {
                     callVol = bachelierBlackFormulaImpliedVol(Option::Call, strikeGrid[k], swapRate, exerciseTime, testCall);
-                } catch (std::exception e) {}
+                } catch (std::exception const& e) {}
                 try {
                     putVol = bachelierBlackFormulaImpliedVol(Option::Put, strikeGrid[k], swapRate, exerciseTime, testPut);
-                } catch (std::exception e) {}
+                } catch (std::exception const& e) {}
                 try {
                     vanVol = bachelierBlackFormulaImpliedVol(Option::Call, strikeGrid[k], swapRate, exerciseTime, call);
-                } catch (std::exception e) {}
+                } catch (std::exception const& e) {}
                 std::vector<Real> resultRow = { (double)exerciseDates[i].serialNumber(),
                                                 (double)fixingDate.serialNumber(),
                                                 exerciseTime,
@@ -445,7 +445,7 @@ namespace QuantLib {
                 Real vanVol = volTS_->volatility(obsTime, swapIndex_->tenor(), smileStrikeGrid[k], true);
                 debugLog_.push_back("obsTime = " + std::to_string(obsTime) + ", swapRate = " + std::to_string(swapRate) + ", k = " + std::to_string(k) + ", strike = " + std::to_string(smileStrikeGrid[k]) + ", callVol = " + std::to_string(callVol) + ", putVol = " + std::to_string(putVol) + ", vanVol = " + std::to_string(vanVol));
             }
-            catch (std::exception e) {
+            catch (std::exception const& e) {
                 std::string what = e.what();
                 debugLog_.push_back("Error: " + what);
             }

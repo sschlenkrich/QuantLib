@@ -900,9 +900,9 @@ namespace QuantLib {
                                     Real         discount) {
         QL_REQUIRE(stdDev>=0.0,   "stdDev (" << stdDev << ") must be non-negative");
         QL_REQUIRE(discount>0.0,  "discount (" << discount << ") must be positive");
-        Real d = (forward-strike)*optionType, h = d/stdDev;
+        Real d = (forward-strike)*Integer(optionType), h = d/stdDev;
         CumulativeNormalDistribution phi;
-		return optionType*discount*phi(h);
+		return Integer(optionType)*discount*phi(h);
 	}
 
     Real bachelierBlackFormulaGamma(Option::Type optionType,
@@ -912,7 +912,7 @@ namespace QuantLib {
                                     Real         discount) {
         QL_REQUIRE(stdDev>=0.0,   "stdDev (" << stdDev << ") must be non-negative");
         QL_REQUIRE(discount>0.0,  "discount (" << discount << ") must be positive");
-        Real d = (forward-strike)*optionType, h = d/stdDev;
+        Real d = (forward-strike)*Integer(optionType), h = d/stdDev;
         CumulativeNormalDistribution phi;
 		return discount/stdDev*phi.derivative(h);
 	}

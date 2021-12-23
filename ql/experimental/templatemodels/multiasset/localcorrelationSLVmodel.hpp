@@ -37,6 +37,8 @@ namespace QuantLib {
                           const std::vector<ext::shared_ptr<QuantLib::HestonSLVProcess>>&				  processes,
                           const Handle<LocalCorrTermStructure>&											  localCorrTermStructureAsset);
         
+        virtual ~LocalCorrelationSLVModel() = default;
+
         virtual void evolve(const QuantLib::Time t0, const VecA& X0, const QuantLib::Time dt, const VecD& dW, VecA& X1);
     };
 

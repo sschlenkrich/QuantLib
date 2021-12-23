@@ -43,12 +43,6 @@ namespace QuantLib {
         // calibration target volatilities
         Handle<SwaptionVolatilityStructure> volTS_;
         
-        // simulation derived during calibration; we need to store nPaths_ and seed_ separately
-        // because we can't initialise simulation within constructor
-        size_t     nPaths_;
-        BigNatural seed_;
-        ext::shared_ptr<MCSimulation> simulation_;
-        
         // we calibrate to a strip of swaption volatilities; maybe also co-terminals can be relevant
         ext::shared_ptr<SwapIndex> swapIndex_;
 
@@ -56,11 +50,6 @@ namespace QuantLib {
         std::vector< Interpolation > sigmaS_;
         std::vector < std::vector<Real> > strikeGrid_;  // we need to separately store data for interpolation
         std::vector < std::vector<Real> > locvolGrid_;
-
-        // stochastic volatility uses kernel-based conditional expectation evaluation
-        bool calcStochVolAdjustment_;  // switch adjustment on/off independent of vol-of-vol marking
-        Real kernelWidth_; // kernel width for conditional expectation calculation in terms of stdDevs
-        inline static Real kernel(const Real u) { return ((fabs(u) < 1.0) ? (1.0 - fabs(u)) : (0.0)); }
 
         // we have three modes for sigma_x calculation (during and after calibration phase)
         enum { 
@@ -71,6 +60,25 @@ namespace QuantLib {
 
         // we specify the local vol grid in terms of standard deviations
         std::vector<Real> stdDevGrid_;
+
+        // simulation derived during calibration; we need to store nPaths_ and seed_ separately
+        // because we can't initialise simulation within constructor
+        size_t     nPaths_;
+        BigNatural seed_;
+        ext::shared_ptr<MCSimulation> simulation_;
+    
+        // stochastic volatility uses kernel-based conditional expectation evaluation
+        bool calcStochVolAdjustment_;  // switch adjustment on/off independent of vol-of-vol marking
+        Real kernelWidth_; // kernel width for conditional expectation calculation in terms of stdDevs
+        inline static Real kernel(const Real u) { return ((fabs(u) < 1.0) ? (1.0 - fabs(u)) : (0.0)); }
+
+        // debugging, warning and errors
+        std::vector<std::string> debugLog_;
+        size_t debugLevel_; // 0 ... no debugging
+                            // 1 ... debugging for time steps
+                            // 2 ... debugging for strikes
+                            // 3 ... warnings for simulation
+                            // 4 ... debugging for each path (not recommended)
 
         // we need to cache the swap rate model and observation time for the current time step
         ext::shared_ptr<QGSwaprateModel> swapRateModel_;
@@ -156,14 +164,6 @@ namespace QuantLib {
                                    const Real               swapRate,
                                    const std::vector<Real>& smileStrikeGrid );
 
-        // debugging, warning and errors
-        std::vector<std::string> debugLog_;
-        size_t debugLevel_; // 0 ... no debugging
-                            // 1 ... debugging for time steps
-                            // 2 ... debugging for strikes
-                            // 3 ... warnings for simulation
-                            // 4 ... debugging for each path (not recommended)
-
     public:
         // pure local volatility
         QGLocalvolModel( const Handle<YieldTermStructure>&                      termStructure,
@@ -190,6 +190,8 @@ namespace QuantLib {
                         const size_t                                           nPaths,
                         const BigNatural                                       seed = 1234,
                         const size_t                                           debugLevel = 1);
+
+        virtual ~QGLocalvolModel() = default;
 
         // do the actual calculation
         virtual void simulateAndCalibrate() = 0;
@@ -225,6 +227,9 @@ namespace QuantLib {
             const BigNatural                                       seed = 1234,
             const size_t                                           debugLevel = 1)
             : QGLocalvolModel(termStructure, volTS, chi, theta, eta, swapIndex, times, stdDevGrid, calcStochVolAdjustment, kernelWidth, nPaths, seed, debugLevel) {}
+
+        virtual ~QGLocalvolModelBackwardFlavor() = default;
+
         // do the actual calculation
         virtual void simulateAndCalibrate();
     };
@@ -247,6 +252,9 @@ namespace QuantLib {
             const BigNatural                                       seed = 1234,
             const size_t                                           debugLevel = 1)
             : QGLocalvolModel(termStructure, volTS, chi, theta, eta, swapIndex, times, stdDevGrid, calcStochVolAdjustment, kernelWidth, nPaths, seed, debugLevel) {}
+
+        virtual ~QGLocalvolModelForwardFlavor() = default;
+
         // do the actual calculation
         virtual void simulateAndCalibrate();
     };
@@ -265,6 +273,9 @@ namespace QuantLib {
             const BigNatural                                       seed = 1234,
             const size_t                                           debugLevel = 1)
             : QGLocalvolModel(termStructure, volTS, chi, swapIndex, times, stdDevGrid, nPaths, seed, debugLevel) {}
+
+        virtual ~QGLocalvolModelAnalyticFlavor() = default;
+
         // do the actual calculation
         virtual void simulateAndCalibrate();
     };
@@ -287,6 +298,9 @@ namespace QuantLib {
             const BigNatural                                       seed = 1234,
             const size_t                                           debugLevel = 1)
             : QGLocalvolModel(termStructure, volTS, chi, theta, eta, swapIndex, times, stdDevGrid, calcStochVolAdjustment, kernelWidth, nPaths, seed, debugLevel) {}
+
+        virtual ~QGLocalvolModelMonteCarloFlavor() = default;
+
         // do the actual calculation
         virtual void simulateAndCalibrate();
     };
@@ -309,6 +323,9 @@ namespace QuantLib {
             const BigNatural                                       seed = 1234,
             const size_t                                           debugLevel = 1)
             : QGLocalvolModel(termStructure, volTS, chi, theta, eta, swapIndex, times, stdDevGrid, true, kernelWidth, nPaths, seed, debugLevel) {}
+
+        virtual ~QGLocalvolModelForwardStochVolFlavor() = default;
+
         // do the actual calculation
         virtual void simulateAndCalibrate();
     };
