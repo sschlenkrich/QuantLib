@@ -27,11 +27,11 @@ namespace QuantLib {
     SabrSmileSection::SabrSmileSection(Time timeToExpiry,
                                        Rate forward,
                                        const std::vector<Real>& sabrParams,
-                                       Real shift,
-                                       bool useNormalVols)
+                                       const Real shift,
+                                       VolatilityType volatilityType)
         : SmileSection(timeToExpiry,DayCounter(),
-                       ShiftedLognormal,shift),
-          forward_(forward), shift_(shift), useNormalVols_(useNormalVols) {
+                       volatilityType,shift),
+          forward_(forward), shift_(shift) {
         initialise(sabrParams);
     }
 
@@ -39,10 +39,10 @@ namespace QuantLib {
                                        Rate forward,
                                        const std::vector<Real>& sabrParams,
                                        const DayCounter& dc,
-                                       Real shift,
-                                       bool useNormalVols)
-        : SmileSection(d, dc,Date(),ShiftedLognormal,shift),
-          forward_(forward), shift_(shift), useNormalVols_(useNormalVols) {
+                                       const Real shift,
+                                       VolatilityType volatilityType)
+        : SmileSection(d, dc,Date(),volatilityType,shift),
+          forward_(forward), shift_(shift) {
         initialise(sabrParams);
      }
 
@@ -63,17 +63,14 @@ namespace QuantLib {
 
      Real SabrSmileSection::varianceImpl(Rate strike) const {
         strike = std::max(0.00001 - shift(),strike);
-        Volatility vol=0.0;
-		if (useNormalVols_) vol = unsafeNormalSabrVolatility(strike+shift_, forward_+shift_, exerciseTime(), alpha_, beta_, nu_, rho_);
-		else                vol = unsafeShiftedSabrVolatility(strike, forward_, exerciseTime(), alpha_, beta_, nu_, rho_, shift_);
+        Volatility vol = unsafeShiftedSabrVolatility(
+            strike, forward_, exerciseTime(), alpha_, beta_, nu_, rho_, shift_, volatilityType());
         return vol * vol * exerciseTime();
      }
 
      Real SabrSmileSection::volatilityImpl(Rate strike) const {
         strike = std::max(0.00001 - shift(),strike);
-        Volatility vol=0.0;
-		if (useNormalVols_) vol = unsafeNormalSabrVolatility(strike+shift_, forward_+shift_, exerciseTime(), alpha_, beta_, nu_, rho_);
-		else                vol = unsafeShiftedSabrVolatility(strike, forward_, exerciseTime(), alpha_, beta_, nu_, rho_, shift_);
-        return vol;
+        return unsafeShiftedSabrVolatility(strike, forward_, exerciseTime(),
+                                           alpha_, beta_, nu_, rho_, shift_, volatilityType());
      }
 }

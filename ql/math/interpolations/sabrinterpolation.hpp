@@ -54,11 +54,9 @@ class SABRWrapper {
                                                  << shift_ << " not allowed");
         validateSabrParameters(params[0], params[1], params[2], params[3]);
     }
-    Real volatility(const Real x) {
-        Real vol=0.0;
-        if (useNormalVols_) vol = unsafeNormalSabrVolatility(x+shift_, forward_+shift_, t_, params_[0], params_[1], params_[2], params_[3]);
-        else                vol = shiftedSabrVolatility(x, forward_, t_, params_[0], params_[1], params_[2], params_[3], shift_);
-        return vol;
+    Real volatility(const Real x, const VolatilityType volatilityType) {
+        return shiftedSabrVolatility(x, forward_, t_, params_[0], params_[1],
+                                     params_[2], params_[3], shift_, volatilityType);
     }
 
   private:
@@ -176,9 +174,8 @@ class SABRInterpolation : public Interpolation {
                           ext::shared_ptr<OptimizationMethod>(),
                       const Real errorAccept = 0.0020,
                       const bool useMaxError = false,
-                      const Size maxGuesses = 50,
-                      const Real shift = 0.0,
-                      const bool useNormalVols = false ) {
+                      const Size maxGuesses = 50, const Real shift = 0.0,
+                      const VolatilityType volatilityType = VolatilityType::ShiftedLognormal) {
 
         Real useNVols = (useNormalVols) ? (1.0) : (0.0);
         impl_ = ext::shared_ptr<Interpolation::Impl>(
@@ -187,7 +184,7 @@ class SABRInterpolation : public Interpolation {
                 {alpha, beta, nu, rho},
                 {alphaIsFixed, betaIsFixed, nuIsFixed, rhoIsFixed},
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
-                maxGuesses, {shift}));
+                maxGuesses, {shift}, volatilityType));
         coeffs_ = ext::dynamic_pointer_cast<
             detail::XABRCoeffHolder<detail::SABRSpecs> >(impl_);
     }

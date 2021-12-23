@@ -45,7 +45,6 @@
 
 #include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
-#include <boost/noncopyable.hpp>
 #include <map>
 
 namespace QuantLib {
@@ -93,10 +92,23 @@ namespace QuantLib {
         \ingroup patterns
     */
     template <class T, class Global = std::integral_constant<bool, false> >
-    class Singleton : private boost::noncopyable {
+    class Singleton {
+      public:
+        // disable copy/move
+        Singleton(const Singleton&) = delete;
+        Singleton(Singleton&&) = delete;
+        Singleton& operator=(const Singleton&) = delete;
+        Singleton& operator=(Singleton&&) = delete;
+
+        //! access to the unique instance
+        static T& instance();
+
+      protected:
+        Singleton() = default;
+
       private:
 #ifdef QL_ENABLE_SESSIONS
-        // construct on first use to avoid static initialization order fiasko
+        // construct on first use to avoid static initialization order fiasco
         static std::map<ThreadKey, ext::shared_ptr<T> >& m_instances() {
             static std::map<ThreadKey, ext::shared_ptr<T> > instances;
             return instances;
@@ -122,13 +134,6 @@ namespace QuantLib {
         }
 #    endif
 #endif
-
-      public:
-        //! access to the unique instance
-        static T& instance();
-
-      protected:
-        Singleton() = default;
     };
 
     // template definitions
