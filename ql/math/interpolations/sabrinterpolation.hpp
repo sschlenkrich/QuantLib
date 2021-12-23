@@ -177,7 +177,6 @@ class SABRInterpolation : public Interpolation {
                       const Size maxGuesses = 50, const Real shift = 0.0,
                       const VolatilityType volatilityType = VolatilityType::ShiftedLognormal) {
 
-        Real useNVols = (useNormalVols) ? (1.0) : (0.0);
         impl_ = ext::shared_ptr<Interpolation::Impl>(
             new detail::XABRInterpolationImpl<I1, I2, detail::SABRSpecs>(
                 xBegin, xEnd, yBegin, t, forward,

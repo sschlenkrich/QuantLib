@@ -103,7 +103,7 @@ namespace QuantLib {
                      exerciseTime(), forwardValue_,
                      alpha_, beta_, nu_, rho_,
                      isAlphaFixed_, isBetaFixed_, isNuFixed_, isRhoFixed_, vegaWeighted_,
-                     endCriteria_, method_, 0.002, false, 50, shift_, useNormalVols_));
+                     endCriteria_, method_, 0.002, false, 50, shift_, (useNormalVols_) ? (VolatilityType::Normal) : (VolatilityType::ShiftedLognormal)));
          swap(tmp, sabrInterpolation_);
     }
 
