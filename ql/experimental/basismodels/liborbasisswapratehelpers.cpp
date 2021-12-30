@@ -10,7 +10,7 @@
 */
 
 
-#include <ql/experimental/basismodels/basisswapratehelpers.hpp>
+#include <ql/experimental/basismodels/liborbasisswapratehelpers.hpp>
 
 namespace QuantLib {
 

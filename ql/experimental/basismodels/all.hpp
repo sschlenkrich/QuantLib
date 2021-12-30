@@ -3,8 +3,8 @@
 
 #include <ql/experimental/basismodels/basisswapengine.hpp>
 #include <ql/experimental/basismodels/basisswap.hpp>
-#include <ql/experimental/basismodels/basisswapratehelpers.hpp>
 #include <ql/experimental/basismodels/fxfwdratehelper.hpp>
+#include <ql/experimental/basismodels/liborbasisswapratehelpers.hpp>
 #include <ql/experimental/basismodels/spreadyieldtermstructure.hpp>
 #include <ql/experimental/basismodels/swaptioncfs.hpp>
 #include <ql/experimental/basismodels/tenoroptionletvts.hpp>

@@ -588,8 +588,8 @@
     <ClInclude Include="ql\experimental\basismodels\all.hpp" />
     <ClInclude Include="ql\experimental\basismodels\basisswap.hpp" />
     <ClInclude Include="ql\experimental\basismodels\basisswapengine.hpp" />
-    <ClInclude Include="ql\experimental\basismodels\basisswapratehelpers.hpp" />
     <ClInclude Include="ql\experimental\basismodels\fxfwdratehelper.hpp" />
+    <ClInclude Include="ql\experimental\basismodels\liborbasisswapratehelpers.hpp" />
     <ClInclude Include="ql\experimental\basismodels\spreadyieldtermstructure.hpp" />
     <ClInclude Include="ql\experimental\basismodels\swaptioncfs.hpp" />
     <ClInclude Include="ql\experimental\basismodels\tenoroptionletvts.hpp" />
@@ -2046,8 +2046,8 @@
     <ClCompile Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\basismodels\basisswap.cpp" />
     <ClCompile Include="ql\experimental\basismodels\basisswapengine.cpp" />
-    <ClCompile Include="ql\experimental\basismodels\basisswapratehelpers.cpp" />
     <ClCompile Include="ql\experimental\basismodels\fxfwdratehelper.cpp" />
+    <ClCompile Include="ql\experimental\basismodels\liborbasisswapratehelpers.cpp" />
     <ClCompile Include="ql\experimental\basismodels\swaptioncfs.cpp" />
     <ClCompile Include="ql\experimental\basismodels\tenoroptionletvts.cpp" />
     <ClCompile Include="ql\experimental\basismodels\tenorswaptionvts.cpp" />

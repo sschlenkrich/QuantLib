@@ -4422,10 +4422,10 @@
     <ClInclude Include="ql\experimental\basismodels\basisswapengine.hpp">
       <Filter>experimental\basismodels</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\basismodels\basisswapratehelpers.hpp">
+    <ClInclude Include="ql\experimental\basismodels\fxfwdratehelper.hpp">
       <Filter>experimental\basismodels</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\basismodels\fxfwdratehelper.hpp">
+    <ClInclude Include="ql\experimental\basismodels\liborbasisswapratehelpers.hpp">
       <Filter>experimental\basismodels</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\basismodels\spreadyieldtermstructure.hpp">
@@ -7437,10 +7437,10 @@
     <ClCompile Include="ql\experimental\basismodels\basisswapengine.cpp">
       <Filter>experimental\basismodels</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\basismodels\basisswapratehelpers.cpp">
+    <ClCompile Include="ql\experimental\basismodels\fxfwdratehelper.cpp">
       <Filter>experimental\basismodels</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\basismodels\fxfwdratehelper.cpp">
+    <ClCompile Include="ql\experimental\basismodels\liborbasisswapratehelpers.cpp">
       <Filter>experimental\basismodels</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\basismodels\swaptioncfs.cpp">

@@ -9,8 +9,8 @@
     \brief (Cross currency) Interest rate swap consisting of several legs
 */
 
-#ifndef quantlib_basisswapratehelpers_hpp
-#define quantlib_basisswapratehelpers_hpp
+#ifndef quantlib_liborbasisswapratehelpers_hpp
+#define quantlib_liborbasisswapratehelpers_hpp
 
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>

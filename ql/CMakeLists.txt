@@ -66,8 +66,8 @@ set(QL_SOURCES
     experimental/barrieroption/wulinyongdoublebarrierengine.cpp
     experimental/basismodels/basisswap.cpp
     experimental/basismodels/basisswapengine.cpp
-    experimental/basismodels/basisswapratehelpers.cpp
     experimental/basismodels/fxfwdratehelper.cpp
+    experimental/basismodels/liborbasisswapratehelpers.cpp
     experimental/basismodels/swaptioncfs.cpp
     experimental/basismodels/tenoroptionletvts.cpp
     experimental/basismodels/tenorswaptionvts.cpp
@@ -1035,8 +1035,8 @@ set(QL_HEADERS
     experimental/barrieroption/wulinyongdoublebarrierengine.hpp
     experimental/basismodels/basisswap.hpp
     experimental/basismodels/basisswapengine.hpp
-    experimental/basismodels/basisswapratehelpers.hpp
     experimental/basismodels/fxfwdratehelper.hpp
+    experimental/basismodels/liborbasisswapratehelpers.hpp
     experimental/basismodels/spreadyieldtermstructure.hpp
     experimental/basismodels/swaptioncfs.hpp
     experimental/basismodels/tenoroptionletvts.hpp
