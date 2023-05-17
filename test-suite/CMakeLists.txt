@@ -160,6 +160,7 @@ set(QL_TEST_SOURCES
     twoassetcorrelationoption.cpp
     ultimateforwardtermstructure.cpp
     utilities.cpp
+    vanillalocalvolmodels.cpp
     variancegamma.cpp
     varianceoption.cpp
     varianceswaps.cpp
@@ -333,6 +334,7 @@ set(QL_TEST_HEADERS
     twoassetcorrelationoption.hpp
     ultimateforwardtermstructure.hpp
     utilities.hpp
+    vanillalocalvolmodels.hpp
     variancegamma.hpp
     varianceoption.hpp
     varianceswaps.hpp

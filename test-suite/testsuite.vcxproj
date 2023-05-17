@@ -796,6 +796,7 @@
     <ClCompile Include="twoassetcorrelationoption.cpp" />
     <ClCompile Include="ultimateforwardtermstructure.cpp" />
     <ClCompile Include="utilities.cpp" />
+    <ClCompile Include="vanillalocalvolmodels.cpp" />
     <ClCompile Include="variancegamma.cpp" />
     <ClCompile Include="varianceoption.cpp" />
     <ClCompile Include="varianceswaps.cpp" />
@@ -969,6 +970,7 @@
     <ClInclude Include="twoassetcorrelationoption.hpp" />
     <ClInclude Include="ultimateforwardtermstructure.hpp" />
     <ClInclude Include="utilities.hpp" />
+    <ClInclude Include="vanillalocalvolmodels.hpp" />
     <ClInclude Include="variancegamma.hpp" />
     <ClInclude Include="varianceoption.hpp" />
     <ClInclude Include="varianceswaps.hpp" />

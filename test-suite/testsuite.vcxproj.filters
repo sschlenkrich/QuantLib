@@ -419,6 +419,9 @@
     <ClCompile Include="utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vanillalocalvolmodels.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="variancegamma.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -930,6 +933,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utilities.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vanillalocalvolmodels.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="variancegamma.hpp">
