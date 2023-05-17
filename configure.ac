@@ -499,7 +499,22 @@ AC_CONFIG_FILES([
     ql/experimental/risk/Makefile
     ql/experimental/shortrate/Makefile
     ql/experimental/swaptions/Makefile
+    ql/experimental/templatemodels/Makefile
+    ql/experimental/templatemodels/auxilliaries/Makefile
+    ql/experimental/templatemodels/commodity/Makefile
+    ql/experimental/templatemodels/hullwhite/Makefile
+    ql/experimental/templatemodels/hybrid/Makefile
+    ql/experimental/templatemodels/montecarlo/Makefile
+    ql/experimental/templatemodels/montecarlo/scripting/Makefile
+    ql/experimental/templatemodels/multiasset/Makefile
+    ql/experimental/templatemodels/multiasset/Helper/Makefile
+    ql/experimental/templatemodels/multiasset/localCorrFX/Makefile
+    ql/experimental/templatemodels/qgaussian/Makefile
+    ql/experimental/templatemodels/qgaussian2/Makefile
+    ql/experimental/templatemodels/stochvol/Makefile
+    ql/experimental/templatemodels/vanillalocalvol/Makefile
     ql/experimental/termstructures/Makefile
+    ql/experimental/vanillalocalvolmodel/Makefile
     ql/experimental/variancegamma/Makefile
     ql/experimental/varianceoption/Makefile
     ql/experimental/volatility/Makefile
