@@ -44,7 +44,11 @@ class SABRWrapper {
                 const Real& forward,
                 const std::vector<Real>& params,
                 const std::vector<Real>& addParams)
-    : t_(t), forward_(forward), params_(params), shift_(addParams.empty() ? 0.0 : addParams[0]) {
+    : t_(t), forward_(forward), params_(params), shift_(addParams.empty() ? 0.0 : addParams[0]),
+      useNormalVols_(
+          (static_cast<int>(addParams.size() > 1) & static_cast<int>(addParams[1] > 0.0)) != 0 ?
+          (true) : (false)
+      ) {
         QL_REQUIRE(forward_ + shift_ > 0.0, "forward+shift must be positive: "
                                                  << forward_ << " with shift "
                                                  << shift_ << " not allowed");
@@ -59,6 +63,7 @@ class SABRWrapper {
     const Real t_, &forward_;
     const std::vector<Real> &params_;
     const Real shift_;
+    const bool useNormalVols_;
 };
 
 struct SABRSpecs {
@@ -128,10 +133,16 @@ struct SABRSpecs {
                    : Real(eps2() * (x[3] > 0.0 ? 1.0 : (-1.0)));
         return y;
     }
-    Real weight(const Real strike, const Real forward, const Real stdDev,
-                const std::vector<Real> &addParams) {
-        return blackFormulaStdDevDerivative(strike, forward, stdDev, 1.0,
-                                            addParams[0]);
+    Real weight(const Real strike, const Real forward, const Real stdDev, const std::vector<Real> &addParams) {
+        Real shift = (!addParams.empty()) ? (addParams[0]) : 0.0;
+        bool useNormalVols =
+            (static_cast<int>(addParams.size() > 1) & static_cast<int>(addParams[1] > 0.0)) != 0 ?
+                (true) :
+                (false);
+        Real vega = 0.0;
+        if (useNormalVols) vega = bachelierBlackFormulaStdDevDerivative(strike+shift, forward+shift, stdDev,1.0);
+        else               vega = blackFormulaStdDevDerivative(strike, forward, stdDev, 1.0, shift);
+        return vega;
     }
     typedef SABRWrapper type;
     ext::shared_ptr<type> instance(const Time t, const Real &forward,
