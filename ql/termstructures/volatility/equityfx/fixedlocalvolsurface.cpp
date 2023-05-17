@@ -125,6 +125,14 @@ namespace QuantLib {
             }
     }
 
+    const Matrix FixedLocalVolSurface::strikeMatrix() {
+        Matrix M(localVolMatrix_->rows(), localVolMatrix_->columns());
+        for (Size i = 0; i < M.rows(); ++i)
+            for (Size j = 0; j < M.columns(); ++j)
+                M[i][j] = strikes_[j]->at(i);
+        return M;
+    }
+
     Date FixedLocalVolSurface::maxDate() const {
         return maxDate_;
     }
