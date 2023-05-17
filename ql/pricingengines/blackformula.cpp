@@ -883,4 +883,29 @@ namespace QuantLib {
         return bachelierBlackFormulaAssetItmProbability(payoff->optionType(),
             payoff->strike(), forward, stdDev);
     }
+
+    Real bachelierBlackFormulaDelta(Option::Type optionType,
+                                    Real         strike,
+                                    Real         forward,
+                                    Real         stdDev,
+                                    Real         discount) {
+        QL_REQUIRE(stdDev>=0.0,   "stdDev (" << stdDev << ") must be non-negative");
+        QL_REQUIRE(discount>0.0,  "discount (" << discount << ") must be positive");
+        Real d = (forward-strike)*Integer(optionType), h = d/stdDev;
+        CumulativeNormalDistribution phi;
+        return Integer(optionType)*discount*phi(h);
+    }
+
+    Real bachelierBlackFormulaGamma(Option::Type optionType,
+                                    Real         strike,
+                                    Real         forward,
+                                    Real         stdDev,
+                                    Real         discount) {
+        QL_REQUIRE(stdDev>=0.0,   "stdDev (" << stdDev << ") must be non-negative");
+        QL_REQUIRE(discount>0.0,  "discount (" << discount << ") must be positive");
+        Real d = (forward-strike)*Integer(optionType), h = d/stdDev;
+        CumulativeNormalDistribution phi;
+        return discount/stdDev*phi.derivative(h);
+    }
+
 }

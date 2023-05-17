@@ -407,6 +407,18 @@ namespace QuantLib {
                                                   Real forward,
                                                   Real stdDev);
 
+    Real bachelierBlackFormulaDelta(Option::Type optionType,
+                                    Real         strike,
+                                    Real         forward,
+                                    Real         stdDev,
+                                    Real         discount = 1.0);
+
+    Real bachelierBlackFormulaGamma(Option::Type optionType,
+                                    Real         strike,
+                                    Real         forward,
+                                    Real         stdDev,
+                                    Real         discount = 1.0);
+
 }
 
 #endif
