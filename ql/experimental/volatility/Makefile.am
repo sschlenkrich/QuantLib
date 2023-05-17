@@ -18,6 +18,7 @@ this_include_HEADERS = \
     noarbsabrswaptionvolatilitycube.hpp \
     sabrvolsurface.hpp \
     sabrvoltermstructure.hpp \
+    smiledsurface.hpp \
     sviinterpolatedsmilesection.hpp \
     sviinterpolation.hpp \
     svismilesection.hpp \
@@ -41,6 +42,7 @@ cpp_files = \
     noarbsabrinterpolatedsmilesection.cpp \
     noarbsabrsmilesection.cpp \
     sabrvolsurface.cpp \
+    smiledsurface.cpp \
     sviinterpolatedsmilesection.cpp \
     svismilesection.cpp \
     volcube.cpp \
