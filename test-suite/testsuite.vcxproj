@@ -800,6 +800,7 @@
     <ClCompile Include="twoassetcorrelationoption.cpp" />
     <ClCompile Include="ultimateforwardtermstructure.cpp" />
     <ClCompile Include="utilities.cpp" />
+    <ClCompile Include="vanillalocalvolmodels.cpp" />
     <ClCompile Include="variancegamma.cpp" />
     <ClCompile Include="varianceoption.cpp" />
     <ClCompile Include="varianceswaps.cpp" />
