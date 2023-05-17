@@ -60,7 +60,8 @@ namespace QuantLib {
             ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
             ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
             const DayCounter& dc = Actual365Fixed(),
-            Real shift = 0.0);
+            Real shift = 0.0,
+            bool useNormalVols = false);
         //! no quotes
         SabrInterpolatedSmileSection(
             const Date& optionDate,
@@ -81,7 +82,8 @@ namespace QuantLib {
             ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
             ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
             const DayCounter& dc = Actual365Fixed(),
-            Real shift = 0.0);
+            Real shift = 0.0,
+            bool useNormalVols = false);
         //@}
         //! \name LazyObject interface
         //@{
@@ -133,6 +135,12 @@ namespace QuantLib {
         const ext::shared_ptr<OptimizationMethod> method_;
 
         mutable Date evaluationDate_;
+
+        // displaced diffusion SABR
+        Real shift_;
+        // inputs and interpolation based on normal vols
+        bool useNormalVols_;
+
     };
 
     inline void SabrInterpolatedSmileSection::update() {
