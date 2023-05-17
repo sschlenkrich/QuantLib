@@ -77,6 +77,17 @@ namespace QuantLib {
         Time t0, const Array& x0, Time dt, const Array& dw) const {
         Array retVal(2);
 
+        if (isLocalVolProcess()) {
+            // local vol model
+            Real vol = std::sqrt(dt)*leverageFct()->localVol(t0, x0[0],true);
+            const Real mu = riskFreeRate()->forwardRate(t0, t0 + dt, Continuous)
+                - dividendYield()->forwardRate(t0, t0 + dt, Continuous)
+                - 0.5 * vol*vol;
+            retVal[0] = x0[0] * std::exp( vol * dw[0] + mu);
+            retVal[1] = x0[1];
+            return retVal;
+        }
+
         const Real ex = std::exp(-kappa_*dt);
 
         const Real m  =  theta_+(x0[1]-theta_)*ex;
@@ -125,4 +136,7 @@ namespace QuantLib {
         mixedSigma_ = mixingFactor_ * sigma_;
     }
 
+    bool HestonSLVProcess::isLocalVolProcess() const {
+        return fabs(kappa_) < QL_EPSILON && fabs(sigma_) < QL_EPSILON && fabs(v0_ - 1) < QL_EPSILON;
+    }
 }

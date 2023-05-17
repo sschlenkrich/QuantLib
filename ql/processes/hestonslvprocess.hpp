@@ -72,6 +72,8 @@ namespace QuantLib {
 
         Time time(const Date& d) const override { return hestonProcess_->time(d); }
 
+        bool isLocalVolProcess() const;
+
       private:
         Real kappa_, theta_, sigma_, rho_, v0_, mixingFactor_, mixedSigma_;
 
