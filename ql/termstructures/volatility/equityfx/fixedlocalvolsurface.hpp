@@ -61,6 +61,10 @@ namespace QuantLib {
                              Extrapolation lowerExtrapolation = ConstantExtrapolation,
                              Extrapolation upperExtrapolation = ConstantExtrapolation);
 
+        // inspectors
+        const std::vector<Time>& times() const { return times_; }
+        const Matrix strikeMatrix();  // we can't pass a reference since we need to set up the matrix
+        Matrix localVolMatrix() { return *localVolMatrix_; }
 
         Date maxDate() const override;
         Time maxTime() const override;
