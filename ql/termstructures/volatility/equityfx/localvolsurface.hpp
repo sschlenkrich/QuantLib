@@ -25,6 +25,7 @@
 #define quantlib_localvolsurface_hpp
 
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
+#include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 
 namespace QuantLib {
 
@@ -67,6 +68,11 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
+
+        inline Handle<Quote> getUnderlying() { return underlying_; };
+        inline Handle<YieldTermStructure>& getDividendTS() { return dividendTS_; };
+        inline Handle<YieldTermStructure>& getInterestRateTS() { return riskFreeTS_; };
+        inline Handle<BlackVolTermStructure>& getBlackSurface() { return blackTS_; };
       protected:
         Volatility localVolImpl(Time, Real) const override;
 
@@ -74,6 +80,38 @@ namespace QuantLib {
         Handle<BlackVolTermStructure> blackTS_;
         Handle<YieldTermStructure> riskFreeTS_, dividendTS_;
         Handle<Quote> underlying_;
+    };
+
+
+    class InterpolatedLocalVolSurface : public LocalVolSurface {
+    public:
+        InterpolatedLocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
+            const Handle<YieldTermStructure>& riskFreeTS,
+            const Handle<YieldTermStructure>& dividendTS,
+            const Handle<Quote>& underlying, Size strikeGridAmt,
+            Size timeStepsPerYear);
+
+        inline Matrix getSurface() {
+            Matrix mat(gridTimes_.size(), strikes_[0]->size());
+
+            for (size_t i = 0; i < mat.rows(); i++)
+            {
+                for (size_t j = 0; j < mat.columns(); j++)
+                {
+                    mat[i][j] = surface_->localVol(gridTimes_[i], strikes_[i]->at(j), true);
+                }
+            }
+
+            return mat;
+        };
+
+    protected:
+          Volatility localVolImpl(Time, Real) const override;
+
+        private:
+        ext::shared_ptr<FixedLocalVolSurface> surface_;
+        std::vector<Time> gridTimes_;
+        std::vector<ext::shared_ptr<std::vector<Real> > > strikes_;
     };
 
 }
