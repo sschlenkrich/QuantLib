@@ -25,6 +25,7 @@
 #define quantlib_vol_term_structure_hpp
 
 #include <ql/termstructure.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
@@ -45,20 +46,24 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         VolatilityTermStructure(BusinessDayConvention bdc,
-                                const DayCounter& dc = DayCounter());
+                                const DayCounter& dc = DayCounter(),
+                                const VolatilityType& volatilityType = ShiftedLognormal);
         //! initialize with a fixed reference date
         VolatilityTermStructure(const Date& referenceDate,
                                 const Calendar& cal,
                                 BusinessDayConvention bdc,
-                                const DayCounter& dc = DayCounter());
+                                const DayCounter& dc = DayCounter(),
+                                const VolatilityType& volatilityType = ShiftedLognormal);
         //! calculate the reference date based on the global evaluation date
         VolatilityTermStructure(Natural settlementDays,
                                 const Calendar& cal,
                                 BusinessDayConvention bdc,
-                                const DayCounter& dc = DayCounter());
+                                const DayCounter& dc = DayCounter(),
+                                const VolatilityType& volatilityType = ShiftedLognormal);
         //@}
         //! the business day convention used in tenor to date conversion
         virtual BusinessDayConvention businessDayConvention() const;
+        virtual VolatilityType volatilityType() const { return volatilityType_; }
         //! period/date conversion
         Date optionDateFromTenor(const Period&) const;
         //! the minimum strike for which the term structure can return vols
@@ -71,6 +76,7 @@ namespace QuantLib {
                          bool extrapolate) const;
       private:
         BusinessDayConvention bdc_;
+        VolatilityType volatilityType_;
     };
 
     // inline definitions

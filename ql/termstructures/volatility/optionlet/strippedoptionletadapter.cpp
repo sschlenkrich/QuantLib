@@ -34,7 +34,8 @@ namespace QuantLib {
     : OptionletVolatilityStructure(s->settlementDays(),
                                    s->calendar(),
                                    s->businessDayConvention(),
-                                   s->dayCounter()),
+                                   s->dayCounter(),
+                                   s->volatilityType()),
       optionletStripper_(s),
       nInterpolations_(s->optionletMaturities()),
       strikeInterpolations_(nInterpolations_) {

@@ -24,21 +24,24 @@ namespace QuantLib {
 
     OptionletVolatilityStructure::OptionletVolatilityStructure(
                                                     BusinessDayConvention bdc,
-                                                    const DayCounter& dc)
-    : VolatilityTermStructure(bdc, dc) {}
+                                                    const DayCounter& dc,
+                                                    const VolatilityType& volatilityType)
+    : VolatilityTermStructure(bdc, dc, volatilityType) {}
 
     OptionletVolatilityStructure::OptionletVolatilityStructure(
                                                     const Date& referenceDate,
                                                     const Calendar& cal,
                                                     BusinessDayConvention bdc,
-                                                    const DayCounter& dc)
-    : VolatilityTermStructure(referenceDate, cal, bdc, dc) {}
+                                                    const DayCounter& dc,
+                                                    const VolatilityType& volatilityType)
+    : VolatilityTermStructure(referenceDate, cal, bdc, dc, volatilityType) {}
 
     OptionletVolatilityStructure::OptionletVolatilityStructure(
                                                     Natural settlementDays,
                                                     const Calendar& cal,
                                                     BusinessDayConvention bdc,
-                                                    const DayCounter& dc)
-    : VolatilityTermStructure(settlementDays, cal, bdc, dc) {}
+                                                    const DayCounter& dc,
+                                                    const VolatilityType& volatilityType)
+    : VolatilityTermStructure(settlementDays, cal, bdc, dc, volatilityType) {}
 
 }

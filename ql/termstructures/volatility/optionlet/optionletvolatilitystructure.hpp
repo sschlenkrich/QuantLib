@@ -52,17 +52,21 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         OptionletVolatilityStructure(BusinessDayConvention bdc = Following,
-                                     const DayCounter& dc = DayCounter());
+                                     const DayCounter& dc = DayCounter(),
+                                     const VolatilityType& volatilityType = ShiftedLognormal);
+
         //! initialize with a fixed reference date
         OptionletVolatilityStructure(const Date& referenceDate,
                                      const Calendar& cal,
                                      BusinessDayConvention bdc,
-                                     const DayCounter& dc = DayCounter());
+                                     const DayCounter& dc = DayCounter(),
+                                     const VolatilityType& volatilityType = ShiftedLognormal);
         //! calculate the reference date based on the global evaluation date
         OptionletVolatilityStructure(Natural settlementDays,
                                      const Calendar&,
                                      BusinessDayConvention bdc,
-                                     const DayCounter& dc = DayCounter());
+                                     const DayCounter& dc = DayCounter(),
+                                     const VolatilityType& volatilityType = ShiftedLognormal);
         //@}
         ~OptionletVolatilityStructure() override = default;
         //! \name Volatility and Variance
@@ -103,7 +107,7 @@ namespace QuantLib {
         ext::shared_ptr<SmileSection> smileSection(Time optionTime,
                                                      bool extr = false) const;
         //@}
-        virtual VolatilityType volatilityType() const;
+        VolatilityType volatilityType() const override;
         virtual Real displacement() const;
 
       protected:
@@ -212,7 +216,7 @@ namespace QuantLib {
 
     inline VolatilityType
     OptionletVolatilityStructure::volatilityType() const {
-        return ShiftedLognormal;
+        return VolatilityTermStructure::volatilityType();
     }
 
     inline Real OptionletVolatilityStructure::displacement() const {

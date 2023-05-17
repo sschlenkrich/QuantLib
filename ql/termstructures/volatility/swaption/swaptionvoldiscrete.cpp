@@ -30,8 +30,9 @@ namespace QuantLib {
                                     Natural settlementDays,
                                     const Calendar& cal,
                                     BusinessDayConvention bdc,
-                                    const DayCounter& dc)
-    : SwaptionVolatilityStructure(settlementDays, cal, bdc, dc),
+                                    const DayCounter& dc,
+                                    const VolatilityType& volatilityType)
+    : SwaptionVolatilityStructure(settlementDays, cal, bdc, dc, volatilityType),
       nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
       optionDates_(nOptionTenors_),
@@ -63,8 +64,9 @@ namespace QuantLib {
                                     const Date& referenceDate,
                                     const Calendar& cal,
                                     BusinessDayConvention bdc,
-                                    const DayCounter& dc)
-    : SwaptionVolatilityStructure(referenceDate, cal, bdc, dc),
+                                    const DayCounter& dc,
+                                    const VolatilityType& volatilityType)
+    : SwaptionVolatilityStructure(referenceDate, cal, bdc, dc, volatilityType),
       nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
       optionDates_(nOptionTenors_),
@@ -95,8 +97,9 @@ namespace QuantLib {
                                         const Date& referenceDate,
                                         const Calendar& cal,
                                         BusinessDayConvention bdc,
-                                        const DayCounter& dc)
-    : SwaptionVolatilityStructure(referenceDate, cal, bdc, dc),
+                                        const DayCounter& dc,
+                                        const VolatilityType& volatilityType)
+    : SwaptionVolatilityStructure(referenceDate, cal, bdc, dc, volatilityType),
       nOptionTenors_(optionDates.size()),
       optionTenors_(nOptionTenors_),
       optionDates_(optionDates),

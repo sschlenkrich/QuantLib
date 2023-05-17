@@ -38,19 +38,22 @@ namespace QuantLib {
                                    Natural settlementDays,
                                    const Calendar& cal,
                                    BusinessDayConvention bdc,
-                                   const DayCounter& dc);
+                                   const DayCounter& dc,
+                                   const VolatilityType& volatilityType = ShiftedLognormal);
         SwaptionVolatilityDiscrete(const std::vector<Period>& optionTenors,
                                    const std::vector<Period>& swapTenors,
                                    const Date& referenceDate,
                                    const Calendar& cal,
                                    BusinessDayConvention bdc,
-                                   const DayCounter& dc);
+                                   const DayCounter& dc,
+                                   const VolatilityType& volatilityType = ShiftedLognormal);
         SwaptionVolatilityDiscrete(const std::vector<Date>& optionDates,
                                    const std::vector<Period>& swapTenors,
                                    const Date& referenceDate,
                                    const Calendar& cal,
                                    BusinessDayConvention bdc,
-                                   const DayCounter& dc);
+                                   const DayCounter& dc,
+                                   const VolatilityType& volatilityType = ShiftedLognormal);
         const std::vector<Period>& optionTenors() const;
         const std::vector<Date>& optionDates() const;
         const std::vector<Time>& optionTimes() const;
