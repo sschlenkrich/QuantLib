@@ -207,6 +207,32 @@ set(QL_SOURCES
     experimental/swaptions/haganirregularswaptionengine.cpp
     experimental/swaptions/irregularswap.cpp
     experimental/swaptions/irregularswaption.cpp
+    experimental/templatemodels/hullwhite/bondoptionengine.cpp
+    experimental/templatemodels/hullwhite/fixedratebondoption.cpp
+    experimental/templatemodels/hullwhite/hullwhitemodels.cpp
+    experimental/templatemodels/hybrid/hybridmodels.cpp
+    experimental/templatemodels/multiasset/Helper/ParticleMethodUtils.cpp
+    experimental/templatemodels/multiasset/corrtermstructureStrike.cpp
+    experimental/templatemodels/multiasset/localCorrFX/CTSlocalInCrossCorrelationFX.cpp
+    experimental/templatemodels/multiasset/localCorrFX/CTSlocalInCrossCovarianceFX.cpp
+    experimental/templatemodels/multiasset/localCorrFX/CTSlocalInCrossNegSkewFX.cpp
+    experimental/templatemodels/multiasset/localCorrFX/CTSlocalInCrossVolatilityFX.cpp
+    experimental/templatemodels/multiasset/localCorrFX/localcorrsurfaceabfFX.cpp
+    experimental/templatemodels/multiasset/localcorrelationSLVmodel.cpp
+    experimental/templatemodels/multiasset/localcorrelationbsmodel.cpp
+    experimental/templatemodels/multiasset/localcorrsurfaceabf.cpp
+    experimental/templatemodels/multiasset/localcorrtermstructure.cpp
+    experimental/templatemodels/multiasset/multiassetbsmodel.cpp
+    experimental/templatemodels/multiasset/multiassetslvmodel.cpp
+    experimental/templatemodels/qgaussian2/mccalibrator.cpp
+    experimental/templatemodels/qgaussian2/qgcalibrator.cpp
+    experimental/templatemodels/qgaussian2/qglocalvolmodel.cpp
+    experimental/templatemodels/qgaussian2/qglsvmodel.cpp
+    experimental/templatemodels/qgaussian/qgaussiancalibrator.cpp
+    experimental/templatemodels/stochvol/stochvolcalibrator.cpp
+    experimental/vanillalocalvolmodel/vanillalocalvolmodel.cpp
+    experimental/vanillalocalvolmodel/vanillalocalvolsmilesection.cpp
+    experimental/vanillalocalvolmodel/vanillalocalvoltermstructures.cpp
     experimental/termstructures/basisswapratehelpers.cpp
     experimental/termstructures/crosscurrencyratehelpers.cpp
     experimental/variancegamma/analyticvariancegammaengine.cpp
@@ -229,6 +255,7 @@ set(QL_SOURCES
     experimental/volatility/noarbsabrinterpolatedsmilesection.cpp
     experimental/volatility/noarbsabrsmilesection.cpp
     experimental/volatility/sabrvolsurface.cpp
+    experimental/volatility/smiledsurface.cpp
     experimental/volatility/sviinterpolatedsmilesection.cpp
     experimental/volatility/svismilesection.cpp
     experimental/volatility/volcube.cpp
@@ -1201,9 +1228,79 @@ set(QL_HEADERS
     experimental/swaptions/haganirregularswaptionengine.hpp
     experimental/swaptions/irregularswap.hpp
     experimental/swaptions/irregularswaption.hpp
+    experimental/templatemodels/auxilliaries/auxilliariesT.hpp
+    experimental/templatemodels/auxilliaries/choleskyfactorisationT.hpp
+    experimental/templatemodels/auxilliaries/complexT.hpp
+    experimental/templatemodels/auxilliaries/gausslobattoT.hpp
+    experimental/templatemodels/auxilliaries/integratorsT.hpp
+    experimental/templatemodels/auxilliaries/minimADVariable2T.hpp
+    experimental/templatemodels/auxilliaries/qrfactorisationT.hpp
+    experimental/templatemodels/auxilliaries/regressionT.hpp
+    experimental/templatemodels/auxilliaries/solver1dT.hpp
+    experimental/templatemodels/auxilliaries/svdT.hpp
+    experimental/templatemodels/commodity/commoditymodels.hpp
+    experimental/templatemodels/commodity/indextermstructure.hpp
+    experimental/templatemodels/commodity/twofactorlognormalmodelT.hpp
+    experimental/templatemodels/commodity/twofactormeanreversionmodelT.hpp
+    experimental/templatemodels/commodity/twofactornormalmodelT.hpp
+    experimental/templatemodels/hullwhite/bondoptionengine.hpp
+    experimental/templatemodels/hullwhite/fixedratebondoption.hpp
+    experimental/templatemodels/hullwhite/g2ppT.hpp
+    experimental/templatemodels/hullwhite/hullwhitemodelT.hpp
+    experimental/templatemodels/hullwhite/hullwhitemodels.hpp
+    experimental/templatemodels/hybrid/assetmodelT.hpp
+    experimental/templatemodels/hybrid/hybridmodelT.hpp
+    experimental/templatemodels/hybrid/hybridmodels.hpp
+    experimental/templatemodels/hybrid/localvolassetmodel.hpp
+    experimental/templatemodels/hybrid/spreadmodelT.hpp
+    experimental/templatemodels/montecarlo/amcpricerT.hpp
+    experimental/templatemodels/montecarlo/commoditypayoffT.hpp
+    experimental/templatemodels/montecarlo/mcpayoffT.hpp
+    experimental/templatemodels/montecarlo/mcsimulationT.hpp
+    experimental/templatemodels/montecarlo/montecarlomodells.hpp
+    experimental/templatemodels/montecarlo/ratespayoffT.hpp
+    experimental/templatemodels/multiasset/Helper/KernelInterface.hpp
+    experimental/templatemodels/multiasset/Helper/ParticleMethodUtils.hpp
+    experimental/templatemodels/multiasset/corrtermstructureStrike.hpp
+    experimental/templatemodels/multiasset/localCorrFX/CTSlocalInCrossCorrelationFX.hpp
+    experimental/templatemodels/multiasset/localCorrFX/CTSlocalInCrossCovarianceFX.hpp
+    experimental/templatemodels/multiasset/localCorrFX/CTSlocalInCrossNegSkewFX.hpp
+    experimental/templatemodels/multiasset/localCorrFX/CTSlocalInCrossVolatilityFX.hpp
+    experimental/templatemodels/multiasset/localCorrFX/localcorrsurfaceabfFX.hpp
+    experimental/templatemodels/multiasset/localcorrelationSLVmodel.hpp
+    experimental/templatemodels/multiasset/localcorrelationbsmodel.hpp
+    experimental/templatemodels/multiasset/localcorrsurfaceabf.hpp
+    experimental/templatemodels/multiasset/localcorrtermstructure.hpp
+    experimental/templatemodels/multiasset/multiassetbsmodel.hpp
+    experimental/templatemodels/multiasset/multiassetslvmodel.hpp
+    experimental/templatemodels/qgaussian2/mccalibrator.hpp
+    experimental/templatemodels/qgaussian2/qgaverageswapratemodelT.hpp
+    experimental/templatemodels/qgaussian2/qgcalibrator.hpp
+    experimental/templatemodels/qgaussian2/qglocalvolmodel.hpp
+    experimental/templatemodels/qgaussian2/qglsvmodel.hpp
+    experimental/templatemodels/qgaussian2/qgswapratemodelT.hpp
+    experimental/templatemodels/qgaussian2/quasigaussianmodel2T.hpp
+    experimental/templatemodels/qgaussian/qgaussiancalibrator.hpp
+    experimental/templatemodels/qgaussian/qgswaptionmodelT.hpp
+    experimental/templatemodels/qgaussian/quasigaussianmodelT.hpp
+    experimental/templatemodels/qgaussian/quasigaussianmodelabcdT.hpp
+    experimental/templatemodels/qgaussian/quasigaussianmodels.hpp
+    experimental/templatemodels/stochasticprocessT.hpp
+    experimental/templatemodels/stochvol/hestonmodelT.hpp
+    experimental/templatemodels/stochvol/quadraticlvsvmodelT.hpp
+    experimental/templatemodels/stochvol/shiftedsabrmodelT.hpp
+    experimental/templatemodels/stochvol/stochvolcalibrator.hpp
+    experimental/templatemodels/stochvol/stochvolmodels.hpp
+    experimental/templatemodels/stochvol/tdstochvolmodelT.hpp
+    experimental/templatemodels/vanillalocalvol/vanillalocalvolmodelT.hpp
+    experimental/templatemodels/vanillalocalvol/vanillalocalvolmodels.hpp
     experimental/termstructures/basisswapratehelpers.hpp
     experimental/termstructures/crosscurrencyratehelpers.hpp
     experimental/termstructures/multicurvesensitivities.hpp
+    experimental/termstructures/spreadyieldtermstructure.hpp
+    experimental/vanillalocalvolmodel/vanillalocalvolmodel.hpp
+    experimental/vanillalocalvolmodel/vanillalocalvolsmilesection.hpp
+    experimental/vanillalocalvolmodel/vanillalocalvoltermstructures.hpp
     experimental/variancegamma/analyticvariancegammaengine.hpp
     experimental/variancegamma/fftengine.hpp
     experimental/variancegamma/fftvanillaengine.hpp
@@ -1226,6 +1323,7 @@ set(QL_HEADERS
     experimental/volatility/noarbsabrswaptionvolatilitycube.hpp
     experimental/volatility/sabrvolsurface.hpp
     experimental/volatility/sabrvoltermstructure.hpp
+    experimental/volatility/smiledsurface.hpp
     experimental/volatility/sviinterpolatedsmilesection.hpp
     experimental/volatility/sviinterpolation.hpp
     experimental/volatility/svismilesection.hpp
@@ -2243,7 +2341,21 @@ set(QL_GENERATED_HEADERS
     ${PROJECT_BINARY_DIR}/ql/experimental/risk/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/shortrate/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/swaptions/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/auxilliaries/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/commodity/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/hullwhite/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/hybrid/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/montecarlo/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/multiasset/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/multiasset/Helper/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/multiasset/localCorrFX/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/qgaussian2/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/qgaussian/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/stochvol/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/templatemodels/vanillalocalvol/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/termstructures/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/experimental/vanillalocalvolmodel/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/variancegamma/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/varianceoption/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/volatility/all.hpp
