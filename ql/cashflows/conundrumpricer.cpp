@@ -24,9 +24,12 @@
 
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
+#include <ql/exercise.hpp>
+#include <ql/experimental/basismodels/swaptioncfs.hpp>
 #include <ql/functional.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/indexes/swapindex.hpp>
+#include <ql/instruments/swaption.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
@@ -98,9 +101,15 @@ namespace QuantLib {
 
         Date today = Settings::instance().evaluationDate();
 
-        if(paymentDate_ > today)
-            discount_ = rateCurve_->discount(paymentDate_);
-        else discount_= 1.;
+        if (paymentDate_ > today) {
+            discount_ = rateCurve_->discount(paymentDate_); // this is only the default choice
+            if ((modelOfYieldCurve_ == GFunctionFactory::Affine) &&
+                (!swapIndex->discountingTermStructure().empty()))
+                discount_ = swapIndex->discountingTermStructure()->discount(
+                    paymentDate_); // we need to use the discounting curve to capture basis spreads
+        } else {
+            discount_ = 1.;
+        }
 
         spreadLegValue_ = spread_ * accrualPeriod * discount_;
 
@@ -139,6 +148,9 @@ namespace QuantLib {
                     break;
                 case GFunctionFactory::NonParallelShifts:
                     gFunction_ = GFunctionFactory::newGFunctionWithShifts(*coupon_, meanReversion_);
+                    break;
+                case GFunctionFactory::Affine:
+                    gFunction_ = GFunctionFactory::newGFunctionAffine(*coupon_);
                     break;
                 default:
                     QL_FAIL("unknown/illegal gFunction type");
@@ -579,6 +591,80 @@ namespace QuantLib {
         }
     }
 
+    AnalyticNormalHaganPricer::AnalyticNormalHaganPricer(
+        const Handle<SwaptionVolatilityStructure>& swaptionVol, // this must be normal volatilities
+        GFunctionFactory::YieldCurveModel modelOfYieldCurve,
+        const Handle<Quote>& meanReversion)
+    : HaganPricer(swaptionVol, modelOfYieldCurve, meanReversion) {}
+
+    // Hagan, 3.6
+    Real AnalyticNormalHaganPricer::optionletPrice(Option::Type optionType, Real strike) const {
+        Real variance = swaptionVolatility()->blackVariance(fixingDate_, swapTenor_,
+                                                            strike); // we assume normal vols here
+        Real stdev = sqrt(variance);
+        // undiscounted optionlet price in annuity meassure
+        Real fwprice = bachelierBlackFormula(optionType, strike, swapRateValue_, stdev);
+        // E[ (S(T)-S(t))h(S(T)) ]
+        CumulativeNormalDistribution cumulativeOfNormal;
+        Real d = Integer(optionType) * (swapRateValue_ - strike) / stdev;
+        Real Phi = Integer(optionType) * cumulativeOfNormal(d);
+        // convexity adjustment...
+        Real firstDerivativeOfGAtForwardValue = gFunction_->firstDerivative(swapRateValue_);
+        Real CA = firstDerivativeOfGAtForwardValue * annuity_ / discount_ * variance * Phi;
+        // discounted option let price w/ convexity adjustment
+        Real price = discount_ * (fwprice + CA);
+        price *= coupon_->accrualPeriod();
+        return price;
+    }
+
+    // Hagan 3.6
+    Real AnalyticNormalHaganPricer::swapletPrice() const {
+
+        Date today = Settings::instance().evaluationDate();
+        if (fixingDate_ <= today) {
+            // the fixing is determined
+            const Rate Rs = coupon_->swapIndex()->fixing(fixingDate_);
+            Rate price = (gearing_ * Rs + spread_) * (coupon_->accrualPeriod() * discount_);
+            return price;
+        } else {
+            Real variance(swaptionVolatility()->blackVariance(
+                fixingDate_, swapTenor_, swapRateValue_)); // assuming normal vols here
+            Real firstDerivativeOfGAtForwardValue(gFunction_->firstDerivative(swapRateValue_));
+            Real price = discount_ * (swapRateValue_ + firstDerivativeOfGAtForwardValue * annuity_ /
+                                                           discount_ * variance);
+            return gearing_ * price * coupon_->accrualPeriod() + spreadLegValue_;
+        }
+    }
+
+    Real AnalyticNormalHaganPricer::capletPrice(Rate effectiveCap) const {
+        // caplet is equivalent to call option on fixing
+        Date today = Settings::instance().evaluationDate();
+        if (fixingDate_ <= today) {
+            // the fixing is determined
+            const Rate Rs = std::max(coupon_->swapIndex()->fixing(fixingDate_) - effectiveCap, 0.);
+            Rate price = (gearing_ * Rs) * (coupon_->accrualPeriod() * discount_);
+            return price;
+        } else {
+            Real capletPrice = optionletPrice(Option::Call, effectiveCap);
+            return gearing_ * capletPrice;
+        }
+    }
+
+    Real AnalyticNormalHaganPricer::floorletPrice(Rate effectiveFloor) const {
+        // floorlet is equivalent to put option on fixing
+        Date today = Settings::instance().evaluationDate();
+        if (fixingDate_ <= today) {
+            // the fixing is determined
+            const Rate Rs =
+                std::max(effectiveFloor - coupon_->swapIndex()->fixing(fixingDate_), 0.);
+            Rate price = (gearing_ * Rs) * (coupon_->accrualPeriod() * discount_);
+            return price;
+        } else {
+            Real floorletPrice = optionletPrice(Option::Put, effectiveFloor);
+            return gearing_ * floorletPrice;
+        }
+    }
+
 
 
 //===========================================================================//
@@ -982,6 +1068,54 @@ namespace QuantLib {
     ext::shared_ptr<GFunction> GFunctionFactory::newGFunctionWithShifts(const CmsCoupon& coupon,
                                                                           const Handle<Quote>& meanReversion) {
         return ext::shared_ptr<GFunction>(new GFunctionWithShifts(coupon, meanReversion));
+    }
+
+    //===========================================================================//
+    //                              GFunctionAffine                              //
+    //===========================================================================//
+
+    GFunctionFactory::GFunctionAffine::GFunctionAffine(const CmsCoupon& coupon) {
+        const ext::shared_ptr<SwapIndex>& swapIndex = coupon.swapIndex();
+        const ext::shared_ptr<VanillaSwap>& swap = swapIndex->underlyingSwap(coupon.fixingDate());
+        Handle<YieldTermStructure> discCurve = swapIndex->discountingTermStructure();
+        // constant part of GFunction
+        const Real basisPoint = 1.0e-4;
+        swaprate_ = swap->fairRate();
+        annuity_ = swap->fixedLegBPS() / basisPoint;
+        discount_ = discCurve->discount(coupon.date());
+        // a(T_p) = u (T_N - T_p) + v
+        SwaptionCashFlows cfs(
+            ext::shared_ptr<Swaption>(new Swaption(
+                swap, ext::shared_ptr<Exercise>(new EuropeanExercise(coupon.fixingDate())))),
+            discCurve);
+        // Sum tau_j   (fixed leg)
+        Real sumTauj = 0.0;
+        for (Size k = 0; k < cfs.annuityWeights().size(); ++k)
+            sumTauj += cfs.annuityWeights()[k];
+        // Sum tau_j (T_M - T_j)   (fixed leg)
+        Real sumTaujDeltaT = 0.0;
+        for (Size k = 0; k < cfs.annuityWeights().size(); ++k)
+            sumTaujDeltaT +=
+                cfs.annuityWeights()[k] * (cfs.fixedTimes().back() - cfs.fixedTimes()[k]);
+        // Sum w_i   (float leg)
+        Real sumWi = 0.0;
+        for (Size k = 0; k < cfs.floatWeights().size(); ++k)
+            sumWi += cfs.floatWeights()[k];
+        // Sum w_i (T_N - T_i)    (float leg)
+        Real sumWiDeltaT = 0.0;
+        for (Size k = 0; k < cfs.floatWeights().size(); ++k)
+            sumWiDeltaT += cfs.floatWeights()[k] * (cfs.floatTimes().back() - cfs.floatTimes()[k]);
+        // assemble u, v and a(T_p)
+        Real den = sumTaujDeltaT * sumWi - sumWiDeltaT * sumTauj;
+        Real u = -sumTauj / den;
+        Real v = sumTaujDeltaT / den;
+        Actual365Fixed dc;
+        Real T_p = dc.yearFraction(discCurve->referenceDate(), coupon.date());
+        a_ = u * (cfs.fixedTimes().back() - T_p) + v;
+    }
+
+    ext::shared_ptr<GFunction> GFunctionFactory::newGFunctionAffine(const CmsCoupon& coupon) {
+        return ext::shared_ptr<GFunction>(new GFunctionAffine(coupon));
     }
 
 }

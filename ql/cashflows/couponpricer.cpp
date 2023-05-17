@@ -431,6 +431,7 @@ namespace QuantLib {
         QL_REQUIRE(nCashFlows>0, "no cashflows");
 
         Size nPricers = pricers.size();
+        QL_REQUIRE(nPricers > 0, "no pricers");
         QL_REQUIRE(nCashFlows >= nPricers,
                    "mismatch between leg size (" << nCashFlows <<
                    ") and number of pricers (" << nPricers << ")");

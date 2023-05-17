@@ -80,7 +80,8 @@ namespace QuantLib {
         enum YieldCurveModel { Standard,
                                ExactYield,
                                ParallelShifts,
-                               NonParallelShifts
+                               NonParallelShifts,
+                               Affine
         };
 
         GFunctionFactory() = delete;
@@ -94,6 +95,9 @@ namespace QuantLib {
         static ext::shared_ptr<GFunction>
         newGFunctionWithShifts(const CmsCoupon& coupon,
                                const Handle<Quote>& meanReversion);
+        static ext::shared_ptr<GFunction>
+        newGFunctionAffine(const CmsCoupon& coupon);
+
       private:
         class GFunctionStandard : public GFunction {
           public:
@@ -178,6 +182,19 @@ namespace QuantLib {
             Real secondDerivative(Real x) override;
         };
 
+        // affine function in swaprate and T_p complying w/ additivity and consistency condition and
+        // basis spreads
+        class GFunctionAffine : public GFunction {
+          public:
+            GFunctionAffine(const CmsCoupon& coupon);
+            Real operator()(Real x) override { return a_ * (x - swaprate_) + discount_ / annuity_; }
+            Real firstDerivative(Real x) override { return a_; }
+            Real secondDerivative(Real x) override { return 0.0; }
+
+          protected:
+            Real a_, swaprate_, discount_, annuity_;
+        };
+
     };
 
     inline std::ostream& operator<<(std::ostream& out,
@@ -191,6 +208,8 @@ namespace QuantLib {
             return out << "ParallelShifts";
           case GFunctionFactory::NonParallelShifts:
             return out << "NonParallelShifts";
+          case GFunctionFactory::Affine:
+            return out << "Affine";
           default:
             QL_FAIL("unknown option type");
         }
@@ -329,6 +348,20 @@ namespace QuantLib {
       protected:
         Real optionletPrice(Option::Type optionType, Real strike) const override;
         Real swapletPrice() const override;
+    };
+
+    //! CMS-coupon pricer based on normal volatilities
+    class AnalyticNormalHaganPricer : public HaganPricer {
+      public:
+        AnalyticNormalHaganPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol,
+                                  GFunctionFactory::YieldCurveModel modelOfYieldCurve,
+                                  const Handle<Quote>& meanReversion);
+
+      protected:
+        Real optionletPrice(Option::Type optionType, Real strike) const override;
+        Real swapletPrice() const override;
+        Real capletPrice(Rate effectiveCap) const override;
+        Real floorletPrice(Rate effectiveFloor) const override;
     };
 
 }
