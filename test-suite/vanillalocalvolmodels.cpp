@@ -365,8 +365,6 @@ BOOST_AUTO_TEST_CASE(testSmileCalibration) {
 
     BOOST_TEST_MESSAGE("Testing smile calibration to market data...");
 
-    using namespace vanilla_local_vol_models_test;
-
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons(); // check for QL_USE_INDEXED_COUPON
 
     std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
@@ -402,8 +400,6 @@ BOOST_AUTO_TEST_CASE(testSmileCalibration) {
 BOOST_AUTO_TEST_CASE(testSmileInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing smile interpolation accross expiries and swap terms...");
-
-    using namespace vanilla_local_vol_models_test;
 
     std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
     smiles.resize(5);   // 1y, 2y, 5y, 10y, 30y swaps
@@ -469,8 +465,6 @@ BOOST_AUTO_TEST_CASE(testSmileInterpolation) {
 BOOST_AUTO_TEST_CASE(testSwaptionVTSInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing interpolation via SwaptionVTS...");   
-
-    using namespace vanilla_local_vol_models_test;
 
     std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
     smiles.resize(5);   // 1y, 2y, 5y, 10y, 30y swaps

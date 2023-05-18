@@ -3,7 +3,7 @@ SUBDIRS = asian averageois barrieroption basismodels \
           callablebonds catbonds commodities coupons credit \
           exoticoptions finitedifferences forward fx inflation lattices \
           math mcbasket models processes risk shortrate swaptions \
-          termstructures variancegamma varianceoption volatility
+          termstructures vanillalocalvolmodel variancegamma varianceoption volatility
 
 AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
@@ -37,6 +37,7 @@ libExperimental_la_LIBADD = \
     shortrate/libShortRate.la \
     swaptions/libSwaptions.la \
     termstructures/libTermStructures.la \
+    vanillalocalvolmodel/libVanillaLocalVolModels.la \
     variancegamma/libVarianceGamma.la \
     varianceoption/libVarianceOption.la \
     volatility/libVolatility.la

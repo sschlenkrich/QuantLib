@@ -556,7 +556,6 @@ AC_CONFIG_FILES([
     ql/experimental/templatemodels/hullwhite/Makefile
     ql/experimental/templatemodels/hybrid/Makefile
     ql/experimental/templatemodels/montecarlo/Makefile
-    ql/experimental/templatemodels/montecarlo/scripting/Makefile
     ql/experimental/templatemodels/multiasset/Makefile
     ql/experimental/templatemodels/multiasset/Helper/Makefile
     ql/experimental/templatemodels/multiasset/localCorrFX/Makefile
