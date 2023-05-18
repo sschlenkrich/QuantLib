@@ -38,7 +38,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace vanilla_local_vol_models_test {
+namespace {
 
     // auxilliary data
     Period termsData[] = {
@@ -356,8 +356,6 @@ void VanillaLocalVolModelTest::testShiftedLognormalModelBoundaryCase() {
 void VanillaLocalVolModelTest::testSmileCalibration() {
     BOOST_TEST_MESSAGE("Testing smile calibration to market data...");
 
-    using namespace vanilla_local_vol_models_test;
-
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons(); // check for QL_USE_INDEXED_COUPON
 
     std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
@@ -392,8 +390,6 @@ void VanillaLocalVolModelTest::testSmileCalibration() {
 
 void VanillaLocalVolModelTest::testSmileInterpolation() {
     BOOST_TEST_MESSAGE("Testing smile interpolation accross expiries and swap terms...");
-
-    using namespace vanilla_local_vol_models_test;
 
     std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
     smiles.resize(5);   // 1y, 2y, 5y, 10y, 30y swaps
@@ -458,8 +454,6 @@ void VanillaLocalVolModelTest::testSmileInterpolation() {
 
 void VanillaLocalVolModelTest::testSwaptionVTSInterpolation() {
     BOOST_TEST_MESSAGE("Testing interpolation via SwaptionVTS...");   
-
-    using namespace vanilla_local_vol_models_test;
 
     std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
     smiles.resize(5);   // 1y, 2y, 5y, 10y, 30y swaps

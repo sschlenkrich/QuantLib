@@ -75,7 +75,7 @@ namespace QuantLib {
         Volatility volatility(Time time, Rate strike) const;
 
         //! Returns the volatility type
-        virtual VolatilityType volatilityType() const { return volType_; }
+        virtual VolatilityType volatilityType() const override { return volType_; }
         //! Returns the displacement for lognormal volatilities
         virtual Real displacement() const { return displacement_; }
 

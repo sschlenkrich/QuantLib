@@ -41,9 +41,9 @@ libTemplateMultiasset_la_SOURCES = $(cpp_files)
 
 endif
 
-libTermStructures_la_LIBADD = \
-    Helper/libTermStructuresHelpers.la \
-    localCorrFX/libTermStructuresLocalCorrFX.la
+libTemplateMultiasset_la_LIBADD = \
+    Helper/libTemplateMultiassetHelpers.la \
+    localCorrFX/libTemplateMultiassetLocalCorrFX.la
 
 noinst_LTLIBRARIES = libTemplateMultiasset.la
 

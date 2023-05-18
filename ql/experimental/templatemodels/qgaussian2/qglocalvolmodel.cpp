@@ -205,13 +205,13 @@ namespace QuantLib {
                 Real vanVol = 0.0;
                 try {
                     callVol = bachelierBlackFormulaImpliedVol(Option::Call, strikeGrid[k], swapRate, exerciseTime, testCall);
-                } catch (std::exception) {}
+                } catch (std::exception const&) {}
                 try {
                     putVol = bachelierBlackFormulaImpliedVol(Option::Put, strikeGrid[k], swapRate, exerciseTime, testPut);
-                } catch (std::exception) {}
+                } catch (std::exception const&) {}
                 try {
                     vanVol = bachelierBlackFormulaImpliedVol(Option::Call, strikeGrid[k], swapRate, exerciseTime, call);
-                } catch (std::exception) {}
+                } catch (std::exception  const&) {}
                 std::vector<Real> resultRow = { (double)exerciseDates[i].serialNumber(),
                                                 (double)fixingDate.serialNumber(),
                                                 exerciseTime,
