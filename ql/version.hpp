@@ -31,7 +31,7 @@
 /*! @{ */
 
 //! version string
-#define QL_VERSION "1.35"
+#define QL_VERSION "1.35-a7a9d2e46"
 
 //! version hexadecimal number
 #define QL_HEX_VERSION 0x013500f0
