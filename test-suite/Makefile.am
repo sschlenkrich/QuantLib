@@ -70,6 +70,7 @@ QL_TEST_SRCS = \
 	forwardoption.cpp \
 	forwardrateagreement.cpp \
 	functions.cpp \
+	fxrangeaccrual.cpp \
 	garch.cpp \
 	gaussianquadratures.cpp \
 	gjrgarchmodel.cpp \

@@ -26,6 +26,8 @@
 #include <ql/termstructures/yield/all.hpp>
 
 #include <ql/indexes/fxindex.hpp>
+#include <ql/cashflows/fxrangeaccrualfixed.hpp>
+
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -132,11 +134,34 @@ BOOST_AUTO_TEST_CASE(testCouponSetup)  {
         fx += 0.001;
     }
     
-    for (auto date : fixingSchedule.dates()) {
-        BOOST_TEST_MESSAGE("" << date << ": " << fxIndex->fixing(date));
+    auto startDate = Date(31, August, 2015);
+    auto endDate = Date(30, September, 2015);
+    auto payDate = Date(30, September, 2015);
+    Real notional = 100.0;
+    Real fixedRate = 0.01;
+    auto dc = Actual360();
+
+    auto make_coupon = [payDate, notional, fixedRate, dc, startDate, endDate,
+                        fxIndex](Real lowerTrigger, Real upperTrigger) {
+        return FxRangeAccrualFixedCoupon(payDate, notional, fixedRate, dc, startDate, endDate,
+                                         fxIndex, lowerTrigger, upperTrigger);
+    };
+
+    auto coupon = make_coupon(1.10, 1.175);
+
+    for (auto date : coupon.observationsSchedule()->dates()) {
+        BOOST_TEST_MESSAGE("ObsDate: " << date << ", Index: " << fxIndex->fixing(date));
     }
 
+    std::vector<FxRangeAccrualFixedCoupon> cps;
+    cps.push_back(make_coupon(1.10, 1.15));
+    cps.push_back(make_coupon(1.15, 1.20));
+    cps.push_back(make_coupon(1.20, 1.22));
+    cps.push_back(make_coupon(1.15, 1.175));  // RA 8/23 = 0.347826087
 
+    for (auto cp : cps) {
+        BOOST_TEST_MESSAGE("Rate: " << cp.rate() << ", RA: " << cp.rangeAccrual() << ", Amount: " << cp.amount());
+    }
 }
 
 
