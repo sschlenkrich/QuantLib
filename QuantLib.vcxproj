@@ -819,6 +819,7 @@
     <ClInclude Include="ql\indexes\all.hpp" />
     <ClInclude Include="ql\indexes\bmaindex.hpp" />
     <ClInclude Include="ql\indexes\equityindex.hpp" />
+    <ClInclude Include="ql\indexes\fxindex.hpp" />
     <ClInclude Include="ql\indexes\ibor\all.hpp" />
     <ClInclude Include="ql\indexes\ibor\aonia.hpp" />
     <ClInclude Include="ql\indexes\ibor\audlibor.hpp" />
@@ -2125,6 +2126,7 @@
     <ClCompile Include="ql\experimental\volatility\zabr.cpp" />
     <ClCompile Include="ql\indexes\bmaindex.cpp" />
     <ClCompile Include="ql\indexes\equityindex.cpp" />
+    <ClCompile Include="ql\indexes\fxindex.cpp" />
     <ClCompile Include="ql\indexes\ibor\bibor.cpp" />
     <ClCompile Include="ql\indexes\ibor\corra.cpp" />
     <ClCompile Include="ql\indexes\ibor\eonia.cpp" />
