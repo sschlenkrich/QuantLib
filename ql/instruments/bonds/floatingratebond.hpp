@@ -43,7 +43,7 @@ namespace QuantLib {
       public:
         FloatingRateBond(Natural settlementDays,
                          Real faceAmount,
-                         Schedule schedule,
+                         const Schedule& schedule,
                          const ext::shared_ptr<IborIndex>& iborIndex,
                          const DayCounter& accrualDayCounter,
                          BusinessDayConvention paymentConvention = Following,

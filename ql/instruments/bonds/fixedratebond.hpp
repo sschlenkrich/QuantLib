@@ -48,7 +48,7 @@ namespace QuantLib {
         //! simple annual compounding coupon rates
         FixedRateBond(Natural settlementDays,
                       Real faceAmount,
-                      Schedule schedule,
+                      const Schedule& schedule,
                       const std::vector<Rate>& coupons,
                       const DayCounter& accrualDayCounter,
                       BusinessDayConvention paymentConvention = Following,

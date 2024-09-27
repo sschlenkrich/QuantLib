@@ -30,7 +30,7 @@ namespace QuantLib {
 
     FixedRateBond::FixedRateBond(Natural settlementDays,
                                  Real faceAmount,
-                                 Schedule schedule,
+                                 const Schedule& schedule,
                                  const std::vector<Rate>& coupons,
                                  const DayCounter& accrualDayCounter,
                                  BusinessDayConvention paymentConvention,

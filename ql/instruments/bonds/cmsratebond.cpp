@@ -30,7 +30,7 @@ namespace QuantLib {
     CmsRateBond::CmsRateBond(
                            Natural settlementDays,
                            Real faceAmount,
-                           Schedule schedule,
+                           const Schedule& schedule,
                            const ext::shared_ptr<SwapIndex>& index,
                            const DayCounter& paymentDayCounter,
                            BusinessDayConvention paymentConvention,
