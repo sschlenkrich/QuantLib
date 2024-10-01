@@ -34,7 +34,8 @@
 namespace QuantLib {
 
     class FxIndex;
-    class FxRangeAccrualFixePricer;
+    class BlackVolTermStructure;
+    class FxRangeAccrualFixedCouponPricer;
 
     class FxRangeAccrualFixedCoupon: public FixedRateCoupon {
 
@@ -96,6 +97,9 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
+
+        void setPricer(const ext::shared_ptr<FxRangeAccrualFixedCouponPricer>&);
+
       private:
 
         const ext::shared_ptr<Schedule> observationsSchedule_;
@@ -104,9 +108,33 @@ namespace QuantLib {
         Real lowerTrigger_;
         Real upperTrigger_;
 
+        ext::shared_ptr<FxRangeAccrualFixedCouponPricer> pricer_;
         mutable Real rangeAccrual_;
      };
 
+
+    class FxRangeAccrualFixedCouponPricer
+    : public virtual Observer,
+      public virtual Observable {
+      public:
+
+        FxRangeAccrualFixedCouponPricer(
+            Handle<BlackVolTermStructure> fxVolatility
+        );
+
+        void initialize(const FxRangeAccrualFixedCoupon& coupon);
+
+        Real rangeAccrual() const;
+
+      //! \name Observer interface
+      //@{
+      void update() override { notifyObservers(); }
+      //@}
+
+      protected:
+        Handle<BlackVolTermStructure> fxVolatility_;
+        Real rangeAccrual_;
+    };
 
 }
 

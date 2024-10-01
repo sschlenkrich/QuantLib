@@ -18,6 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/patterns/visitor.hpp>
+#include <ql/patterns/lazyobject.hpp>
 
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/fxrangeaccrualfixed.hpp>
@@ -58,7 +60,7 @@ namespace QuantLib {
                       refPeriodEnd,
                       exCouponDate),
       observationsSchedule_(std::move(observationsSchedule)), fxIndex_(std::move(fxIndex)),
-      lowerTrigger_(lowerTrigger), upperTrigger_(upperTrigger), rangeAccrual_(0.0) {} 
+      lowerTrigger_(lowerTrigger), upperTrigger_(upperTrigger), pricer_(0), rangeAccrual_(0.0) {}
 
 
     FxRangeAccrualFixedCoupon::FxRangeAccrualFixedCoupon(
@@ -94,19 +96,24 @@ namespace QuantLib {
                                     .withCalendar(fxIndex->fixingCalendar())
                                     .withConvention(Following))),
     fxIndex_(std::move(fxIndex)),
-    lowerTrigger_(lowerTrigger), upperTrigger_(upperTrigger), rangeAccrual_(0.0) {}
+    lowerTrigger_(lowerTrigger), upperTrigger_(upperTrigger), pricer_(0), rangeAccrual_(0.0) {}
 
 
     void FxRangeAccrualFixedCoupon::performCalculations() const {
         FixedRateCoupon::performCalculations();
-        // more stuff
-        Real inRange = 0.0;
-        for (auto d : observationsSchedule()->dates()) {
-            auto indexObservation = fxIndex()->fixing(d);
-            if (indexObservation >= lowerTrigger() && indexObservation <= upperTrigger())
-                inRange += 1.0;
+        if (pricer_) {
+            pricer_->initialize(*this);
+            rangeAccrual_ = pricer_->rangeAccrual();
+        } else {
+            // calculate fall-back via intrinsic value
+            Real inRange = 0.0;
+            for (auto d : observationsSchedule()->dates()) {
+                auto indexObservation = fxIndex()->fixing(d);
+                if (indexObservation >= lowerTrigger() && indexObservation <= upperTrigger())
+                    inRange += 1.0;
+            }
+            rangeAccrual_ = inRange / observationsSchedule()->dates().size();
         }
-        rangeAccrual_ = inRange / observationsSchedule()->dates().size();
     }
 
     Real FxRangeAccrualFixedCoupon::rangeAccrual() const {
@@ -129,5 +136,26 @@ namespace QuantLib {
             FixedRateCoupon::accept(v);
     }
 
+    void FxRangeAccrualFixedCoupon::setPricer(const ext::shared_ptr<FxRangeAccrualFixedCouponPricer>& pricer){
+        if (pricer_ != nullptr)
+            unregisterWith(pricer_);
+        pricer_ = pricer;
+        if (pricer_ != nullptr)
+            registerWith(pricer_);
+        update();
+    }
+
+    FxRangeAccrualFixedCouponPricer::FxRangeAccrualFixedCouponPricer(
+            Handle<BlackVolTermStructure> fxVolatility
+    ) : fxVolatility_(fxVolatility), rangeAccrual_(Null<Real>()) {}
+
+    void FxRangeAccrualFixedCouponPricer::initialize(const FxRangeAccrualFixedCoupon& coupon) {
+        // implement rangeAccrual_ calculation...
+        rangeAccrual_ = 0.123;
+    }
+
+    Real FxRangeAccrualFixedCouponPricer::rangeAccrual() const {
+        return rangeAccrual_;
+    }
 
 }

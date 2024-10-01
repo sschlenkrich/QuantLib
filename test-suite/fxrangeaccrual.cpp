@@ -24,6 +24,7 @@
 #include <ql/compounding.hpp>
 #include <ql/time/all.hpp>
 #include <ql/termstructures/yield/all.hpp>
+#include <ql/termstructures/volatility/all.hpp>
 
 #include <ql/indexes/fxindex.hpp>
 #include <ql/cashflows/fxrangeaccrualfixed.hpp>
@@ -106,7 +107,7 @@ namespace {
 
 BOOST_AUTO_TEST_CASE(testCouponSetup)  {
 
-    BOOST_TEST_MESSAGE("Testing FX range accrual coupon...");
+    BOOST_TEST_MESSAGE("Testing FX range accrual coupon without pricer...");
 
     Date today = Settings::instance().evaluationDate();
 
@@ -133,7 +134,7 @@ BOOST_AUTO_TEST_CASE(testCouponSetup)  {
         fxIndex->addFixing(date, fx);
         fx += 0.001;
     }
-    
+
     auto startDate = Date(31, August, 2015);
     auto endDate = Date(30, September, 2015);
     auto payDate = Date(30, September, 2015);
@@ -163,6 +164,82 @@ BOOST_AUTO_TEST_CASE(testCouponSetup)  {
         BOOST_TEST_MESSAGE("Rate: " << cp.rate() << ", RA: " << cp.rangeAccrual() << ", Amount: " << cp.amount());
     }
 }
+
+
+BOOST_AUTO_TEST_CASE(testCouponPricing)  {
+
+    BOOST_TEST_MESSAGE("Testing FX range accrual coupon with pricer...");
+
+    Date today = Settings::instance().evaluationDate();
+
+    BOOST_TEST_MESSAGE("Today: " << today);
+
+    Handle<YieldTermStructure> domYtsh = getYtsh(terms, domDiscRates);
+    Handle<YieldTermStructure> forYtsh = getYtsh(terms, forDiscRates);
+
+    BOOST_TEST_MESSAGE("domYtsh at today: " << domYtsh->discount(today));
+    BOOST_TEST_MESSAGE("forYtsh at today: " << forYtsh->discount(today));
+
+    RelinkableHandle<Quote> spotHandle; // = RelinkableHandle<Quote>(ext::make_shared<SimpleQuote>(0.0));
+
+    ext::shared_ptr<FxIndex> fxIndex =
+        ext::make_shared<FxIndex>(
+            "EUR-USD", TARGET(), domYtsh, forYtsh, spotHandle);
+
+    Schedule fixingSchedule =
+        Schedule(Date(1, January, 2015), Date(31, December, 2015), Period(1, Days),
+                              TARGET(), Following, Following, DateGeneration::Forward, false);
+
+    Real fx = 1.0;
+    for (auto date : fixingSchedule.dates()) {
+        fxIndex->addFixing(date, fx);
+        fx += 0.001;
+    }
+
+
+    RelinkableHandle<Quote> volQuote = RelinkableHandle<Quote>(ext::make_shared<SimpleQuote>(0.25));
+    ext::shared_ptr<BlackVolTermStructure> volTs = ext::shared_ptr<BlackVolTermStructure>(
+        new BlackConstantVol(today, TARGET(), volQuote, Actual365Fixed())
+    );
+    RelinkableHandle<BlackVolTermStructure> volTsh(volTs);
+    ext::shared_ptr<FxRangeAccrualFixedCouponPricer> pricer =
+        ext::make_shared<FxRangeAccrualFixedCouponPricer>(volTsh);
+
+
+    auto startDate = Date(31, August, 2015);
+    auto endDate = Date(30, September, 2015);
+    auto payDate = Date(30, September, 2015);
+    Real notional = 100.0;
+    Real fixedRate = 0.01;
+    auto dc = Actual360();
+
+    auto make_coupon = [payDate, notional, fixedRate, dc, startDate, endDate,
+                        fxIndex](Real lowerTrigger, Real upperTrigger) {
+        return FxRangeAccrualFixedCoupon(payDate, notional, fixedRate, dc, startDate, endDate,
+                                         fxIndex, lowerTrigger, upperTrigger);
+    };
+
+    auto coupon = make_coupon(1.10, 1.175);
+
+    for (auto date : coupon.observationsSchedule()->dates()) {
+        BOOST_TEST_MESSAGE("ObsDate: " << date << ", Index: " << fxIndex->fixing(date));
+    }
+
+    std::vector<FxRangeAccrualFixedCoupon> cps;
+    cps.push_back(make_coupon(1.10, 1.15));
+    cps.push_back(make_coupon(1.15, 1.20));
+    cps.push_back(make_coupon(1.20, 1.22));
+    cps.push_back(make_coupon(1.15, 1.175));  // RA 8/23 = 0.347826087
+
+    for (FxRangeAccrualFixedCoupon& cp : cps) { // make sure we get a reference and not a copy
+        cp.setPricer(pricer);
+    }
+
+    for (auto cp : cps) {
+        BOOST_TEST_MESSAGE("Rate: " << cp.rate() << ", RA: " << cp.rangeAccrual() << ", Amount: " << cp.amount());
+    }
+}
+
 
 
 BOOST_AUTO_TEST_SUITE_END()
