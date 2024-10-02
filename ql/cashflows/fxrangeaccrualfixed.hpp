@@ -100,6 +100,8 @@ namespace QuantLib {
 
         void setPricer(const ext::shared_ptr<FxRangeAccrualFixedCouponPricer>&);
 
+        std::map<std::string, Real>& additionalResults() const { return additionalResults_; }
+
       private:
 
         const ext::shared_ptr<Schedule> observationsSchedule_;
@@ -110,6 +112,7 @@ namespace QuantLib {
 
         ext::shared_ptr<FxRangeAccrualFixedCouponPricer> pricer_;
         mutable Real rangeAccrual_;
+        mutable std::map<std::string, Real> additionalResults_;
      };
 
 
@@ -126,6 +129,8 @@ namespace QuantLib {
 
         Real rangeAccrual() const;
 
+        std::map<std::string, Real>& additionalResults() const { return additionalResults_; }
+
       //! \name Observer interface
       //@{
       void update() override { notifyObservers(); }
@@ -134,6 +139,7 @@ namespace QuantLib {
       protected:
         Handle<BlackVolTermStructure> fxVolatility_;
         Real rangeAccrual_;
+        mutable std::map<std::string, Real> additionalResults_;
     };
 
 }

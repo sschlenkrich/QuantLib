@@ -29,6 +29,7 @@
 #include <ql/indexes/fxindex.hpp>
 #include <ql/cashflows/fxrangeaccrualfixed.hpp>
 
+#include <iostream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -170,6 +171,9 @@ BOOST_AUTO_TEST_CASE(testCouponPricing)  {
 
     BOOST_TEST_MESSAGE("Testing FX range accrual coupon with pricer...");
 
+    // std::cout << "Press Enter to Continue";  // use interrupt to attach debugger
+    // std::cin.ignore();
+
     Date today = Settings::instance().evaluationDate();
 
     BOOST_TEST_MESSAGE("Today: " << today);
@@ -221,8 +225,8 @@ BOOST_AUTO_TEST_CASE(testCouponPricing)  {
 
     auto coupon = make_coupon(1.10, 1.175);
 
-    for (auto date : coupon.observationsSchedule()->dates()) {
-        BOOST_TEST_MESSAGE("ObsDate: " << date << ", Index: " << fxIndex->fixing(date));
+    for (Date date : coupon.observationsSchedule()->dates()) {
+        BOOST_TEST_MESSAGE("ObsDate: " << io::iso_date(date) << ", Index: " << fxIndex->fixing(date));
     }
 
     std::vector<FxRangeAccrualFixedCoupon> cps;
@@ -235,8 +239,98 @@ BOOST_AUTO_TEST_CASE(testCouponPricing)  {
         cp.setPricer(pricer);
     }
 
-    for (auto cp : cps) {
+    BOOST_TEST_MESSAGE("Coupon Results:");
+    for (FxRangeAccrualFixedCoupon& cp : cps) {
         BOOST_TEST_MESSAGE("Rate: " << cp.rate() << ", RA: " << cp.rangeAccrual() << ", Amount: " << cp.amount());
+    }
+
+    BOOST_TEST_MESSAGE("Additional Results 4th coupon:");
+    auto additionalResults = cps[3].additionalResults();
+    for (auto const& x : additionalResults) {
+        std::cout << x.first << " : " << x.second << std::endl;
+    }
+}
+
+
+
+BOOST_AUTO_TEST_CASE(testCouponLeg) {
+
+    BOOST_TEST_MESSAGE("Testing FX range accrual coupon leg with pricer...");
+
+    // std::cout << "Press Enter to Continue";  // use interrupt to attach debugger
+    // std::cin.ignore();
+
+    Date today = Settings::instance().evaluationDate();
+
+    BOOST_TEST_MESSAGE("Today: " << today);
+
+    Handle<YieldTermStructure> domYtsh = getYtsh(terms, domDiscRates);
+    Handle<YieldTermStructure> forYtsh = getYtsh(terms, forDiscRates);
+
+    BOOST_TEST_MESSAGE("domYtsh at today: " << domYtsh->discount(today));
+    BOOST_TEST_MESSAGE("forYtsh at today: " << forYtsh->discount(today));
+
+    RelinkableHandle<Quote>
+        spotHandle; // = RelinkableHandle<Quote>(ext::make_shared<SimpleQuote>(0.0));
+
+    ext::shared_ptr<FxIndex> fxIndex =
+        ext::make_shared<FxIndex>("EUR-USD", TARGET(), domYtsh, forYtsh, spotHandle);
+
+    Schedule fixingSchedule =
+        Schedule(Date(1, January, 2015), Date(31, December, 2015), Period(1, Days), TARGET(),
+                 Following, Following, DateGeneration::Forward, false);
+
+    Real fx = 1.0;
+    for (auto date : fixingSchedule.dates()) {
+        fxIndex->addFixing(date, fx);
+        fx += 0.001;
+    }
+
+
+    RelinkableHandle<Quote> volQuote = RelinkableHandle<Quote>(ext::make_shared<SimpleQuote>(0.25));
+    ext::shared_ptr<BlackVolTermStructure> volTs = ext::shared_ptr<BlackVolTermStructure>(
+        new BlackConstantVol(today, TARGET(), volQuote, Actual365Fixed()));
+    RelinkableHandle<BlackVolTermStructure> volTsh(volTs);
+    ext::shared_ptr<FxRangeAccrualFixedCouponPricer> pricer =
+        ext::make_shared<FxRangeAccrualFixedCouponPricer>(volTsh);
+
+
+    auto startDate = Date(15, January, 2015);
+    auto endDate = Date(15, January, 2045);
+    auto period = Period(3, Months);
+    auto cal = TARGET();
+    auto endOfMonth = false;
+    Schedule couponSchedule = Schedule(startDate, endDate, period, cal, Following, Following,
+                                       DateGeneration::Backward, endOfMonth);
+
+    Real notional = 100.0;
+    Real fixedRate = 0.01;
+    auto dc = Actual360();
+
+    auto lowerTrigger = 1.10;
+    auto upperTrigger = 1.20;
+
+    std::vector<FxRangeAccrualFixedCoupon> leg;
+    for (Size k = 0; k < couponSchedule.dates().size()-1; ++k) {
+        auto startDate = couponSchedule.dates()[k];
+        auto endDate = couponSchedule.dates()[k+1];
+        auto payDate = couponSchedule.dates()[k + 1];
+        leg.push_back(FxRangeAccrualFixedCoupon(payDate, notional, fixedRate, dc, startDate,
+                                                endDate, fxIndex, lowerTrigger, upperTrigger)
+        );
+    }
+
+    for (FxRangeAccrualFixedCoupon& cp : leg) { // make sure we get a reference and not a copy
+        cp.setPricer(pricer);
+    }
+
+    BOOST_TEST_MESSAGE("Coupon Results:");
+    for (FxRangeAccrualFixedCoupon& cp : leg) {
+        BOOST_TEST_MESSAGE("Start: " << io::iso_date(cp.accrualStartDate())
+                                     << ", End: " << io::iso_date(cp.accrualEndDate())
+                                     << ", RA: " << cp.rangeAccrual()
+                                     << ", Rate: " << cp.rate()
+                                    << ", Amount: " << cp.amount());
     }
 }
 
