@@ -8,6 +8,7 @@ this_include_HEADERS = \
     all.hpp \
     bmaindex.hpp \
     equityindex.hpp \
+    fxindex.hpp \
     iborindex.hpp \
     indexmanager.hpp \
     inflationindex.hpp \
@@ -18,6 +19,7 @@ this_include_HEADERS = \
 cpp_files = \
     bmaindex.cpp \
     equityindex.cpp \
+    fxindex.cpp \
     iborindex.cpp \
     indexmanager.cpp \
     inflationindex.cpp \

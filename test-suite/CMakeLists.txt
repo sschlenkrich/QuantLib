@@ -69,6 +69,7 @@ set(QL_TEST_SOURCES
     forwardoption.cpp
     forwardrateagreement.cpp
     functions.cpp
+    fxrangeaccrual.cpp
     garch.cpp
     gaussianquadratures.cpp
     gjrgarchmodel.cpp

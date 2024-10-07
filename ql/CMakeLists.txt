@@ -19,6 +19,7 @@ set(QL_SOURCES
     cashflows/equitycashflow.cpp
     cashflows/fixedratecoupon.cpp
     cashflows/floatingratecoupon.cpp
+    cashflows/fxrangeaccrualfixed.cpp
     cashflows/iborcoupon.cpp
     cashflows/indexedcashflow.cpp
     cashflows/inflationcoupon.cpp
@@ -228,6 +229,7 @@ set(QL_SOURCES
     index.cpp
     indexes/bmaindex.cpp
     indexes/equityindex.cpp
+    indexes/fxindex.cpp
     indexes/ibor/bibor.cpp
     indexes/ibor/corra.cpp
     indexes/ibor/eonia.cpp
@@ -956,6 +958,7 @@ set(QL_HEADERS
     cashflows/equitycashflow.hpp
     cashflows/fixedratecoupon.hpp
     cashflows/floatingratecoupon.hpp
+    cashflows/fxrangeaccrualfixed.hpp
     cashflows/iborcoupon.hpp
     cashflows/indexedcashflow.hpp
     cashflows/inflationcoupon.hpp
@@ -1242,6 +1245,7 @@ set(QL_HEADERS
     index.hpp
     indexes/bmaindex.hpp
     indexes/equityindex.hpp
+    indexes/fxindex.hpp
     indexes/ibor/aonia.hpp
     indexes/ibor/audlibor.hpp
     indexes/ibor/bbsw.hpp
