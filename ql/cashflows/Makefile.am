@@ -10,6 +10,7 @@ this_include_HEADERS = \
     cashflows.hpp \
     cashflowvectors.hpp \
     cmscoupon.hpp \
+    cmsrangeaccrualfixed.hpp \
     conundrumpricer.hpp \
     coupon.hpp \
     couponpricer.hpp \
@@ -46,6 +47,7 @@ cpp_files = \
     cashflows.cpp \
     cashflowvectors.cpp \
     cmscoupon.cpp \
+    cmsrangeaccrualfixed.cpp \
     conundrumpricer.cpp \
     coupon.cpp \
     couponpricer.cpp \

@@ -4470,6 +4470,9 @@
     <ClInclude Include="ql\cashflows\fxrangeaccrualfixed.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\cmsrangeaccrualfixed.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7226,6 +7229,9 @@
       <Filter>indexes</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\fxrangeaccrualfixed.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\cashflows\cmsrangeaccrualfixed.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
   </ItemGroup>

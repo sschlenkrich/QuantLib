@@ -6,6 +6,7 @@ set(QL_SOURCES
     cashflows/cashflows.cpp
     cashflows/cashflowvectors.cpp
     cashflows/cmscoupon.cpp
+    cashflows/cmsrangeaccrualfixed.cpp
     cashflows/conundrumpricer.cpp
     cashflows/coupon.cpp
     cashflows/couponpricer.cpp
@@ -945,6 +946,7 @@ set(QL_HEADERS
     cashflows/cashflows.hpp
     cashflows/cashflowvectors.hpp
     cashflows/cmscoupon.hpp
+    cashflows/cmsrangeaccrualfixed.hpp
     cashflows/conundrumpricer.hpp
     cashflows/coupon.hpp
     cashflows/couponpricer.hpp

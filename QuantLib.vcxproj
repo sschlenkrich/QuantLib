@@ -507,6 +507,7 @@
     <ClInclude Include="ql\cashflows\cashflows.hpp" />
     <ClInclude Include="ql\cashflows\cashflowvectors.hpp" />
     <ClInclude Include="ql\cashflows\cmscoupon.hpp" />
+    <ClInclude Include="ql\cashflows\cmsrangeaccrualfixed.hpp" />
     <ClInclude Include="ql\cashflows\conundrumpricer.hpp" />
     <ClInclude Include="ql\cashflows\coupon.hpp" />
     <ClInclude Include="ql\cashflows\couponpricer.hpp" />
@@ -1912,6 +1913,7 @@
     <ClCompile Include="ql\cashflows\cashflows.cpp" />
     <ClCompile Include="ql\cashflows\cashflowvectors.cpp" />
     <ClCompile Include="ql\cashflows\cmscoupon.cpp" />
+    <ClCompile Include="ql\cashflows\cmsrangeaccrualfixed.cpp" />
     <ClCompile Include="ql\cashflows\conundrumpricer.cpp" />
     <ClCompile Include="ql\cashflows\coupon.cpp" />
     <ClCompile Include="ql\cashflows\couponpricer.cpp" />
