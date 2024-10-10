@@ -175,8 +175,8 @@ namespace QuantLib {
             Real standardDevLow = 0.0;
             Real standardDevUpp = 0.0;
             if (d > fxVolatility_->referenceDate()) {
-                standardDevLow = fxVolatility_->blackVariance(d, coupon.lowerTrigger(), true);
-                standardDevUpp = fxVolatility_->blackVariance(d, coupon.upperTrigger(), true);
+                standardDevLow = std::sqrt(std::max(fxVolatility_->blackVariance(d, coupon.lowerTrigger(), true), 0.0));
+                standardDevUpp = std::sqrt(std::max(fxVolatility_->blackVariance(d, coupon.upperTrigger(), true), 0.0));
             }
             Real inRangeProbability = 0.0;
             if (standardDevLow < minStd) {  // calculate intrinsic value
