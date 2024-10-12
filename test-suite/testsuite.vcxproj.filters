@@ -534,6 +534,9 @@
     <ClCompile Include="fxrangeaccrual.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cmsrangeaccrual.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="paralleltestrunner.hpp">
