@@ -35,6 +35,8 @@ namespace QuantLib {
 
     class SwapIndex;
     class SwaptionVolatilityStructure;
+    class CmsCouponPricer;
+    class HaganPricer;
     class CmsRangeAccrualFixedCouponPricer;
 
     class CmsRangeAccrualFixedCoupon: public FixedRateCoupon {
@@ -125,6 +127,10 @@ namespace QuantLib {
             Handle<SwaptionVolatilityStructure> swaptionVolatility
         );
 
+        CmsRangeAccrualFixedCouponPricer(
+            const ext::shared_ptr<CmsCouponPricer> cmsCouponPricer
+        );
+
         void initialize(const CmsRangeAccrualFixedCoupon& coupon);
 
         Real rangeAccrual() const;
@@ -138,8 +144,18 @@ namespace QuantLib {
 
       protected:
         Handle<SwaptionVolatilityStructure> swaptionVolatility_;
+        ext::shared_ptr<HaganPricer> haganPricer_;
         Real rangeAccrual_;
         mutable std::map<std::string, Real> additionalResults_;
+
+      private:
+        Real cmsPutOption(const ext::shared_ptr<SwapIndex>& cmsIndex,
+                          const Date& exerciseDate,
+                          const Date& paymentDate,
+                          const Real optionStrike,
+                          const Real spreadWidth = 1.0e-4  // 1bp, be carefull with numerical instabilities
+        );
+
     };
 
 }
