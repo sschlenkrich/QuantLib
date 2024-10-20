@@ -28,6 +28,7 @@
 
 #include <ql/indexes/all.hpp>
 #include <ql/cashflows/cmsrangeaccrualfixed.hpp>
+#include <ql/cashflows/conundrumpricer.hpp>
 
 #include <iostream>
 
@@ -294,8 +295,9 @@ BOOST_AUTO_TEST_CASE(testCouponLeg) {
         ext::shared_ptr<ConstantSwaptionVolatility>(new ConstantSwaptionVolatility(
             today, TARGET(), Following, volQuote, Actual365Fixed(), vType));
     RelinkableHandle<SwaptionVolatilityStructure> volTsh(volTs);
-    //
-    ext::shared_ptr<CmsRangeAccrualFixedCouponPricer> pricer =
+
+    // volatility-based pricer
+    ext::shared_ptr<CmsRangeAccrualFixedCouponPricer> pricerWithVol =
         ext::make_shared<CmsRangeAccrualFixedCouponPricer>(volTsh);
 
     auto startDate = Date(15, January, 2015);
@@ -324,7 +326,7 @@ BOOST_AUTO_TEST_CASE(testCouponLeg) {
     }
 
     for (CmsRangeAccrualFixedCoupon& cp : leg) { // make sure we get a reference and not a copy
-        cp.setPricer(pricer);
+        cp.setPricer(pricerWithVol);
     }
 
     BOOST_TEST_MESSAGE("Coupon Results:");
@@ -334,6 +336,41 @@ BOOST_AUTO_TEST_CASE(testCouponLeg) {
                                      << ", RA: " << cp.rangeAccrual()
                                      << ", Rate: " << cp.rate()
                                     << ", Amount: " << cp.amount());
+    }
+
+    // mean reversion parameter for some GFunction implementations; not used here
+    RelinkableHandle<Quote> meanReversion = RelinkableHandle<Quote>();
+
+    // a CMS pricer with 'Standard' model for replication-based pricing
+    ext::shared_ptr<CmsCouponPricer> cmsCouponPricerStandard =
+        ext::make_shared<NumericHaganPricer>(volTsh, GFunctionFactory::Standard, meanReversion);
+    // replication-based pricer
+    ext::shared_ptr<CmsRangeAccrualFixedCouponPricer> pricerWithCmsStandard =
+        ext::make_shared<CmsRangeAccrualFixedCouponPricer>(cmsCouponPricerStandard);
+
+    // a CMS pricer with 'ExactYield' model for replication-based pricing
+    ext::shared_ptr<CmsCouponPricer> cmsCouponPricerExactYield =
+        ext::make_shared<NumericHaganPricer>(volTsh, GFunctionFactory::ExactYield,
+                                             meanReversion);
+    // replication-based pricer
+    ext::shared_ptr<CmsRangeAccrualFixedCouponPricer> pricerWithCmsExactYield =
+        ext::make_shared<CmsRangeAccrualFixedCouponPricer>(cmsCouponPricerExactYield);
+
+
+    BOOST_TEST_MESSAGE("Coupon RA with replication:");
+    for (CmsRangeAccrualFixedCoupon& cp : leg) { // make sure we get a reference and not a copy
+        cp.setPricer(pricerWithVol);
+        Real raWithVol = cp.rangeAccrual();
+        cp.setPricer(pricerWithCmsStandard);
+        Real raWithStandard = cp.rangeAccrual();
+        cp.setPricer(pricerWithCmsExactYield);
+        Real raWithExactYield = cp.rangeAccrual();
+        //
+        BOOST_TEST_MESSAGE("Start: " << io::iso_date(cp.accrualStartDate())
+                                     << ", RA_Vol: " << raWithVol
+                                     << ", RA_Std: " << raWithStandard
+                                     << ", RA_Yld: " << raWithExactYield);
+
     }
 }
 

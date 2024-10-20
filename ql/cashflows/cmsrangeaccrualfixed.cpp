@@ -22,12 +22,15 @@
 #include <ql/patterns/lazyobject.hpp>
 
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/cmsrangeaccrualfixed.hpp>
+#include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <cmath>
 #include <utility>
 
@@ -158,13 +161,67 @@ namespace QuantLib {
 
     CmsRangeAccrualFixedCouponPricer::CmsRangeAccrualFixedCouponPricer(
         Handle<SwaptionVolatilityStructure> swaptionVolatility)
-    : swaptionVolatility_(swaptionVolatility), rangeAccrual_(Null<Real>()) {}
+    : swaptionVolatility_(swaptionVolatility), haganPricer_(),
+      rangeAccrual_(Null<Real>()) {}
+
+    CmsRangeAccrualFixedCouponPricer::CmsRangeAccrualFixedCouponPricer(
+        const ext::shared_ptr<CmsCouponPricer> cmsCouponPricer)
+    : swaptionVolatility_(cmsCouponPricer->swaptionVolatility()), haganPricer_(),
+      rangeAccrual_(Null<Real>()) {
+        // We allow a CmsCouponPricer here to enable a general interface.
+        // However, for our implementation, we require a HaganPricer.
+        // Consequently, we need to down-cast the pricer.
+        QL_REQUIRE(cmsCouponPricer, "cmsCouponPricer is required.");
+        haganPricer_ = ext::dynamic_pointer_cast<HaganPricer>(cmsCouponPricer);
+        QL_REQUIRE(haganPricer_, "Cannot down-cast cmsCouponPricer to HaganPricer.");
+    }
+
+    Real CmsRangeAccrualFixedCouponPricer::cmsPutOption(
+        const ext::shared_ptr<SwapIndex>& cmsIndex,
+        const Date& exerciseDate,
+        const Date& paymentDate,
+        const Real optionStrike,
+        const Real spreadWidth // 1bp
+    ) {
+        QL_REQUIRE(haganPricer_, "haganPricer_ required.");
+        QL_REQUIRE(spreadWidth > 0.0, "spreadWidth > 0.0 required.");
+        CmsCoupon cmsCoupon(
+            paymentDate,
+            1.0,               // nominal
+            exerciseDate,      // startDate
+            exerciseDate + 1,  // endDate
+            0,                 // fixingDays
+            cmsIndex,
+            1.0,               // gearing
+            0.0,               // spread
+            Date(),            // refPeriodStart
+            Date(),            // refPeriodEnd
+            Actual360()
+        );
+        cmsCoupon.setPricer(haganPricer_);
+        cmsCoupon.performCalculations();
+        Real swapRate = cmsIndex->fixing(exerciseDate);
+        Real putSprd = 0.0;
+        if (optionStrike > swapRate) {  // calculate call spread to improve numerical stability
+            Real calPlus = haganPricer_->capletRate(optionStrike + 0.5 * spreadWidth);
+            Real calMins = haganPricer_->capletRate(optionStrike - 0.5 * spreadWidth);
+            putSprd = 1.0 - (calMins - calPlus) / spreadWidth;
+        } else {
+            Real putPlus = haganPricer_->floorletRate(optionStrike + 0.5 * spreadWidth);
+            Real putMins = haganPricer_->floorletRate(optionStrike - 0.5 * spreadWidth);
+            putSprd = (putPlus - putMins) / spreadWidth;
+        }
+        return putSprd;
+    }
+
 
     void CmsRangeAccrualFixedCouponPricer::initialize(const CmsRangeAccrualFixedCoupon& coupon) {
         additionalResults_.clear();
         Period swapTerm = coupon.cmsIndex()->tenor();
         // implement rangeAccrual_ calculation...
         Real minStd = 0.000005;  // 1bp * sqrt(1d)
+        Real strikeLow = coupon.lowerTrigger();
+        Real strikeUpp = coupon.upperTrigger();
         CumulativeNormalDistribution Phi;
         Real daysInRange = 0.0;
         for (auto d : coupon.observationsSchedule()->dates()) {
@@ -174,23 +231,35 @@ namespace QuantLib {
             Real indexObservation = coupon.cmsIndex()->fixing(d);
             Real standardDevLow = 0.0;
             Real standardDevUpp = 0.0;
+            //
+            Real putLow = 0.0;
+            Real putUpp = 0.0;
             if (d > swaptionVolatility_->referenceDate()) {
                 standardDevLow = std::sqrt(std::max(swaptionVolatility_->blackVariance(d, swapTerm, coupon.lowerTrigger(), true), 0.0));
                 standardDevUpp = std::sqrt(std::max(swaptionVolatility_->blackVariance(d, swapTerm, coupon.upperTrigger(), true), 0.0));
             }
             Real inRangeProbability = 0.0;
-            if (standardDevLow < minStd) {  // calculate intrinsic value
-                if (indexObservation >= coupon.lowerTrigger() &&
-                    indexObservation <= coupon.upperTrigger())
-                    inRangeProbability = 1.0;
-            } else {  // put option spread valuation
-                // Adjust for convexity adjustment
-                Real hLower = (coupon.lowerTrigger() - indexObservation) / standardDevLow;
-                Real hUpper = (coupon.upperTrigger() - indexObservation) / standardDevUpp;
-                Real putLower = Phi(hLower);
-                Real putUpper = Phi(hUpper);
-                inRangeProbability = putUpper - putLower;
+            //
+            if (standardDevLow < minStd) { // calculate intrinsic value
+                putLow = (indexObservation < strikeLow) ? (1.0) : (0.0);
+            } else {
+                if (haganPricer_) { // replication
+                    putLow = cmsPutOption(coupon.cmsIndex(), d, coupon.date(), strikeLow);
+                } else { // fall-back to Bachelier w/o CMS adjustment
+                    putLow = Phi((strikeLow - indexObservation) / standardDevLow);
+                }
             }
+            //
+            if (standardDevUpp < minStd) { // calculate intrinsic value
+                putUpp = (indexObservation < strikeUpp) ? (1.0) : (0.0);
+            } else {
+                if (haganPricer_) { // replication
+                    putUpp = cmsPutOption(coupon.cmsIndex(), d, coupon.date(), strikeUpp);
+                } else { // fall-back to Bachelier w/o CMS adjustment
+                    putUpp = Phi((strikeUpp - indexObservation) / standardDevUpp);
+                }
+            }
+            inRangeProbability = putUpp - putLow;
             daysInRange += inRangeProbability;
             //
             additionalResults_["indexObservation_" + date_s] = indexObservation;
